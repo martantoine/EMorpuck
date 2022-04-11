@@ -7,7 +7,7 @@
         {
             "name": "BMP launch",
             "cwd": "${workspaceRoot}/debug",
-            "executable": "${workspaceRoot}/debug/EMorpuck.elf",
+            "executable": "${workspaceRoot}/build/EMorpuck.elf",
             "request": "launch",
             "type": "cortex-debug",
             "servertype": "bmp",
@@ -23,7 +23,7 @@
         {
             "name": "BMP attach",
             "cwd": "${workspaceRoot}/debug",
-            "executable": "${workspaceRoot}/debug/EMorpuck.elf",
+            "executable": "${workspaceRoot}/build/EMorpuck.elf",
             "request": "attach",
             "type": "cortex-debug",
             "servertype": "bmp",

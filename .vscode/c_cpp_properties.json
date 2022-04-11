@@ -3,7 +3,19 @@
         {
             "name": "ARM C",
             "includePath": [
-                "${workspaceFolder}/src/"
+                "${workspaceFolder}//src//",
+                "${workspaceFolder}//e-puck2_main-processor//src//",
+                "${workspaceFolder}//e-puck2_main-processor//ChibiOS//os//rt//ports//ARM//compilers//GCC//",
+                "${workspaceFolder}//e-puck2_main-processor//ChibiOS//os//rt//ports//ARM//",
+                "${workspaceFolder}//e-puck2_main-processor//ChibiOS//os/hal//include//",
+                "${workspaceFolder}//e-puck2_main-processor//ChibiOS//os/rt//include//",
+                "${workspaceFolder}//e-puck2_main-processor//ChibiOS//os//hal//osal//rt",
+                "${workspaceFolder}//e-puck2_main-processor//ChibiOS_ext//os//hal//boards//epuck2//",
+                "${workspaceFolder}//e-puck2_main-processor//ChibiOS//os//common//ports//ARM//devices//LPC214x",
+                "${workspaceFolder}//e-puck2_main-processor//ChibiOS//os//hal//ports//STM32//STM32F4xx",
+                "${workspaceFolder}//e-puck2_main-processor//ChibiOS//os//hal//ports//common//ARMCMx",
+                "C://Program Files (x86)//GNU Arm Embedded Toolchain//10 2021.10//arm-none-eabi//include//",
+                "C://Program Files (x86)//GNU Arm Embedded Toolchain//10 2021.10//lib//gcc//arm-none-eabi//10.3.1//include//"
             ],
             "defines": [
                 "_DEBUG",

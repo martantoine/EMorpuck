@@ -4,5 +4,20 @@
 			"path": "."
 		}
 	],
-	"settings": {}
+	"settings": {
+		"files.associations": {
+			"string.h": "c",
+			"po8030.h": "c",
+			"hal.h": "c",
+			"ch.h": "c",
+			"chtypes.h": "c",
+			"chcore.h": "c",
+			"pal.h": "c",
+			"hal_lld.h": "c",
+			"stdio.h": "c",
+			"cdefs.h": "c",
+			"memory_protection.h": "c"
+		},
+		"cortex-debug.showRTOS": true
+	}
 }
