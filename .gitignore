@@ -1,2 +1,5 @@
 .dep/*
 build/
+.vscode/*.log
+libssp_nonshared.a
+libssp.a

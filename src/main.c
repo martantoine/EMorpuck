@@ -18,7 +18,7 @@ int main(void)
     halInit();
     chSysInit();
     mpu_init();
-
+    int i;
     while (1) {
         chThdSleepMilliseconds(1000);
     }
