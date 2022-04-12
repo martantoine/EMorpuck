@@ -1,3 +1,12 @@
+/* author : Antoine Martin
+ * email : martantoine@tuta.io
+ * date : April 2022
+ * Description : VSCode properties file for C/C++ related configuration (include path, compiler path) to make intellisense works
+ * Compiling with latest version of the ARM Toolchain doesn't seems to work (I tried with GNU Arm Embedded Toolchain 10.3-2021.10) 10.3.1 20210824 (release))
+ * ChibiOS uses deprecated functionnalities of arm-none-eabi-gcc, errors during linking (sample of errors among many the linker doesn't find implementation of _exit _getpid _kill)
+ * The only I found working is the one included with the eclipse epuck2 IDE (which is in my case placed under AppData/Local/Eclipse_e-puck2)
+ */
+
 {
     "configurations": [
         {
@@ -8,25 +17,39 @@
                 "${workspaceFolder}//e-puck2_main-processor//ChibiOS//os//rt//ports//ARM//compilers//GCC//",
                 "${workspaceFolder}//e-puck2_main-processor//ChibiOS//os//rt//ports//ARM//",
                 "${workspaceFolder}//e-puck2_main-processor//ChibiOS//os/hal//include//",
+                "${workspaceFolder}//e-puck2_main-processor//ChibiOS//os/hal//lib//streams",
                 "${workspaceFolder}//e-puck2_main-processor//ChibiOS//os/rt//include//",
                 "${workspaceFolder}//e-puck2_main-processor//ChibiOS//os//hal//osal//rt",
                 "${workspaceFolder}//e-puck2_main-processor//ChibiOS_ext//os//hal//boards//epuck2//",
+                "${workspaceFolder}//e-puck2_main-processor//ChibiOS_ext//os//hal//include//",
                 "${workspaceFolder}//e-puck2_main-processor//ChibiOS//os//common//ports//ARM//devices//LPC214x",
                 "${workspaceFolder}//e-puck2_main-processor//ChibiOS//os//hal//ports//STM32//STM32F4xx",
                 "${workspaceFolder}//e-puck2_main-processor//ChibiOS//os//hal//ports//common//ARMCMx",
-                "C://Program Files (x86)//GNU Arm Embedded Toolchain//10 2021.10//arm-none-eabi//include//",
-                "C://Program Files (x86)//GNU Arm Embedded Toolchain//10 2021.10//lib//gcc//arm-none-eabi//10.3.1//include//"
+                "${workspaceFolder}//e-puck2_main-processor//ChibiOS//os//hal//ports//STM32//LLD//DACv1",
+                "${workspaceFolder}//e-puck2_main-processor//ChibiOS//os//hal//ports//STM32//LLD//DMAv1",
+                "${workspaceFolder}//e-puck2_main-processor//ChibiOS//os//hal//ports//STM32//LLD//GPIOv2",
+                "${workspaceFolder}//e-puck2_main-processor//ChibiOS//os//hal//ports//STM32//LLD//I2Cv2",
+                "${workspaceFolder}//e-puck2_main-processor//ChibiOS//os//hal//ports//STM32//LLD//OTGv1",
+                "${workspaceFolder}//e-puck2_main-processor//ChibiOS//os//hal//ports//STM32//LLD//RTCv2",
+                "${workspaceFolder}//e-puck2_main-processor//ChibiOS//os//hal//ports//STM32//LLD//SPIv1",
+                "${workspaceFolder}//e-puck2_main-processor//ChibiOS//os//hal//ports//STM32//LLD//TIMv1",
+                "${workspaceFolder}//e-puck2_main-processor//ChibiOS//os//hal//ports//STM32//LLD//USARTv2",
+                "${workspaceFolder}//e-puck2_main-processor//ChibiOS//os//hal//ports//STM32//LLD//USBv1",
+                "${workspaceFolder}//e-puck2_main-processor//ChibiOS//os//hal//ports//STM32//LLD",
+                "C://Users//marta//AppData//Local//Eclipse_e-puck2//Tools//gcc-arm-none-eabi-7-2017-q4-major-win32//arm-none-eabi//include",
+                "C://Users//marta//AppData//Local//Eclipse_e-puck2//Tools//gcc-arm-none-eabi-7-2017-q4-major-win32//lib//gcc//arm-none-eabi//7.2.1//include"
+                //"C://Program Files (x86)//GNU Arm Embedded Toolchain//10 2021.10//arm-none-eabi//include//", //the path should looks like this if using newer versions of the ARM toolchain
+                //"C://Program Files (x86)//GNU Arm Embedded Toolchain//10 2021.10//lib//gcc//arm-none-eabi//10.3.1//include//" 
             ],
             "defines": [
                 "_DEBUG",
                 "UNICODE",
                 "_UNICODE"
             ],
+            "compilerPath": "C://Users//marta//AppData//Local//Eclipse_e-puck2//Tools//gcc-arm-none-eabi-7-2017-q4-major-win32//bin//arm-none-eabi-gcc.exe",
             "compileCommands": "${default}",
-            "cStandard": "c17",
-            "cppStandard": "c++17",
-            "intelliSenseMode": "gcc-arm",
-            "configurationProvider": "ms-vscode.makefile-tools"
+            "cStandard": "c99",
+            "intelliSenseMode": "gcc-arm"
         }
     ],
     "version": 4
