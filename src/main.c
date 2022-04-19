@@ -9,7 +9,6 @@
 #include <usbcfg.h>
 #include <main.h>
 #include <motors.h>
-#include <camera/po8030.h>
 #include <chprintf.h>
 
 
@@ -18,11 +17,19 @@ int main(void)
     halInit();
     chSysInit();
     mpu_init();
-    int i;
+    motors_init();
+
+    right_motor_set_speed(MOTOR_SPEED_LIMIT/2);
+    left_motor_set_speed(MOTOR_SPEED_LIMIT/2);
+    
     while (1) {
+        right_motor_set_speed(MOTOR_SPEED_LIMIT/2);
+        left_motor_set_speed(MOTOR_SPEED_LIMIT/2);
         chThdSleepMilliseconds(1000);
+        right_motor_set_speed(-MOTOR_SPEED_LIMIT/2);
+        left_motor_set_speed(-MOTOR_SPEED_LIMIT/2);
+        chThdSleepMilliseconds(1000);        
     }
-    // karl u suss
 }
 
 #define STACK_CHK_GUARD 0xe2dee396

@@ -25,7 +25,13 @@
 			"dcmi.h": "c",
 			"dcmi_lld.h": "c",
 			"chprintf.h": "c",
-			"stdarg.h": "c"
+			"stdarg.h": "c",
+			"adc.h": "c",
+			"_default_types.h": "c",
+			"stdint.h": "c",
+			"stdint-gcc.h": "c",
+			"path.h": "c",
+			"motors.h": "c"
 		},
 		"cortex-debug.showRTOS": true
 	}
