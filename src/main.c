@@ -6,11 +6,11 @@
 #include "ch.h"
 #include "hal.h"
 #include "memory_protection.h"
+#include "motors_thd.h"
+#include "main.h"
+#include "shared_var.h"
 #include <usbcfg.h>
-#include <main.h>
-#include <motors.h>
 #include <chprintf.h>
-
 
 int main(void)
 {
@@ -18,17 +18,23 @@ int main(void)
     chSysInit();
     mpu_init();
     motors_init();
+    motors_thd_init();
 
-    right_motor_set_speed(MOTOR_SPEED_LIMIT/2);
-    left_motor_set_speed(MOTOR_SPEED_LIMIT/2);
-    
     while (1) {
-        right_motor_set_speed(MOTOR_SPEED_LIMIT/2);
-        left_motor_set_speed(MOTOR_SPEED_LIMIT/2);
-        chThdSleepMilliseconds(1000);
-        right_motor_set_speed(-MOTOR_SPEED_LIMIT/2);
-        left_motor_set_speed(-MOTOR_SPEED_LIMIT/2);
-        chThdSleepMilliseconds(1000);        
+        chSemWait(&path_s);
+        path = malloc(10*sizeof(step_t));
+        path[0] = FORWARD;
+        path[1] = FORWARD;
+        path[2] = FORWARD;
+        path[3] = LEFT;
+        path[4] = FORWARD;
+        path[5] = FORWARD;
+        path[6] = FORWARD;
+        path[7] = FORWARD;
+        path[8] = RIGHT;
+        path[9] = RIGHT;
+        chSemSignal(&path_s);
+        chThdSleepMilliseconds(4000);        
     }
 }
 

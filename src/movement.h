@@ -12,8 +12,9 @@
 #ifndef MOVEMENT_H
 #define MOVEMENT_H
 
-#include "path.h"
-
-void move(struct pos_t target);
+void forward(void);
+void backward(void);
+void left(void);
+void right(void);
 
 #endif

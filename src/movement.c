@@ -10,32 +10,39 @@
  */
 
 #include "movement.h"
+#include "constants.h"
+#include "shared_var.h"
 #include <motors.h>
+#include <ch.h>
 
-#define CELL_STEPS 1000;
-static struct pos_t current_pos;
+#define WAIT_MOTOR_TARGET_REACHED() \
+        while(left_motor_get_pos() != 0 && right_motor_get_pos() != 0) \
+        chThdSleepMilliseconds(10)
 
-void initPos()
+void mvt_forward()
 {
-    current_pos.x = 0;
-    current_pos.y = 0;
-    current_pos.t = 0;
+    //left_motor_move(CELL_WIDTH/4);
+    //right_motor_move(CELL_WIDTH/4);
+    WAIT_MOTOR_TARGET_REACHED();
 }
 
-void move(struct pos_t target)
+void mvt_backward()
 {
-    uint8_t size;
-    struct pos_t* path = findPath(target, &size);
-    struct pos_t delta_path;
-    for(uint8_t i=0; i < size; i++)
-    {
-        delta_path.x = path[i].x - current_pos.x;
-        delta_path.y = path[i].y - current_pos.y;
-        delta_path.t = path[i].t - current_pos.t;
-        turn(delta_path.t);
-        if(delta_path.x != 0 || delta_path.y != 0)
-        {
-            robot_forward();
-        }
-    }
+    //left_motor_move(-CELL_WIDTH/4);
+    //right_motor_move(-CELL_WIDTH/4);
+    WAIT_MOTOR_TARGET_REACHED();
+}
+
+void mvt_left()
+{
+    //left_motor_move(STEPS_TURN_45_DEG);
+    //right_motor_move(-STEPS_TURN_45_DEG);
+    WAIT_MOTOR_TARGET_REACHED();
+}
+
+void mvt_right()
+{
+    //left_motor_move(-STEPS_TURN_45_DEG);
+    //right_motor_move(STEPS_TURN_45_DEG);
+    WAIT_MOTOR_TARGET_REACHED();
 }
