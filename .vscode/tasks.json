@@ -21,6 +21,15 @@
                 "kind": "build",
                 "isDefault": true
             }
+        },
+        {
+            "label": "Clean libssp",
+            "type": "shell",
+            "command": "make clean-libssp",
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            }
         }
     ]
 }

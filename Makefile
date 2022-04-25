@@ -14,5 +14,14 @@ CSRC += ./src/main.c \
 #Header folders to include
 INCDIR += 
 
+
+clean-libssp:
+	@echo Cleaning libssp
+	-rm libssp.a libssp_nonshared.a
+	@echo
+	@echo Done
+	
 #Jump to the main Makefile
 include $(GLOBAL_PATH)/Makefile
+
+CSRC := $(filter-out $(GLOBAL_PATH)/src/motors.c, $(CSRC))
