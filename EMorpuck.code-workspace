@@ -31,7 +31,10 @@
 			"stdint.h": "c",
 			"stdint-gcc.h": "c",
 			"path.h": "c",
-			"motors.h": "c"
+			"motors.h": "c",
+			"chconf.h": "c",
+			"movement.h": "c",
+			"shared_var.h": "c"
 		},
 		"cortex-debug.showRTOS": true
 	}

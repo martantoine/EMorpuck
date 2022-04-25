@@ -13,5 +13,6 @@
 #define MOTORS_THD_H
 
 void motors_thd_init(void);
+thread_reference_t* motor_get_trp(void);
 
 #endif /*MOTORS_THD_H*/

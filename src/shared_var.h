@@ -27,17 +27,20 @@ enum angle {
 };
 typedef enum angle angle_t;
 
-static semaphore_t position_s;
-static int8_t position_x;
-static int8_t position_y;
-static angle_t position_t;
+extern semaphore_t position_s;
+extern int8_t position_x;
+extern int8_t position_y;
+extern angle_t position_t;
 void init_position(void);
 
 enum step { FORWARD, BACKWARD, LEFT, RIGHT, STOP };
 typedef enum step step_t;
 
-static semaphore_t path_s;
-static step_t* path;
+#define MAX_PATH_STEPS 100
+extern semaphore_t path_s;
+extern step_t path[MAX_PATH_STEPS];
+//extern memory_heap_t* path;
+
 void init_path(void);
 
 #endif /*SHARED_VAR*/

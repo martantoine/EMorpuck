@@ -9,40 +9,39 @@
  * 
  */
 
-#include "movement.h"
-#include "constants.h"
-#include "shared_var.h"
-#include <motors.h>
 #include <ch.h>
+#include "movement.h"
+#include "motors_driver.h"
+#include "constants.h"
 
 #define WAIT_MOTOR_TARGET_REACHED() \
-        while(left_motor_get_pos() != 0 && right_motor_get_pos() != 0) \
-        chThdSleepMilliseconds(10)
+    while((left_motor_steps_left() != 0) || (right_motor_steps_left() != 0));
+        //chThdSleepMilliseconds(10)
 
-void mvt_forward()
+void mvt_forward(void)
 {
-    //left_motor_move(CELL_WIDTH/4);
-    //right_motor_move(CELL_WIDTH/4);
+    left_motor_move(CELL_WIDTH/4);
+    right_motor_move(CELL_WIDTH/4);
     WAIT_MOTOR_TARGET_REACHED();
 }
 
-void mvt_backward()
+void mvt_backward(void)
 {
-    //left_motor_move(-CELL_WIDTH/4);
-    //right_motor_move(-CELL_WIDTH/4);
+    left_motor_move(-CELL_WIDTH/4);
+    right_motor_move(-CELL_WIDTH/4);
     WAIT_MOTOR_TARGET_REACHED();
 }
 
-void mvt_left()
+void mvt_left(void)
 {
-    //left_motor_move(STEPS_TURN_45_DEG);
-    //right_motor_move(-STEPS_TURN_45_DEG);
+    left_motor_move(STEPS_TURN_45_DEG);
+    right_motor_move(-STEPS_TURN_45_DEG);
     WAIT_MOTOR_TARGET_REACHED();
 }
 
-void mvt_right()
+void mvt_right(void)
 {
-    //left_motor_move(-STEPS_TURN_45_DEG);
-    //right_motor_move(STEPS_TURN_45_DEG);
+    left_motor_move(-STEPS_TURN_45_DEG);
+    right_motor_move(STEPS_TURN_45_DEG);
     WAIT_MOTOR_TARGET_REACHED();
 }

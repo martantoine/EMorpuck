@@ -1,68 +1,97 @@
+#include <stdlib.h>
 #include <ch.h>
 #include "motors_thd.h"
+#include "motors_driver.h"
+#include "movement.h"
 #include "shared_var.h"
 
-static void inline updatePosition(); //inline because used only in one place
-static void calibrationPosition();
+static thread_reference_t motors_trp = NULL;
 
-static THD_WORKING_AREA(waMotors, 128);
+inline static void updatePosition(step_t* step); //inline because used only in one place
+static void calibrationPosition(void);
+
+static THD_WORKING_AREA(waMotors, 256);
 static THD_FUNCTION(Motors, arg)
-{
+{   
+    chRegSetThreadName(__FUNCTION__);
+    (void)arg;
+    chSysInit();
     for(;;) // equivalent to while(true) but a bit more optimized
     {
         chSemWait(&position_s);
         chSemWait(&path_s);
         if(path != NULL)
         {
-            while(*path != STOP)
+            uint16_t i = 0;
+            while(*(path+i*sizeof(step_t)) != STOP)
             {
-                switch(*path)
+                while((left_motor_steps_left() != 0) || (right_motor_steps_left() != 0));
+                switch(*(path+i*sizeof(step_t)))
                 {
                     case FORWARD: 
-                        forward();
-                        break; 
+                        mvt_forward();
+                        break;
                     case BACKWARD:
-                        backward();
-                        break; 
+                        mvt_backward();
+                        break;
                     case LEFT: 
-                        left();
-                        break; 
+                        mvt_left();
+                        break;
                     case RIGHT:
-                        right();
+                        mvt_right();
+                        break;
+                    default:
                         break;
                 }
-                updatePosition();
-                path += sizeof(step_t);
+                updatePosition(path+i*sizeof(step_t));
+                i++;
+                //chThdSleepSeconds(1);
             }
-            free(path);
+            //free(path);
         }
         chSemSignal(&position_s);
         chSemSignal(&path_s);
-        chThdSuspend();
+        chThdYield();
+
+        //chSysLock();
+        //chThdSuspendS(&motors_trp);
+        //chSysUnlock();
     }
 }
 
-static void updatePosition()
+thread_reference_t* motor_get_trp(void)
 {
-    uint8_t delta = 0;
+    return &motors_trp;
+}
 
-    if(position_t == (E || W))
-        position_x += (*path == FORWARD) ? 1 : -1;
-    else if(position_t == (N || S))
-        position_y += (*path == FORWARD) ? 1 : -1;
-    
-    if(*path == LEFT)
+static void updatePosition(step_t* step)
+{
+    uint16_t delta = 0;
+    if(*step == FORWARD)
+        delta = 1;
+    else if(*step == BACKWARD)
+        delta = -1;
+    if( ((*step == FORWARD) || (*step == BACKWARD)) && ((position_t == E) || (position_t == W)) )
+        position_x += delta;
+    else if( ((*step == FORWARD) || (*step == BACKWARD)) && ((position_t == N) || (position_t == S)) )
+        position_y += delta;
+
+    if(*step == LEFT)
         position_t = (position_t + 1) % 8;
-    else if(*path == RIGHT)
+    else if(*step == RIGHT)
         position_t = (position_t - 1) % 8;
 }
 
-void motors_thd_init()
+void motors_thd_init(void)
 {
+    motors_init();
+    right_motor_set_speed(400);
+    left_motor_set_speed(400);
     chThdCreateStatic(waMotors, sizeof(waMotors), NORMALPRIO, Motors, NULL);    
+    calibrationPosition();
 }
 
-void calibrationPosition()
+void calibrationPosition(void)
 {
     /*
     Do some obscure things to align the robot with the game map

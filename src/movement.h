@@ -12,9 +12,9 @@
 #ifndef MOVEMENT_H
 #define MOVEMENT_H
 
-void forward(void);
-void backward(void);
-void left(void);
-void right(void);
+void mvt_forward(void);
+void mvt_backward(void);
+void mvt_left(void);
+void mvt_right(void);
 
 #endif
