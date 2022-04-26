@@ -6,8 +6,8 @@ int8_t position_y;
 angle_t position_t;
 
 semaphore_t path_s;
-step_t path[MAX_PATH_STEPS];
-//memory_heap_t* path;
+memory_heap_t* path_h;
+step_t* path;
 /* ideally path should be dynamicaly allocated
  * however, the c standard library allocator doesn't work with multi threading
  * the heap allocator of ChibiOS must be used instead
@@ -15,29 +15,34 @@ step_t path[MAX_PATH_STEPS];
  */
 
 semaphore_t gameMap_s;
-uint16_t gameMap[CELL_NBR_BY_SIDE][CELL_NBR_BY_SIDE];
+uint16_t gameMap[GAMEMAP_SIDE_NBR_CELL][GAMEMAP_SIDE_NBR_CELL];
 
 void init_position()
 {
     chSemObjectInit(&position_s, 1);
+    chSemWait(&position_s);
     position_x = 0;
     position_y = 0;
     position_t = 0;
+    chSemSignal(&position_s);
 }
 
 void init_path()
 {
-    chHeapObjectInit(path, step_t)
-    
-    chSemObjectInit(&path_s, 2);
-    for(int i=0; i < MAX_PATH_STEPS; i++)
+    chSemObjectInit(&path_s, 1);
+    chSemWait(&path_s);
+    chHeapObjectInit(path_h, path, DEFAULT_NBR_STEPS_IN_PATH * sizeof(step_t));
+    for(int i=0; i < DEFAULT_NBR_STEPS_IN_PATH; i++)
         path[i] = STOP;
-    //path = NULL;
+    chSemSignal(&path_s);
 }
 
 void init_gameMap(void)
-{
-    for(uint8_t i = 0; i < CELL_NBR_BY_SIDE; i++)
-        for(uint8_t j = 0; j < CELL_NBR_BY_SIDE; j++)
+{   
+    chSemObjectInit(&gameMap_s, 1);
+    chSemWait(&gameMap_s);
+    for(uint8_t i = 0; i < GAMEMAP_SIDE_NBR_CELL; i++)
+        for(uint8_t j = 0; j < GAMEMAP_SIDE_NBR_CELL; j++)
             gameMap[i][j] = CELL_FREE;
+    chSemSignal(&gameMap_s);
 }
