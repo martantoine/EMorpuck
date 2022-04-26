@@ -14,6 +14,7 @@
 
 #include <stdint.h>
 #include <ch.h>
+#include "constants.h"
 
 enum angle { 
     E=0,
@@ -39,8 +40,13 @@ typedef enum step step_t;
 #define MAX_PATH_STEPS 100
 extern semaphore_t path_s;
 extern step_t path[MAX_PATH_STEPS];
-//extern memory_heap_t* path;
+extern step_t* path;
 
+//extern memory_heap_t* path;
 void init_path(void);
+
+extern semaphore_t gameMap_s;
+extern uint16_t gameMap[CELL_NBR_BY_SIDE][CELL_NBR_BY_SIDE];
+void init_gameMap(void);
 
 #endif /*SHARED_VAR*/

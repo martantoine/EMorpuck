@@ -14,6 +14,9 @@ step_t path[MAX_PATH_STEPS];
  * need to figure out how thoo
  */
 
+semaphore_t gameMap_s;
+uint16_t gameMap[CELL_NBR_BY_SIDE][CELL_NBR_BY_SIDE];
+
 void init_position()
 {
     chSemObjectInit(&position_s, 1);
@@ -24,9 +27,17 @@ void init_position()
 
 void init_path()
 {
-    //chHeapObjectInit(path, step_t)
+    chHeapObjectInit(path, step_t)
+    
     chSemObjectInit(&path_s, 2);
     for(int i=0; i < MAX_PATH_STEPS; i++)
         path[i] = STOP;
     //path = NULL;
+}
+
+void init_gameMap(void)
+{
+    for(uint8_t i = 0; i < CELL_NBR_BY_SIDE; i++)
+        for(uint8_t j = 0; j < CELL_NBR_BY_SIDE; j++)
+            gameMap[i][j] = CELL_FREE;
 }
