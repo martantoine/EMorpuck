@@ -11,6 +11,9 @@ func ScanMap()
 func Cell2Check()
 
 ## Path
+node_t** nodeMap
+nodeMap[i][j] = malloc(sizeof(node_t))
+*nodeMap[i][j] = 
 type enum step = { x, y, t }
 func pathFinding(target_x, target_y, target_t)
 atomic movement : 1/4 of a cell

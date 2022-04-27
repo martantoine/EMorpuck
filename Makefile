@@ -9,11 +9,14 @@ CSRC += ./src/main.c \
 		./src/motors_thd.c \
 		./src/shared_var.c \
 		./src/movement.c \
-		./src/motors_driver.c
+		./src/motors_driver.c \
+		./src/path.c
 
 #Header folders to include
 INCDIR += 
-
+	
+#Jump to the main Makefile
+include $(GLOBAL_PATH)/Makefile
 
 clean-libssp:
 	@echo Cleaning libssp
@@ -21,7 +24,4 @@ clean-libssp:
 	@echo
 	@echo Done
 	
-#Jump to the main Makefile
-include $(GLOBAL_PATH)/Makefile
-
 CSRC := $(filter-out $(GLOBAL_PATH)/src/motors.c, $(CSRC))

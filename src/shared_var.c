@@ -15,7 +15,7 @@ step_t* path;
  */
 
 semaphore_t gameMap_s;
-uint16_t gameMap[GAMEMAP_SIDE_NBR_CELL][GAMEMAP_SIDE_NBR_CELL];
+cell_t gameMap[GAMEMAP_SIDE_NBR_CELL][GAMEMAP_SIDE_NBR_CELL];
 
 void init_position()
 {
@@ -43,6 +43,10 @@ void init_gameMap(void)
     chSemWait(&gameMap_s);
     for(uint8_t i = 0; i < GAMEMAP_SIDE_NBR_CELL; i++)
         for(uint8_t j = 0; j < GAMEMAP_SIDE_NBR_CELL; j++)
-            gameMap[i][j] = CELL_FREE;
+            gameMap[i][j] = (cell_t){
+                .state = CELL_FREE,
+                .f_score = 0xFF,        // 0xFF is large enough to be always be greater than the one calculated 
+                .parent = NULL
+            };
     chSemSignal(&gameMap_s);
 }

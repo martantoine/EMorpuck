@@ -42,8 +42,16 @@ extern memory_heap_t* path_h;
 extern step_t* path;
 void init_path(void);
 
+struct cell
+{
+    uint8_t state;
+    uint8_t f_score;
+    struct cell* parent;
+};
+typedef struct cell cell_t;
+
 extern semaphore_t gameMap_s;
-extern uint16_t gameMap[GAMEMAP_SIDE_NBR_CELL][GAMEMAP_SIDE_NBR_CELL];
+extern cell_t gameMap[GAMEMAP_SIDE_NBR_CELL][GAMEMAP_SIDE_NBR_CELL];
 void init_gameMap(void);
 
 #endif /*SHARED_VAR*/
