@@ -25,6 +25,8 @@ int main(void)
 
     motors_thd_init();
 
+
+
     while (1) {
         chSemWait(&path_s);
         //chHeapAlloc(path, 13 * sizeof(step_t));

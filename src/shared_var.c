@@ -8,6 +8,8 @@ angle_t position_t;
 semaphore_t path_s;
 memory_heap_t* path_h;
 step_t* path;
+uint32_t path_size;
+uint32_t path_alloc_size;
 /* ideally path should be dynamicaly allocated
  * however, the c standard library allocator doesn't work with multi threading
  * the heap allocator of ChibiOS must be used instead
@@ -31,7 +33,8 @@ void init_path()
 {
     chSemObjectInit(&path_s, 1);
     chSemWait(&path_s);
-    chHeapObjectInit(path_h, path, DEFAULT_NBR_STEPS_IN_PATH * sizeof(step_t));
+    path_alloc_size = DEFAULT_NBR_STEPS_IN_PATH;
+    chHeapObjectInit(path_h, path, path_alloc_size * sizeof(step_t));
     for(int i=0; i < DEFAULT_NBR_STEPS_IN_PATH; i++)
         path[i] = STOP;
     chSemSignal(&path_s);
