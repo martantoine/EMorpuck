@@ -26,7 +26,6 @@ static uint8_t neighboors[8] = {
 
 void findPath(uint8_t target_x, uint8_t target_y, angle_t target_t)
 {
- 
     /*
      * the pahtfinding algorithm start from the target and search the path toward the current position
      * it may seems illogical but this is way, the path obtained through the pointers "parent" starting

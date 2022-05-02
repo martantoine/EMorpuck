@@ -1,7 +1,7 @@
 #ifndef SCAN_H
 #define SCAN_H
 
-void scanMap(void);
-void Cell2Check(void);
+void updateMap(void);
+uint8_t scanLine(void);
 
 #endif /*SCAN_H*/
