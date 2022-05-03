@@ -17,10 +17,10 @@
 #include "constants.h"
 
 enum angle { 
-    E=0,
-    N=2,
-    W=4,
-    S=6,
+    E=10,
+    N=12,
+    W=14,
+    S=16,
 };
 typedef enum angle angle_t;
 
@@ -34,10 +34,10 @@ enum step { FORWARD, BACKWARD, LEFT, RIGHT, STOP };
 typedef enum step step_t;
 
 extern semaphore_t path_s;
-extern memory_heap_t* path_h;
-extern step_t* path;
-extern uint32_t path_alloc_size;
+extern step_t path[MAX_PATH_SIZE];
+extern uint8_t path_size;
 void init_path(void);
+void reset_path(void);
 
 #define OBSTRUCTION_BITS    (1 << 1) | (1 << 0)
 #define CELL_FREE           (0 << 0)    

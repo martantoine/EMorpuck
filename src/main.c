@@ -14,6 +14,7 @@
 #include "shared_var.h"
 #include "movement.h"
 #include "motors_driver.h"
+#include "path.h"
 
 int main(void)
 {
@@ -26,26 +27,23 @@ int main(void)
     motors_thd_init();
 
 
+    findPath(position_x + 2, position_y - 2, N);
 
     while (1) {
         chSemWait(&path_s);
-        //chHeapAlloc(path, 13 * sizeof(step_t));
-        //path = (step_t*) malloc(13*sizeof(step_t));
-        *(path + 0 * sizeof(step_t)) = FORWARD;
-        *(path + 1 * sizeof(step_t)) = FORWARD;
-        *(path + 2 * sizeof(step_t)) = FORWARD;
-        *(path + 3 * sizeof(step_t)) = LEFT;
-        *(path + 4 * sizeof(step_t)) = BACKWARD;
-        *(path + 5 * sizeof(step_t)) = BACKWARD;
-        *(path + 6 * sizeof(step_t)) = FORWARD;
-        *(path + 7 * sizeof(step_t)) = FORWARD;
-        *(path + 8 * sizeof(step_t)) = RIGHT;
-        *(path + 9 * sizeof(step_t)) = BACKWARD;
-        *(path + 10 * sizeof(step_t)) = BACKWARD;
-        *(path + 11 * sizeof(step_t)) = BACKWARD;
-        *(path + 12 * sizeof(step_t)) = STOP;
+        chSemWait(&position_s);
+        findPath(position_x + 2, position_y - 2, N);
         chSemSignal(&path_s);
-        //chThdResume(motor_get_trp(), 0);
+        chSemSignal(&position_s);
+
+        chThdYield();
+        
+        chSemWait(&path_s);
+        chSemWait(&position_s);
+        findPath(position_x - 2, position_y + 2, S);
+        chSemSignal(&path_s);
+        chSemSignal(&position_s);
+
         chThdYield();
         //chThdSleepMilliseconds(40);
     }

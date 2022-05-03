@@ -34,7 +34,8 @@
 			"motors.h": "c",
 			"chconf.h": "c",
 			"movement.h": "c",
-			"shared_var.h": "c"
+			"shared_var.h": "c",
+			"constants.h": "c"
 		},
 		"cortex-debug.showRTOS": true
 	}
