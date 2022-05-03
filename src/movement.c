@@ -15,8 +15,8 @@
 #include "constants.h"
 
 #define WAIT_MOTOR_TARGET_REACHED() \
-    while((left_motor_steps_left() != 0) || (right_motor_steps_left() != 0));
-        //chThdSleepMilliseconds(10)
+    while((left_motor_steps_left() != 0) || (right_motor_steps_left() != 0)) 
+//            chThdSleepMilliseconds(10)
 
 void mvt_forward(void)
 {
@@ -34,14 +34,14 @@ void mvt_backward(void)
 
 void mvt_left(void)
 {
-    left_motor_move(STEPS_TURN_45_DEG);
-    right_motor_move(-STEPS_TURN_45_DEG);
+    left_motor_move(-STEPS_TURN_45_DEG);
+    right_motor_move(STEPS_TURN_45_DEG);
     WAIT_MOTOR_TARGET_REACHED();
 }
 
 void mvt_right(void)
 {
-    left_motor_move(-STEPS_TURN_45_DEG);
-    right_motor_move(STEPS_TURN_45_DEG);
+    left_motor_move(STEPS_TURN_45_DEG);
+    right_motor_move(-STEPS_TURN_45_DEG);
     WAIT_MOTOR_TARGET_REACHED();
 }

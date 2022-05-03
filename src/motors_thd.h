@@ -12,6 +12,7 @@
 #ifndef MOTORS_THD_H
 #define MOTORS_THD_H
 
+void readpath(void);
 void motors_thd_init(void);
 thread_reference_t* motor_get_trp(void);
 

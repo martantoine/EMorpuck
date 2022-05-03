@@ -14,5 +14,15 @@
 #define GAMEMAP_SIDE_NBR_CELL   9
 #define GAMEMAP_CENTER_INDEX    (GAMEMAP_SIDE_NBR_CELL - 1) / 2
 
+#define OBSTRUCTION_BITS    ((uint8_t) (1 << 1) | (1 << 0))
+#define CELL_FREE           ((uint8_t) (0 << 0))
+#define CELL_OCCUPED_RED    ((uint8_t) (1 << 0))
+#define CELL_OCCUPED_BLUE   ((uint8_t) (1 << 1) | (0 << 0)) 
+#define PATH_FIND_BITS      ((uint8_t) (1 << 3) | (1 << 2))
+#define CELL_BLANK          ((uint8_t) (0 << 3) | (0 << 2))
+#define CELL_OPEN           ((uint8_t) (0 << 3) | (1 << 2))
+#define CELL_CLOSED         ((uint8_t) (1 << 3) | (0 << 2))
+#define CELL_UNKNOWN        ((uint8_t) (0 << 4))
+#define CELL_KNOWN          ((uint8_t) (1 << 4))
 
 #endif /*CONSTANTS_H*/

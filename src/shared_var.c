@@ -20,6 +20,10 @@ cell_t gameMap[GAMEMAP_SIDE_NBR_CELL][GAMEMAP_SIDE_NBR_CELL];
 
 void init_position()
 {
+    /*
+     * The robot must be placed at the center of the map
+     * pointing north direction
+     */
     chSemObjectInit(&position_s, 1);
     chSemWait(&position_s);
     position_x = GAMEMAP_CENTER_INDEX;
@@ -31,9 +35,7 @@ void init_position()
 void init_path()
 {
     chSemObjectInit(&path_s, 1);
-    chSemWait(&path_s);
     reset_path();
-    chSemSignal(&path_s);
 }
 
 void reset_path(void)
@@ -47,11 +49,12 @@ void init_gameMap(void)
 {   
     chSemObjectInit(&gameMap_s, 1);
     chSemWait(&gameMap_s);
-    for(uint8_t i = 0; i < GAMEMAP_SIDE_NBR_CELL; i++)
-        for(uint8_t j = 0; j < GAMEMAP_SIDE_NBR_CELL; j++)
-            gameMap[i][j] = (cell_t){
+    for(uint8_t x = 0; x < GAMEMAP_SIDE_NBR_CELL; x++)
+        for(uint8_t y = 0; y < GAMEMAP_SIDE_NBR_CELL; y++)
+            gameMap[x][y] = (cell_t){
                 .state = 0,
                 .f_score = 0xFF,        // 0xFF is large enough to be always be greater than the one calculated 
+                .g_score = 0xFF,
                 .parent = NULL
             };
     chSemSignal(&gameMap_s);

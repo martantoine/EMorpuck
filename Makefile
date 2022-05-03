@@ -25,3 +25,4 @@ clean-libssp:
 	@echo Done
 	
 CSRC := $(filter-out $(GLOBAL_PATH)/src/motors.c, $(CSRC))
+USE_OPT := $(filter-out -O2, $(USE_OPT)) -O0

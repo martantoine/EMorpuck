@@ -22,30 +22,28 @@ int main(void)
     chSysInit();
     mpu_init();
     init_path();
+    init_gameMap();
     init_position();
-
+    
     motors_thd_init();
-
-
-    findPath(position_x + 2, position_y - 2, N);
-
-    while (1) {
-        chSemWait(&path_s);
-        chSemWait(&position_s);
-        findPath(position_x + 2, position_y - 2, N);
-        chSemSignal(&path_s);
-        chSemSignal(&position_s);
-
-        chThdYield();
+    /*
+    mvt_forward();
+    chThdSleepMilliseconds(1000);
+    mvt_backward();
+    chThdSleepMilliseconds(1000);
+    mvt_left();
+    chThdSleepMilliseconds(1000);
+    mvt_right();
+    chThdSleepMilliseconds(1000);
+    */
+    while (true) {
+        findPath(7, 7, E);
+        readpath();
+        findPath(7, 1, E);
+        readpath();
+        findPath(4, 4, N);
+        readpath();
         
-        chSemWait(&path_s);
-        chSemWait(&position_s);
-        findPath(position_x - 2, position_y + 2, S);
-        chSemSignal(&path_s);
-        chSemSignal(&position_s);
-
-        chThdYield();
-        //chThdSleepMilliseconds(40);
     }
 }
 

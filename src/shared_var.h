@@ -39,16 +39,6 @@ extern uint8_t path_size;
 void init_path(void);
 void reset_path(void);
 
-#define OBSTRUCTION_BITS    (1 << 1) | (1 << 0)
-#define CELL_FREE           (0 << 0)    
-#define CELL_OCCUPED_RED    (1 << 0)
-#define CELL_OCCUPED_BLUE   (1 << 1) | (0 << 0) 
-#define PATH_FIND_BITS      (1 << 3) | (1 << 2)
-#define CELL_BLANK          (0 << 3) | (0 << 2)
-#define CELL_OPEN           (0 << 3) | (1 << 2)
-#define CELL_CLOSED         (1 << 3) | (0 << 2)
-#define CELL_UNKNOWN        (0 << 4)
-#define CELL_KNOWN          (1 << 4)
 struct cell
 {
     /*
