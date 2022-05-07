@@ -1,5 +1,5 @@
 main: main.c
-	gcc main.c -o main -Im
+	gcc -g main.c -o main -Im -lm
 
 clean:
 	rm *.o main

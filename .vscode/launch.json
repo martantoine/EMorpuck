@@ -7,7 +7,7 @@
         {
             "name": "BMP launch",
             "cwd": "${workspaceRoot}/debug",
-            "executable": "${workspaceRoot}/build/EMorpuck.elf",
+            "executable": "${workspaceRoot}/build/e-puck2_main-processor_10.12.21_52ffc6b.elf",
             "request": "launch",
             "type": "cortex-debug",
             "servertype": "bmp",
@@ -23,7 +23,7 @@
         {
             "name": "BMP attach",
             "cwd": "${workspaceRoot}/debug",
-            "executable": "${workspaceRoot}/build/EMorpuck.elf",
+            "executable": "${workspaceRoot}/build/e-puck2_main-processor_10.12.21_52ffc6b.elf",
             "request": "attach",
             "type": "cortex-debug",
             "servertype": "bmp",
@@ -40,6 +40,27 @@
                 "enable breakpoint",
                 "break main"
             ]
-        }
+        },
+        {
+            "name": "GCC Debug WSL",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/src-desktop/main",
+            "args": [],
+            "stopAtEntry": true,
+            "cwd": "${workspaceFolder}/src-desktop",
+            "environment": [],
+            "externalConsole": false,
+            "MIMode": "gdb",
+            "setupCommands": [
+              {
+                "description": "Enable pretty-printing for gdb",
+                "text": "-enable-pretty-printing",
+                "ignoreFailures": true
+              }
+            ],
+            //"preLaunchTask": "g++ build active file",
+            "miDebuggerPath": "/usr/bin/gdb"
+          }
     ]
 }
