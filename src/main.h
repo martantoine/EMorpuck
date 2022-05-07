@@ -24,9 +24,12 @@ extern "C" {
 #include "distance.h"
 /** Robot wide IPC bus. */
 
-extern messagebus_t bus;
+//extern messagebus_t bus;
 extern parameter_namespace_t parameter_root;
 
+
+
+void testv (void);
 #ifdef __cplusplus
 }
 #endif

@@ -38,7 +38,8 @@
 			"leds.h": "c",
 			"messagebus.h": "c",
 			"CHSCHD.H": "cpp",
-			"vl53l0x.h": "c"
+			"vl53l0x.h": "c",
+			"spi_comm.h": "c"
 		},
 		"cortex-debug.showRTOS": true
 	}

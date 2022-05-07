@@ -21,6 +21,19 @@
 #define CELL_PRIORITY       100
 #define NB_SIDE_CELLS 3
 
+enum color {
+    RED,
+    BLUE
+};
+typedef enum color color_t;
+
+enum distnorm {
+    FIRST_CASE,
+    SECOND_CASE,
+    THIRD_CASE,
+    OUT_MAP
+};
+typedef enum distnorm distnorm_t;
 
 #define LED_ON   1
 #define LED_OFF 0

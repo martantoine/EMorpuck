@@ -13,6 +13,37 @@
 #define DISTANCE_C
 #include "distance.h"
 
+// semaphore
+static BSEMAPHORE_DECL(image_ready_sem, TRUE);
+static BSEMAPHORE_DECL(distance_sem, TRUE);
+uint16_t d_mm =0;
+/*
+ *  Returns the line's width extracted from the image buffer given
+ *  Returns 0 if line not found
+ */
+distnorm_t scanDistance(void)
+{
+    distnorm_t d ;
+    chSemWait(&distance_sem);
+    if(d_mm<1000)
+    {
+        d=FIRST_CASE;
+    }
+    if(d_mm>1000 & d_mm<2000)
+    {
+        d=SECOND_CASE;
+    }
+    if(d_mm>2000 & d_mm<3000)
+    {
+        d=THIRD_CASE;
+    }
+    if(d_mm>3000)
+    {
+        d=OUT_MAP;
+    }
+    chSemSignal(&distance_sem);
+    return d;
+}
 
 /* 
 Working area for the left infra red captor and led
@@ -26,14 +57,15 @@ static THD_FUNCTION(distance, arg) {
 
     while(true)
     {
-        if((VL53L0X_get_dist_mm()>20) && (VL53L0X_get_dist_mm()<200))
+        d_mm=VL53L0X_get_dist_mm();
+      /*  if((VL53L0X_get_dist_mm()>20) && (VL53L0X_get_dist_mm()<200))
         {
             set_led(LED5,LED_ON);
         }
         else
         {
             set_led(LED5, LED_OFF);
-        }
+        }*/
     }
 }
 void distance_start(void)

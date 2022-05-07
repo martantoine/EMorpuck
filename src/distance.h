@@ -28,5 +28,5 @@
 #include "shared_var.h"
 
 void distance_start(void);
-
+distnorm_t scanDistance(void);
 #endif /*DISTANCE_H*/
