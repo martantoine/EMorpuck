@@ -16,7 +16,7 @@ step_t* path;
 
 semaphore_t gameMap_s;
 uint16_t gameMap[GAMEMAP_SIDE_NBR_CELL][GAMEMAP_SIDE_NBR_CELL];
-
+uint8_t stateofgame;
 void init_position()
 {
     chSemObjectInit(&position_s, 1);
@@ -45,4 +45,13 @@ void init_gameMap(void)
         for(uint8_t j = 0; j < GAMEMAP_SIDE_NBR_CELL; j++)
             gameMap[i][j] = CELL_FREE;
     chSemSignal(&gameMap_s);
+}
+
+void set_stateofgame(uint8_t state)
+{
+    stateofgame=state; 
+}
+uint8_t get_stateofgame()
+{
+    return stateofgame; 
 }

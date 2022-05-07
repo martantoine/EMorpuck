@@ -34,7 +34,11 @@
 			"motors.h": "c",
 			"chconf.h": "c",
 			"movement.h": "c",
-			"shared_var.h": "c"
+			"shared_var.h": "c",
+			"leds.h": "c",
+			"messagebus.h": "c",
+			"CHSCHD.H": "cpp",
+			"vl53l0x.h": "c"
 		},
 		"cortex-debug.showRTOS": true
 	}

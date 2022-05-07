@@ -1,52 +1,42 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <math.h>
-
-#include <ch.h>
-#include <hal.h>
-#include <memory_protection.h>
-#include <usbcfg.h>
-#include <chprintf.h>
-
 #include "main.h"
-#include "motors_thd.h"
-#include "shared_var.h"
-#include "movement.h"
-#include "motors_driver.h"
+#include "msgbus/messagebus.h"
+#include "parameter/parameter.h"
+#include "camera/dcmi_camera.h"
+#include <camera/po8030.h>
+
+// MUTEX_DECL(bus_lock);
+// CONDVAR_DECL(bus_condvar);
 
 int main(void)
 {
+    /** Inits the Inter Process Communication bus. */
+  //  messagebus_init(&bus, &bus_lock, &bus_condvar);
     halInit();
+    mpu_init();  
     chSysInit();
-    mpu_init();
-    init_path();
-    init_position();
 
-    motors_thd_init();
+ //   spi_comm_start();
+  //  proximity_start();
+   // ir_button_start();
+   
+   
+  //  calibrate_ir();
+ //   clear_leds();
+  //  distance_start();
+   // VL53L0X_start();
+    //set_stateofgame(STATE_WAITING_FOR_PLAYER);
 
-    while (1) {
-        chSemWait(&path_s);
-        //chHeapAlloc(path, 13 * sizeof(step_t));
-        //path = (step_t*) malloc(13*sizeof(step_t));
-        *(path + 0 * sizeof(step_t)) = FORWARD;
-        *(path + 1 * sizeof(step_t)) = FORWARD;
-        *(path + 2 * sizeof(step_t)) = FORWARD;
-        *(path + 3 * sizeof(step_t)) = LEFT;
-        *(path + 4 * sizeof(step_t)) = BACKWARD;
-        *(path + 5 * sizeof(step_t)) = BACKWARD;
-        *(path + 6 * sizeof(step_t)) = FORWARD;
-        *(path + 7 * sizeof(step_t)) = FORWARD;
-        *(path + 8 * sizeof(step_t)) = RIGHT;
-        *(path + 9 * sizeof(step_t)) = BACKWARD;
-        *(path + 10 * sizeof(step_t)) = BACKWARD;
-        *(path + 11 * sizeof(step_t)) = BACKWARD;
-        *(path + 12 * sizeof(step_t)) = STOP;
-        chSemSignal(&path_s);
-        //chThdResume(motor_get_trp(), 0);
-        chThdYield();
-        //chThdSleepMilliseconds(40);
+    //starts the camera
+    dcmi_start();
+	po8030_start();
+
+    process_image_start();
+
+    while(true)
+    {
+        chThdSleepMilliseconds(1000);
     }
+    return 0;
 }
 
 #define STACK_CHK_GUARD 0xe2dee396

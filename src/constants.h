@@ -18,5 +18,19 @@
 #define CELL_OCCUPED_BLUE   2
 #define CELL_CHECKED        -10 
 #define CELL_2CHECK         10
+#define CELL_PRIORITY       100
+#define NB_SIDE_CELLS 3
 
+
+#define LED_ON   1
+#define LED_OFF 0
+#define STATE_EASY 0
+#define STATE_HARD 1
+#define STATE_PLAYING 2
+#define STATE_WAITING_FOR_PLAYER 3
+
+#define IR_LEFT 6
+#define IR_RIGHT 3
+
+#define IMAGE_BUFFER_SIZE		640
 #endif /*CONSTANTS_H*/
