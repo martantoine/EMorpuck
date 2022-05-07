@@ -29,11 +29,11 @@ distnorm_t scanDistance(void)
     {
         d=FIRST_CASE;
     }
-    if(d_mm>1000 & d_mm<2000)
+    if((d_mm>1000) & (d_mm<2000))
     {
         d=SECOND_CASE;
     }
-    if(d_mm>2000 & d_mm<3000)
+    if((d_mm>2000) & (d_mm<3000))
     {
         d=THIRD_CASE;
     }
