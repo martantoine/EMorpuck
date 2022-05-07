@@ -26,22 +26,15 @@ int main(void)
     init_position();
     
     motors_thd_init();
-    /*
-    mvt_forward();
-    chThdSleepMilliseconds(1000);
-    mvt_backward();
-    chThdSleepMilliseconds(1000);
-    mvt_left();
-    chThdSleepMilliseconds(1000);
-    mvt_right();
-    chThdSleepMilliseconds(1000);
-    */
+
     while (true) {
-        findPath(7, 7, E);
+        findPath(7, 7, N);
         readpath();
-        findPath(7, 1, E);
+        findPath(7, 1, N);
         readpath();
-        findPath(4, 4, N);
+        findPath(1, 1, N);
+        readpath();
+        findPath(1, 7, N);
         readpath();
         
     }

@@ -66,7 +66,7 @@ void readpath(void)
     {
         uint16_t i = 0;
         while(*(path+i*sizeof(step_t)) != STOP)
-        {/*
+        {
             switch(*(path+i*sizeof(step_t)))
             {
                 case FORWARD: 
@@ -83,7 +83,7 @@ void readpath(void)
                     break;
                 default:
                     break;
-            }*/
+            }
             updatePosition(path+i*sizeof(step_t));
             i++;
         }
@@ -104,14 +104,16 @@ static void updatePosition(step_t* step)
     else if(*step == BACKWARD)
         delta = -1;
 
-    if(      ((*step == FORWARD) || (*step == BACKWARD)) && (position_t == E))
-        position_x += delta;
-    else if( ((*step == FORWARD) || (*step == BACKWARD)) && (position_t == W))
-        position_x -= delta;
-    else if( ((*step == FORWARD) || (*step == BACKWARD)) && (position_t == N))
-        position_y -= delta;
-    else if( ((*step == FORWARD) || (*step == BACKWARD)) && (position_t == S))
-        position_y += delta;
+    if((*step == FORWARD) || (*step == BACKWARD)) {
+        if(position_t == E)
+            position_x += delta;
+        else if(position_t == W)
+            position_x -= delta;
+        else if(position_t == N)
+            position_y -= delta;
+        else if(position_t == S)
+            position_y += delta;
+    }
 
     if(*step == LEFT) {
         switch(position_t) {
@@ -128,11 +130,7 @@ static void updatePosition(step_t* step)
             case W: position_t = N; break;
             case S: position_t = W; break;
         }
-    }/*
-    if(*step == LEFT)
-        position_t = (position_t + 2 - 10) % 8 + 10;
-    else if(*step == RIGHT)
-        position_t = (position_t - 2 - 10) % 8 + 10;*/
+    }
 }
 
 void motors_thd_init(void)

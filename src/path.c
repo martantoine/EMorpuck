@@ -97,27 +97,26 @@ void generatePathCode(angle_t target_t) {
 
     while(icell->parent != NULL) {
         icell_old = icell;
-        
         icell = icell_old->parent;
-        int32_t delta_addr = icell - icell_old;
+        int32_t delta_addr = (icell - icell_old);
 
         switch(delta_addr) {
-            case +1:
+            case +GAMEMAP_SIDE_NBR_CELL:
                 delta_x = +1;
                 delta_y = 0;
                 break;
-            case -1:
+            case -GAMEMAP_SIDE_NBR_CELL:
                 delta_x = -1;
                 delta_y = 0;
                 break;
-            case +(GAMEMAP_SIDE_NBR_CELL):
+            case +1:
                 delta_x = 0;
                 delta_y = +1;
                 break;
-            case -(GAMEMAP_SIDE_NBR_CELL):
+            case -1:
                 delta_x = 0;
                 delta_y = -1;
-                break;    
+                break;
         }
 
         switch(t_current) {
@@ -161,12 +160,12 @@ void generatePathCode(angle_t target_t) {
                 else if(delta_y == 1) {
                     path[path_size++] = LEFT;
                     path[path_size++] = FORWARD;
-                    t_current = N;
+                    t_current = S;
                 } 
                 else if(delta_y == -1) {
                     path[path_size++] = RIGHT;
                     path[path_size++] = FORWARD;
-                    t_current = S;
+                    t_current = N;
                 }
                 break;
             case S:
@@ -187,8 +186,7 @@ void generatePathCode(angle_t target_t) {
                 break;
         }
     }
-    angle_t delta_angle = t_current - target_t;
-    delta_angle = (delta_angle < 10) ? 18 +  delta_angle : delta_angle;
+    angle_t delta_angle = 10 + ((t_current > target_t) ? t_current - target_t : target_t - t_current);
     switch(delta_angle) {
         case E:
             break;
