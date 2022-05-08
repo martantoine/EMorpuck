@@ -12,7 +12,9 @@
 #ifndef MOVEMENTS_H
 #define MOVEMENTS_H
 
-void mvt_executePath(void);
+#include "typedef.h"
+
+void mvt_executePath(coord_t position, step_t *path);
 void mvt_init(void);
 
 void mvt_forward(void);

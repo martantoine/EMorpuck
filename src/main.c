@@ -19,21 +19,25 @@ int main(void) {
     chSysInit();
     mpu_init();
 
-    init_path();
+    coord_t position = {
+        .x = GAMEMAP_CENTER,
+        .y = GAMEMAP_CENTER,
+        .t = N,
+    };
+    step_t* path;
     init_gameMap();
-    init_position();
     
     mvt_init();
 
     while (true) {
-        findPath(7, 7, N);
-        mvt_executePath();
-        findPath(7, 1, N);
-        mvt_executePath();
-        findPath(1, 1, N);
-        mvt_executePath();
-        findPath(1, 7, N);
-        mvt_executePath();
+        path = findPath(position, (coord_t){.x=7, .y=7, .t=N});
+        mvt_executePath(position, path);
+        path = findPath(position, (coord_t){.x=7, .y=1, .t=N});
+        mvt_executePath(position, path);
+        path = findPath(position, (coord_t){.x=1, .y=1, .t=N});
+        mvt_executePath(position, path);
+        path = findPath(position, (coord_t){.x=1, .y=7, .t=N});
+        mvt_executePath(position, path);
     }
 }
 

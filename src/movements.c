@@ -4,65 +4,70 @@
 #include "shared_var.h"
 #include "constants.h"
 
-inline static void updatePosition(step_t* step); //inline because used only in one place
+inline static void updatePosition(coord_t position, step_t step); //inline because used only in one place : 1 line in mvt_executablePath
 static void calibrationPosition(void);
 
-void mvt_executePath(void) {
-    uint8_t i = 0;
-    while(path[i] != STOP) {
-        switch(path[i]) {
-            case FORWARD: 
-                mvt_forward();
-                break;
-            case BACKWARD:
-                mvt_backward();
-                break;
-            case LEFT: 
-                mvt_left();
-                break;
-            case RIGHT:
-                mvt_right();
-                break;
-            default:
-                break;
+void mvt_executePath(coord_t position, step_t *path) {
+    if(!path) {
+        uint8_t i = 0;
+        while(path[i] != STOP) {
+            switch(path[i]) {
+                case FORWARD: 
+                    mvt_forward();
+                    break;
+                case BACKWARD:
+                    mvt_backward();
+                    break;
+                case LEFT: 
+                    mvt_left();
+                    break;
+                case RIGHT:
+                    mvt_right();
+                    break;
+                default:
+                    break;
+            }
+            updatePosition(position, path[i]);
+            i++;
         }
-        updatePosition(&path[i]);
-        i++;
+        free(path); //better not forget to free unused memory
     }
+    else
+        chSysHalt("path null");
 }
 
-static void updatePosition(step_t* step) {
+static void updatePosition(coord_t position, step_t step) {
     int8_t delta = 0;
-    if(*step == FORWARD)
+    if(step == FORWARD)
         delta = 1;
-    else if(*step == BACKWARD)
+    else if(step == BACKWARD)
         delta = -1;
 
-    if((*step == FORWARD) || (*step == BACKWARD)) {
-        if(position_t == E)
-            position_x += delta;
-        else if(position_t == W)
-            position_x -= delta;
-        else if(position_t == N)
-            position_y -= delta;
-        else if(position_t == S)
-            position_y += delta;
+    if((step == FORWARD) || (step == BACKWARD)) {
+        if(position.t == E)
+            position.x += delta;
+        else if(position.t == W)
+            position.x -= delta;
+        else if(position.t == N)
+            position.y -= delta;
+        else if(position.t == S)
+            position.y += delta;
     }
 
-    if(*step == LEFT) {
-        switch(position_t) {
-            case E: position_t = N; break;
-            case N: position_t = W; break;
-            case W: position_t = S; break;
-            case S: position_t = E; break;
+    if(step == LEFT) {
+        switch(position.t) {
+            case E: position.t = N; break;
+            case N: position.t = W; break;
+            case W: position.t = S; break;
+            case S: position.t = E; break;
         }
     }
-    else if(*step == RIGHT) {
-        switch(position_t) {
-            case E: position_t = S; break;
-            case N: position_t = E; break;
-            case W: position_t = N; break;
-            case S: position_t = W; break;
+    else if(step == RIGHT) {
+        switch(position.t) {
+            case E: position.t = S; break;
+            case N: position.t = E; break;
+            case W: position.t = N; break;
+            case S: position.t = W; break;
         }
     }
 }

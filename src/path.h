@@ -1,9 +1,8 @@
 #ifndef PATH_H
 #define PATH_H
 
-#include <stdint.h>
-#include "shared_var.h"
+#include "typedef.h"
 
-void findPath(uint8_t target_x, uint8_t target_y, angle_t target_t);
+step_t* findPath(coord_t current, coord_t target);
 
 #endif /*PATH_H*/

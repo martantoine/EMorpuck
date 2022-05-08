@@ -1,6 +1,8 @@
 #ifndef TYPEDEF_H
 #define TYPEDEF_H
 
+#include <stdint.h>
+
 /*
  * Differences between angles are 2 to able the possible extension toward 4 more directions :
  * NE, NW, SE, SW
@@ -13,7 +15,7 @@ enum angle {
 };
 typedef enum angle angle_t;
 
-enum step { FORWARD, BACKWARD, LEFT, RIGHT, STOP };
+enum step { STOP=0, FORWARD, BACKWARD, LEFT, RIGHT };
 typedef enum step step_t;
 
 struct cell {
@@ -33,5 +35,11 @@ struct cell {
     struct cell* parent;
 };
 typedef struct cell cell_t;
+
+struct coord {
+    uint8_t x,y;
+    angle_t t;
+};
+typedef struct coord coord_t;
 
 #endif /*TYPEDEF_H*/
