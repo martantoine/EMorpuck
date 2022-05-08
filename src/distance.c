@@ -15,7 +15,7 @@
 
 // semaphore
 static BSEMAPHORE_DECL(image_ready_sem, TRUE);
-static BSEMAPHORE_DECL(distance_sem, TRUE);
+static semaphore_t distance_sem;
 uint16_t d_mm =0;
 /*
  *  Returns the line's width extracted from the image buffer given
@@ -23,7 +23,7 @@ uint16_t d_mm =0;
  */
 distnorm_t scanDistance(void)
 {
-    distnorm_t d ;
+    distnorm_t d;
     chSemWait(&distance_sem);
     if(d_mm<1000)
     {
@@ -57,7 +57,10 @@ static THD_FUNCTION(distance, arg) {
 
     while(true)
     {
+        chSemWait(&distance_sem);
         d_mm=VL53L0X_get_dist_mm();
+        chSemSignal(&distance_sem);
+        chThdSleepMilliseconds(100);
       /*  if((VL53L0X_get_dist_mm()>20) && (VL53L0X_get_dist_mm()<200))
         {
             set_led(LED5,LED_ON);

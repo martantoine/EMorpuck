@@ -11,8 +11,7 @@
 #include "spi_comm.h"
 
 // semaphore
-static BSEMAPHORE_DECL(image_ready_sem, TRUE);
-static BSEMAPHORE_DECL(color_sem, TRUE);
+static semaphore_t color_sem;
 uint8_t r = 0,g = 0, b = 0;
 /*
  *  Returns the line's width extracted from the image buffer given
@@ -114,11 +113,12 @@ static THD_FUNCTION(ProcessImage, arg)
             image_blue[j / 2] = (uint16_t)(img_buff_ptr[i + 1] & 0x1F) << 3;
             j += 2;
         }
-
+        chSemWait(&color_sem);
         r = mean_center(image_red);
         b = mean_center(image_blue);
         g = mean_center(image_green);
-
+        chSemSignal(&color_sem);
+        chThdSleepMilliseconds(100);
   /*      
         if (r >= b)
 
