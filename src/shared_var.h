@@ -16,6 +16,10 @@
 #include <ch.h>
 #include "constants.h"
 
+/*
+ * Differences between angles are 2 to able the possible extension toward 4 more directions :
+ * NE, NW, SE, SW
+ */
 enum angle { 
     E=10,
     N=12,
@@ -39,8 +43,7 @@ extern uint8_t path_size;
 void init_path(void);
 void reset_path(void);
 
-struct cell
-{
+struct cell {
     /*
      * the state variable store all the different states of the cell :
      * bit 0-1 : free = 00 / occuped red = 01 / occuped blue = 10
@@ -62,7 +65,7 @@ extern semaphore_t gameMap_s;
  * the cell's position is stored implincitly in the address :
  * the cell of position (i,j) is accesssed with gameMap[i,j]
  */ 
-extern cell_t gameMap[GAMEMAP_SIDE_NBR_CELL][GAMEMAP_SIDE_NBR_CELL];
+extern cell_t gameMap[GAMEMAP_SIDE_NCELL][GAMEMAP_SIDE_NCELL];
 void init_gameMap(void);
 
 #endif /*SHARED_VAR*/

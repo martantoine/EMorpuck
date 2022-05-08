@@ -10,33 +10,30 @@
 #include <chprintf.h>
 
 #include "main.h"
-#include "motors_thd.h"
 #include "shared_var.h"
-#include "movement.h"
-#include "motors_driver.h"
+#include "movements.h"
 #include "path.h"
 
-int main(void)
-{
+int main(void) {
     halInit();
     chSysInit();
     mpu_init();
+
     init_path();
     init_gameMap();
     init_position();
     
-    motors_thd_init();
+    mvt_init();
 
     while (true) {
         findPath(7, 7, N);
-        readpath();
+        mvt_executePath();
         findPath(7, 1, N);
-        readpath();
+        mvt_executePath();
         findPath(1, 1, N);
-        readpath();
+        mvt_executePath();
         findPath(1, 7, N);
-        readpath();
-        
+        mvt_executePath();
     }
 }
 

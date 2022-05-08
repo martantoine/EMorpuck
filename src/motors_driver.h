@@ -1,3 +1,14 @@
+/**
+ * @file motors_driver.h
+ * @author Antoine Martin (martantoine@tuta.io)
+ * @brief Largely copied from the e-puck2-main-processor's motors library
+ * modified to handle position control of the motor (rather than not speed control)
+ * @version 0.1
+ * @date 2022-05-08
+ * 
+ * @copyright Copyright (c) 2022
+ * 
+ */
 #ifndef MOTORS_DRIVER_H
 #define MOTORS_DRIVER_H
 

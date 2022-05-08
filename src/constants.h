@@ -1,18 +1,26 @@
 #ifndef CONSTANTS_H
 #define CONSTANTS_H
 
-#define PI 3.14
-#define WHEEL_PERIMETER 130
-#define WHEEL_SPACE 50
-#define NSTEP_ONE_TURN 1000 // number of step for 1 turn of the motor
-#define MM_TO_STEPS (NSTEP_ONE_TURN * 2 / WHEEL_PERIMETER)
-#define CELL_WIDTH 400
-#define STEPS_CELL_WIDTH CELL_WIDTH * MM_TO_STEPS
-#define STEPS_TURN_45_DEG (NSTEP_ONE_TURN * WHEEL_SPACE * PI / WHEEL_PERIMETER / 4)
+#define MAX_PATH_SIZE       30
+#define GAMEMAP_SIDE_NCELL  9
+#define GAMEMAP_CENTER      ((GAMEMAP_SIDE_NCELL - 1) / 2)
+#define CELL_WIDTH          100 // in mm
 
-#define MAX_PATH_SIZE 30
-#define GAMEMAP_SIDE_NBR_CELL   9
-#define GAMEMAP_CENTER_INDEX    (GAMEMAP_SIDE_NBR_CELL - 1) / 2
+#define NSTEP_ONE_TURN      1000 // number of full steps for 1 turn of the motor
+#define PI                  3.14159
+#define WHEEL_DIAMETER      41 // in mm
+#define WHEEL_SPACE         53 // in mm
+/*
+ * The 3 following defines are commented to show the derivation of of NTURNS_TURN_360
+ */
+//#define SPACE_PERIMETER (WHEEL_SPACE * PI)
+//#define WHEEL_PERIMETER (WHEEL_DIAMETER * PI)
+//#define NTURNS_TURN_360 (SPACE_PERIMETER / WHEEL_PERIMETER)
+#define NTURNS_TURN_360     (WHEEL_SPACE / WHEEL_DIAMETER)
+#define STEPS_TURN_360      (NTURNS_TURN_360 * NSTEP_ONE_TURN)
+#define STEPS_TURN_90       (STEPS_TURN_360 / 4)
+
+#define NSTEPS_HALF_CELL    (CELL_WIDTH / (WHEEL_DIAMETER * PI) * NSTEP_ONE_TURN / 2)
 
 #define OBSTRUCTION_BITS    ((uint8_t) (1 << 1) | (1 << 0))
 #define CELL_FREE           ((uint8_t) (0 << 0))

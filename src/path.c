@@ -1,7 +1,8 @@
-#include "path.h"
-#include "shared_var.h"
 #include <math.h>
 #include <stdlib.h>
+#include "path.h"
+#include "shared_var.h"
+
 
 /*
  * those functions are inline because they are only used once by findPath()
@@ -48,8 +49,8 @@ void findPath(uint8_t target_x, uint8_t target_y, angle_t target_t) {
         * TODO: test if uint8_t is enough for the f_score & g_score
         */
         f_min = 0xFF;
-        for(uint8_t x = 0; x < GAMEMAP_SIDE_NBR_CELL; x++)
-            for(uint8_t y = 0; y < GAMEMAP_SIDE_NBR_CELL; y++)
+        for(uint8_t x = 0; x < GAMEMAP_SIDE_NCELL; x++)
+            for(uint8_t y = 0; y < GAMEMAP_SIDE_NCELL; y++)
                 if(((gameMap[x][y].state & PATH_FIND_BITS) == CELL_OPEN) && (gameMap[x][y].f_score <= f_min)) {
                     f_min = gameMap[x][y].f_score;
                     x_min = x;
@@ -62,8 +63,8 @@ void findPath(uint8_t target_x, uint8_t target_y, angle_t target_t) {
         
         for(uint8_t i = 0; i < 4; i++) {
             // Check boundaries
-            if((x_min + neighboors[2*i]   < 0) || (x_min + neighboors[2*i]   >= GAMEMAP_SIDE_NBR_CELL) || 
-               (y_min + neighboors[2*i+1] < 0) || (y_min + neighboors[2*i+1] >= GAMEMAP_SIDE_NBR_CELL)) {
+            if((x_min + neighboors[2*i]   < 0) || (x_min + neighboors[2*i]   >= GAMEMAP_SIDE_NCELL) || 
+               (y_min + neighboors[2*i+1] < 0) || (y_min + neighboors[2*i+1] >= GAMEMAP_SIDE_NCELL)) {
             }
             // Check for obstacles and already checked cells
             else if(((gameMap[x_min + neighboors[2*i]][y_min + neighboors[2*i+1]].state & OBSTRUCTION_BITS) == CELL_OCCUPED_BLUE) ||
@@ -101,11 +102,11 @@ void generatePathCode(angle_t target_t) {
         int32_t delta_addr = (icell - icell_old);
 
         switch(delta_addr) {
-            case +GAMEMAP_SIDE_NBR_CELL:
+            case +GAMEMAP_SIDE_NCELL:
                 delta_x = +1;
                 delta_y = 0;
                 break;
-            case -GAMEMAP_SIDE_NBR_CELL:
+            case -GAMEMAP_SIDE_NCELL:
                 delta_x = -1;
                 delta_y = 0;
                 break;
@@ -204,8 +205,8 @@ void generatePathCode(angle_t target_t) {
 }
 
 void pathFindingReset(void) {
-    for(uint8_t x = 0; x < GAMEMAP_SIDE_NBR_CELL; x++)
-        for(uint8_t y = 0; y < GAMEMAP_SIDE_NBR_CELL; y++) {
+    for(uint8_t x = 0; x < GAMEMAP_SIDE_NCELL; x++)
+        for(uint8_t y = 0; y < GAMEMAP_SIDE_NCELL; y++) {
             //set to zero state's bits related to path finding
             gameMap[x][y].state = 0;
             gameMap[x][y].f_score = 0xFF;

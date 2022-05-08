@@ -1,20 +1,23 @@
 /**
- * @file movement.h
+ * @file movements.h
  * @author Antoine Martin (martantoine@tuta.io)
  * @brief 
  * @version 0.1
- * @date 2022-04-18
+ * @date 2022-04-23
  * 
  * @copyright Copyright (c) 2022
  * 
  */
 
-#ifndef MOVEMENT_H
-#define MOVEMENT_H
+#ifndef MOVEMENTS_H
+#define MOVEMENTS_H
+
+void mvt_executePath(void);
+void mvt_init(void);
 
 void mvt_forward(void);
 void mvt_backward(void);
 void mvt_left(void);
 void mvt_right(void);
 
-#endif
+#endif /*MOVEMENTS_H*/

@@ -7,7 +7,7 @@
 void updateMap(void) {
     for(int8_t i = -1; i <= 1; i++)
         for(int8_t j = -1; j <= 1; j++)
-            if((gameMap[i + GAMEMAP_CENTER_INDEX][j + GAMEMAP_CENTER_INDEX].state & OBSTRUCTION_BITS) == CELL_FREE) {
+            if((gameMap[i + GAMEMAP_CENTER][j + GAMEMAP_CENTER].state & OBSTRUCTION_BITS) == CELL_FREE) {
                 angle_t target_angle;
                 if(i == -1)
                     target_angle = E;
@@ -22,19 +22,19 @@ void updateMap(void) {
                      * More complex case where the cell to check is at the center and some sides might be obstructed
                      * The case where all sides are occuped is ignored
                      */
-                    if((gameMap[GAMEMAP_CENTER_INDEX - 1][GAMEMAP_CENTER_INDEX].state & OBSTRUCTION_BITS) == CELL_FREE)
+                    if((gameMap[GAMEMAP_CENTER - 1][GAMEMAP_CENTER].state & OBSTRUCTION_BITS) == CELL_FREE)
                         target_angle = E;
-                    else if((gameMap[GAMEMAP_CENTER_INDEX + 1][GAMEMAP_CENTER_INDEX].state & OBSTRUCTION_BITS) == CELL_FREE)
+                    else if((gameMap[GAMEMAP_CENTER + 1][GAMEMAP_CENTER].state & OBSTRUCTION_BITS) == CELL_FREE)
                         target_angle = W;
-                    else if((gameMap[GAMEMAP_CENTER_INDEX][GAMEMAP_CENTER_INDEX - 1].state & OBSTRUCTION_BITS) == CELL_FREE)
+                    else if((gameMap[GAMEMAP_CENTER][GAMEMAP_CENTER - 1].state & OBSTRUCTION_BITS) == CELL_FREE)
                         target_angle = S;
-                    else if((gameMap[GAMEMAP_CENTER_INDEX][GAMEMAP_CENTER_INDEX + 1].state & OBSTRUCTION_BITS) == CELL_FREE)
+                    else if((gameMap[GAMEMAP_CENTER][GAMEMAP_CENTER + 1].state & OBSTRUCTION_BITS) == CELL_FREE)
                         target_angle = N;
                 }
-                findPath(i + GAMEMAP_CENTER_INDEX, j + GAMEMAP_CENTER_INDEX, target_angle);
+                findPath(i + GAMEMAP_CENTER, j + GAMEMAP_CENTER, target_angle);
                 chThdYield();
                 uint8_t result = scanLine();
-                gameMap[i + GAMEMAP_CENTER_INDEX][j + GAMEMAP_CENTER_INDEX].state += result;
+                gameMap[i + GAMEMAP_CENTER][j + GAMEMAP_CENTER].state += result;
             }
 }
 
