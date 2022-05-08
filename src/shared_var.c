@@ -5,15 +5,15 @@ int8_t position_x;
 int8_t position_y;
 angle_t position_t;
 
-semaphore_t path_s;
-step_t path[MAX_PATH_SIZE];
-uint8_t path_size;
 /* 
  * ideally path should be dynamicaly allocated
  * however, the c standard library allocator doesn't work with multi threading
  * the heap allocator of ChibiOS must be used instead
  * need to figure out how thoo
  */
+semaphore_t path_s;
+step_t path[MAX_PATH_SIZE];
+uint8_t path_size;
 
 semaphore_t gameMap_s;
 cell_t gameMap[GAMEMAP_SIDE_NCELL][GAMEMAP_SIDE_NCELL];
