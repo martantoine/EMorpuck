@@ -16,6 +16,8 @@
 #include "constants.h"
 #include "typedef.h"
 
+extern const coord_t nearest[4];
+
 // this semaphore might disappear if used in only one thread, in this case this variable would become local to main()
 /*
  * the cell's position is stored implincitly in the address :

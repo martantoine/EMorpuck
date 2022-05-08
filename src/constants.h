@@ -33,4 +33,11 @@
 #define CELL_UNKNOWN        ((uint8_t) (0 << 4))
 #define CELL_KNOWN          ((uint8_t) (1 << 4))
 
+#define PATH_UNIT_LENGTH 10
+/*
+ * LookUpTable listing nearest cell (delta_x, delta_y)
+ * some A star implementation allow diagonal crossing of cells
+ * for sake of simplicity only horizontal and vertical crossing is possible 
+ */
+
 #endif /*CONSTANTS_H*/

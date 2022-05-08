@@ -3,38 +3,38 @@
 #include "shared_var.h"
 #include "constants.h"
 #include "path.h"
+#include "movements.h"
 
-void updateMap(void) {
+void updateMap(coord_t *position) {
+    coord_t tocheck;
+    step_t *path;
+
     for(int8_t i = -1; i <= 1; i++)
         for(int8_t j = -1; j <= 1; j++)
             if((gameMap[i + GAMEMAP_CENTER][j + GAMEMAP_CENTER].state & OBSTRUCTION_BITS) == CELL_FREE) {
-                angle_t target_angle;
                 if(i == -1)
-                    target_angle = E;
+                    tocheck = (coord_t){.x=GAMEMAP_CENTER-2, .y=GAMEMAP_CENTER+j, .t=E};
                 else if(i == +1)
-                    target_angle = W;
+                    tocheck = (coord_t){.x=GAMEMAP_CENTER+2, .y=GAMEMAP_CENTER+j, .t=W};
                 else if(j == -1)
-                    target_angle = S;
+                    tocheck = (coord_t){.x=GAMEMAP_CENTER+i, .y=GAMEMAP_CENTER-2, .t=S};
                 else if(j == +1)
-                    target_angle = N;
+                    tocheck = (coord_t){.x=GAMEMAP_CENTER+i, .y=GAMEMAP_CENTER+2, .t=N};
                 else if((i == 0) && (j == 0)) {
                     /*
-                     * More complex case where the cell to check is at the center and some sides might be obstructed
-                     * The case where all sides are occuped is ignored
+                     * It could looks like there is a case where it's impossible to scan the cell in the middle because it's surrounded on every sides
+                     * However, the robot's playing strategy forbidden this kind of situation by always playing the middle case if free
+                     * This strategy simplify the scanning and is moreover the winning strategy
                      */
-                    if((gameMap[GAMEMAP_CENTER - 1][GAMEMAP_CENTER].state & OBSTRUCTION_BITS) == CELL_FREE)
-                        target_angle = E;
-                    else if((gameMap[GAMEMAP_CENTER + 1][GAMEMAP_CENTER].state & OBSTRUCTION_BITS) == CELL_FREE)
-                        target_angle = W;
-                    else if((gameMap[GAMEMAP_CENTER][GAMEMAP_CENTER - 1].state & OBSTRUCTION_BITS) == CELL_FREE)
-                        target_angle = S;
-                    else if((gameMap[GAMEMAP_CENTER][GAMEMAP_CENTER + 1].state & OBSTRUCTION_BITS) == CELL_FREE)
-                        target_angle = N;
+                    for(uint8_t w = 0; w < 4; w++)
+                        if((gameMap[GAMEMAP_CENTER + nearest[w].x][GAMEMAP_CENTER + nearest[w].y].state & OBSTRUCTION_BITS) == CELL_FREE)
+                            tocheck = (coord_t){.x=GAMEMAP_CENTER+nearest[w].x, .y=GAMEMAP_CENTER+nearest[w].y, .t=nearest[w].t};
                 }
-                findPath(i + GAMEMAP_CENTER, j + GAMEMAP_CENTER, target_angle);
-                chThdYield();
-                uint8_t result = scanLine();
-                gameMap[i + GAMEMAP_CENTER][j + GAMEMAP_CENTER].state += result;
+                path = findPath(*position, tocheck);
+                mvt_executePath(position, path);
+
+                //uint8_t result = scanLine();
+                //gameMap[i + GAMEMAP_CENTER][j + GAMEMAP_CENTER].state += result;
             }
 }
 

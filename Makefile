@@ -9,6 +9,7 @@ CSRC += ./src/main.c \
 		./src/shared_var.c \
 		./src/motors_driver.c \
 		./src/movements.c \
+		./src/scan.c \
 		./src/path.c
 
 #Header folders to include
@@ -24,4 +25,5 @@ clean-libssp:
 	@echo Done
 	
 CSRC := $(filter-out $(GLOBAL_PATH)/src/motors.c, $(CSRC))
+
 USE_OPT := $(filter-out -O2, $(USE_OPT)) -O0

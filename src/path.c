@@ -1,3 +1,4 @@
+#include <stdlib.h>
 #include <math.h>
 #include "path.h"
 #include "constants.h"
@@ -10,19 +11,6 @@ inline void pathFindingReset(void);
 inline uint8_t getDistance(coord_t A, coord_t B);
 inline step_t* generatePathCode(coord_t current, coord_t target);
 
-/*
- * LookUpTable listing nearest cell (delta_x, delta_y)
- * some A star implementation allow diagonal crossing of cells
- * for sake of simplicity only horizontal and vertical crossing is possible 
- */
-static int8_t nearest[8] = {
-    1 ,  0,
-    -1,  0,
-    0 ,  1,
-    0 , -1
-};
-
-#define UNIT_LENGTH 10
 
 step_t* findPath(coord_t current, coord_t target) {
     pathFindingReset();
@@ -57,9 +45,9 @@ step_t* findPath(coord_t current, coord_t target) {
         if((x_min == current.x) && (y_min == current.y))
             break;
         
-        for(uint8_t i = 0; i < 4; i++) {
-            uint8_t x = x_min + nearest[2*i];
-            uint8_t y = y_min + nearest[2*i+1];
+        for(uint8_t w = 0; w < 4; w++) {
+            int8_t x = x_min + nearest[w].x;
+            int8_t y = y_min + nearest[w].y;
 
             // Check boundaries
             if((x < 0) || (x >= GAMEMAP_SIDE_NCELL) || (y < 0) || (y >= GAMEMAP_SIDE_NCELL)) {}
@@ -70,11 +58,12 @@ step_t* findPath(coord_t current, coord_t target) {
                     ((gameMap[x][y].state & PATH_FIND_BITS) == CELL_CLOSED)) {}
 
             // Update scores, parents & state if cell blank or a shorter path to the (x,y) cell was found 
-            else if((gameMap[x_min][y_min].g_score + UNIT_LENGTH < gameMap[x][y].g_score) ||
+            else if((gameMap[x_min][y_min].g_score + PATH_UNIT_LENGTH < gameMap[x][y].g_score) ||
                    ((gameMap[x][y].state & PATH_FIND_BITS) == CELL_BLANK)) 
             {
-                gameMap[x][y].g_score = gameMap[x_min][y_min].g_score + UNIT_LENGTH;
+                gameMap[x][y].g_score = gameMap[x_min][y_min].g_score + PATH_UNIT_LENGTH;
                 gameMap[x][y].f_score = gameMap[x][y].g_score + getDistance((coord_t){.x=x, .y=y}, current);
+                
                 
                 gameMap[x][y].parent = &gameMap[x_min][y_min];
                 gameMap[x][y].state = (gameMap[x][y].state & ~PATH_FIND_BITS) | CELL_OPEN;
@@ -233,5 +222,5 @@ void pathFindingReset(void) {
 uint8_t getDistance(coord_t A, coord_t B) {
     int8_t delta_x = A.x - B.x;
     int8_t delta_y = A.y - B.y;
-    return (uint8_t)(10 * sqrt(delta_x*delta_x+delta_y*delta_y));
+    return (uint8_t)(PATH_UNIT_LENGTH * sqrt(delta_x*delta_x+delta_y*delta_y));
 }

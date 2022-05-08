@@ -1,5 +1,12 @@
 #include "shared_var.h"
 
+const coord_t nearest[4] = {
+    {-1,  0, E},
+    {+1,  0, W},
+    { 0, -1, S},
+    { 0, +1, N}
+};
+
 semaphore_t gameMap_s;
 cell_t gameMap[GAMEMAP_SIDE_NCELL][GAMEMAP_SIDE_NCELL];
 
