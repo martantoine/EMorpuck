@@ -7,6 +7,7 @@
 #define NSTEP_ONE_TURN 1000 // number of step for 1 turn of the motor
 #define MM_TO_STEPS (NSTEP_ONE_TURN * 2 / WHEEL_PERIMETER)
 #define CELL_WIDTH 400
+#define CELL_WIDTH_MM 100
 #define STEPS_CELL_WIDTH CELL_WIDTH * MM_TO_STEPS
 #define STEPS_TURN_45_DEG (NSTEP_ONE_TURN * WHEEL_SPACE * PI / WHEEL_PERIMETER / 4)
 
@@ -18,7 +19,6 @@
 #define CELL_OCCUPED_BLUE   2
 #define CELL_CHECKED        -10 
 #define CELL_2CHECK         10
-#define CELL_PRIORITY       100
 #define NB_SIDE_CELLS 3
 
 enum color {
@@ -33,8 +33,13 @@ enum distnorm {
     THIRD_CASE,
     OUT_MAP
 };
-typedef enum distnorm distnorm_t;
-
+typedef enum line line_t;
+enum distnorm {
+    RED_LINE,
+    BLUE_LINE,
+    NO_LINE
+};
+typedef enum distnorm line_t;
 #define LED_ON   1
 #define LED_OFF 0
 #define STATE_EASY 0

@@ -12,7 +12,7 @@ CSRC += ./src/main.c \
 		./src/motors_driver.c \
 		./src/infra.c \
 		./src/distance.c\
-		./src/color.c
+		./src/color_scan.c
 
 #Header folders to include
 INCDIR += 

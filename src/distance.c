@@ -15,33 +15,33 @@
 
 // semaphore
 static BSEMAPHORE_DECL(image_ready_sem, TRUE);
-static semaphore_t distance_sem;
+///static semaphore_t distance_sem;
 uint16_t d_mm =0;
 /*
- *  Returns the line's width extracted from the image buffer given
- *  Returns 0 if line not found
+ *  Returns the case in wich the object facing the Epuck is
  */
 distnorm_t scanDistance(void)
 {
+
     distnorm_t d;
-    chSemWait(&distance_sem);
-    if(d_mm<1000)
+  //  chSemWait(&distance_sem);
+    if(d_mm<CELL_WIDTH_MM)
     {
         d=FIRST_CASE;
     }
-    if((d_mm>1000) & (d_mm<2000))
+    if((d_mm>CELL_WIDTH_MM) & (d_mm<CELL_WIDTH_MM*2))
     {
         d=SECOND_CASE;
     }
-    if((d_mm>2000) & (d_mm<3000))
+    if((d_mm>CELL_WIDTH_MM*2) & (d_mm<CELL_WIDTH_MM*3))
     {
         d=THIRD_CASE;
     }
-    if(d_mm>3000)
+    if(d_mm>CELL_WIDTH_MM*3)
     {
         d=OUT_MAP;
     }
-    chSemSignal(&distance_sem);
+ //   chSemSignal(&distance_sem);
     return d;
 }
 
@@ -57,20 +57,13 @@ static THD_FUNCTION(distance, arg) {
 
     while(true)
     {
-        chSemWait(&distance_sem);
+      //  chSemWait(&distance_sem);
         d_mm=VL53L0X_get_dist_mm();
-        chSemSignal(&distance_sem);
+     //   chSemSignal(&distance_sem);
         chThdSleepMilliseconds(100);
-      /*  if((VL53L0X_get_dist_mm()>20) && (VL53L0X_get_dist_mm()<200))
-        {
-            set_led(LED5,LED_ON);
-        }
-        else
-        {
-            set_led(LED5, LED_OFF);
-        }*/
     }
 }
+//create the thread of the distance measuring captor
 void distance_start(void)
 {
 	chThdCreateStatic(waDISTANCE, sizeof(waDISTANCE), NORMALPRIO,distance, NULL);

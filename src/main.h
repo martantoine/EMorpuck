@@ -20,7 +20,7 @@ extern "C" {
 #include "parameter/parameter.h"
 #include "infra.h"
 #include "camera/dcmi_camera.h"
-#include "color.h"
+#include "color_scan.h"
 #include "distance.h"
 /** Robot wide IPC bus. */
 
@@ -29,7 +29,7 @@ extern parameter_namespace_t parameter_root;
 
 
 
-void testv (void);
+void test_captors (void);
 #ifdef __cplusplus
 }
 #endif

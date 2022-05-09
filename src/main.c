@@ -17,16 +17,16 @@ int main(void)
     halInit();
     mpu_init();
     chSysInit();
-
     spi_comm_start();
-    //  proximity_start();
-    // ir_button_start();
 
-    //  calibrate_ir();
-    //   clear_leds();
+    // starts the proximity sensors
+    proximity_start();
+    ir_button_start();
+    calibrate_ir();
+
+    // starts the distance measuring sensor
     distance_start();
     VL53L0X_start();
-    // set_stateofgame(STATE_WAITING_FOR_PLAYER);
 
     // starts the camera
     cam_start();
@@ -34,15 +34,20 @@ int main(void)
     po8030_start();
     process_image_start();
 
+    set_stateofgame(STATE_WAITING_FOR_PLAYER);
+
     while (true)
     {
-        
+
         chThdSleepMilliseconds(1000);
-        testv();
+
+        test_captors();
     }
     return 0;
 }
-void testv(void)
+
+//fonction de tests des fonctions de mesures de distance et de couleurs
+void test_captors(void)
 {
     if (scanDistance() == FIRST_CASE)
     {
@@ -71,6 +76,9 @@ void testv(void)
         set_rgb_led(3, 0, 0, 10);
     }
 }
+
+
+
 #define STACK_CHK_GUARD 0xe2dee396
 uintptr_t __stack_chk_guard = STACK_CHK_GUARD;
 
