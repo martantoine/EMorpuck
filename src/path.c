@@ -1,16 +1,14 @@
 #include <stdlib.h>
-#include <math.h>
 #include "path.h"
 #include "constants.h"
 #include "shared_var.h"
+#include "utils.h"
 
 /*
  * those functions are inline because they are only used once by findPath()
  */
 inline void pathFindingReset(void);
-inline uint8_t getDistance(coord_t A, coord_t B);
 inline step_t* generatePathCode(coord_t current, coord_t target);
-
 
 step_t* findPath(coord_t current, coord_t target) {
     pathFindingReset();
@@ -217,10 +215,4 @@ void pathFindingReset(void) {
             gameMap[x][y].g_score = 0xFF;
             gameMap[x][y].parent = NULL;           
         }
-}
-
-uint8_t getDistance(coord_t A, coord_t B) {
-    int8_t delta_x = A.x - B.x;
-    int8_t delta_y = A.y - B.y;
-    return (uint8_t)(PATH_UNIT_LENGTH * sqrt(delta_x*delta_x+delta_y*delta_y));
 }

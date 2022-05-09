@@ -10,7 +10,9 @@ CSRC += ./src/main.c \
 		./src/motors_driver.c \
 		./src/movements.c \
 		./src/scan.c \
-		./src/path.c
+		./src/path.c \
+		./src/utils.c \
+		./src/place.c
 
 #Header folders to include
 INCDIR += 

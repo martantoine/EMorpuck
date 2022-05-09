@@ -14,6 +14,7 @@
 #include "movements.h"
 #include "path.h"
 #include "scan.h"
+#include "place.h"
 
 int main(void) {
     halInit();

@@ -17,6 +17,7 @@
 #include "typedef.h"
 
 extern const coord_t nearest[4];
+extern const coord_t storage[12];
 
 // this semaphore might disappear if used in only one thread, in this case this variable would become local to main()
 /*

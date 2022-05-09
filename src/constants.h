@@ -32,7 +32,7 @@
 #define CELL_CLOSED         ((uint8_t) (1 << 3) | (0 << 2))
 #define CELL_UNKNOWN        ((uint8_t) (0 << 4))
 #define CELL_KNOWN          ((uint8_t) (1 << 4))
-
+         
 #define PATH_UNIT_LENGTH 10
 /*
  * LookUpTable listing nearest cell (delta_x, delta_y)

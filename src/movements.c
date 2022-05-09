@@ -8,6 +8,13 @@
 inline static void updatePosition(coord_t *position, step_t step); //inline because used only in one place : 1 line in mvt_executablePath
 static void calibrationPosition(void);
 
+void mvt_init(void) {
+    motors_init();
+    right_motor_set_speed(400);
+    left_motor_set_speed(400);
+    calibrationPosition();
+}
+
 void mvt_executePath(coord_t *position, step_t *path) {
     if(!path) {
         uint8_t i = 0;
@@ -71,13 +78,6 @@ static void updatePosition(coord_t *position, step_t step) {
             case S: position->t = W; break;
         }
     }
-}
-
-void mvt_init(void) {
-    motors_init();
-    right_motor_set_speed(400);
-    left_motor_set_speed(400);
-    calibrationPosition();
 }
 
 void calibrationPosition(void) {

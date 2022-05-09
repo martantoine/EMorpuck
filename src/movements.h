@@ -14,8 +14,8 @@
 
 #include "typedef.h"
 
-void mvt_executePath(coord_t *position, step_t *path);
 void mvt_init(void);
+void mvt_executePath(coord_t *position, step_t *path);
 
 void mvt_forward(void);
 void mvt_backward(void);

@@ -36,7 +36,8 @@
 			"movement.h": "c",
 			"shared_var.h": "c",
 			"constants.h": "c",
-			"typedef.h": "c"
+			"typedef.h": "c",
+			"utils.h": "c"
 		},
 		"cortex-debug.showRTOS": true
 	}
