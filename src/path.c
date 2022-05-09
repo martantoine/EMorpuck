@@ -187,21 +187,42 @@ step_t* generatePathCode(coord_t current, coord_t target) {
         }
     }
 
-    angle_t delta_angle = 10 + ((tmp_t > target.t) ? tmp_t - target.t : target.t - tmp_t);
-    switch(delta_angle) {
+    //might want to use look up table instead, cleaner, hard to figure out
+    switch(tmp_t) {
         case E:
+            switch(target.t) {
+                case E: break;
+                case N: path[path_used++] = LEFT; break;
+                case W: path[path_used++] = LEFT; path[path_used++] = LEFT; break;
+                case S: path[path_used++] = RIGHT; break;
+            }
             break;
         case N:
-            path[path_used++] = LEFT;
+            switch(target.t) {
+                case E: path[path_used++] = RIGHT; break;
+                case N: break;
+                case W: path[path_used++] = LEFT; break;
+                case S: path[path_used++] = LEFT; path[path_used++] = LEFT; break;
+            }
             break;
         case W:
-            path[path_used++] = LEFT;
-            path[path_used++] = LEFT;
+            switch(target.t) {
+                case E: path[path_used++] = LEFT; path[path_used++] = LEFT; break;
+                case N: path[path_used++] = RIGHT; break;
+                case W: break;
+                case S: path[path_used++] = LEFT; break;
+            }
             break;
         case S:
-            path[path_used++] = RIGHT;
+            switch(target.t) {
+                case E: path[path_used++] = LEFT; break;
+                case N: path[path_used++] = LEFT; path[path_used++] = LEFT; break;
+                case W: path[path_used++] = RIGHT; break;
+                case S: break;
+            }
             break;
     }
+    
     return path;
 }
 
@@ -209,7 +230,7 @@ void pathFindingReset(void) {
     for(uint8_t x = 0; x < GAMEMAP_SIDE_NCELL; x++)
         for(uint8_t y = 0; y < GAMEMAP_SIDE_NCELL; y++) {
             //set to zero state's bits related to path finding
-            gameMap[x][y].state = 0;
+            gameMap[x][y].state &= ~PATH_FIND_BITS;
             gameMap[x][y].f_score = 0xFF;
             //reset of parent & g_score not really necessary, test before remove
             gameMap[x][y].g_score = 0xFF;

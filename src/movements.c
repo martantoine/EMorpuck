@@ -16,7 +16,7 @@ void mvt_init(void) {
 }
 
 void mvt_executePath(coord_t *position, step_t *path) {
-    if(!path) {
+    if(path) {
         uint8_t i = 0;
         while(path[i] != STOP) {
             switch(path[i]) {

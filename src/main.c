@@ -32,15 +32,15 @@ int main(void) {
     mvt_init();
 
     while (true) {
-        path = findPath(position, (coord_t){.x=7, .y=7, .t=N});
+        path = findPath(position, (coord_t){.x=6, .y=6, .t=E});
         mvt_executePath(&position, path);
-        path = findPath(position, (coord_t){.x=7, .y=1, .t=N});
+        path = findPath(position, (coord_t){.x=6, .y=2, .t=N});
         mvt_executePath(&position, path);
-        path = findPath(position, (coord_t){.x=1, .y=1, .t=N});
+        path = findPath(position, (coord_t){.x=2, .y=2, .t=W});
         mvt_executePath(&position, path);
-        path = findPath(position, (coord_t){.x=1, .y=7, .t=N});
+        path = findPath(position, (coord_t){.x=2, .y=6, .t=S});
         mvt_executePath(&position, path);
-        updateMap(&position);
+        //updateMap(&position);
     }
 }
 
