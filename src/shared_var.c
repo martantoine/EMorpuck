@@ -54,3 +54,13 @@ void init_gameMap(void) {
     }
     //chSemSignal(&gameMap_s);
 }
+
+uint8_t stateofgame;
+
+void set_stateofgame(uint8_t state) {
+    stateofgame=state; 
+}
+
+uint8_t get_stateofgame(void) {
+    return stateofgame; 
+}

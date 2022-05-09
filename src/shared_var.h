@@ -28,4 +28,13 @@ extern semaphore_t gameMap_s;
 extern cell_t gameMap[GAMEMAP_SIDE_NCELL][GAMEMAP_SIDE_NCELL];
 void init_gameMap(void);
 
+extern uint8_t stateofgame;
+    /* 
+    0 -> easy 
+    1 -> hard 
+    2 -> playing
+    3 -> waiting for player
+    */
+void set_stateofgame(uint8_t state);
+uint8_t get_stateofgame(void);
 #endif /*SHARED_VAR*/

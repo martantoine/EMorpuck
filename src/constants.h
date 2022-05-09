@@ -39,4 +39,29 @@
  * for sake of simplicity only horizontal and vertical crossing is possible 
  */
 
+enum color {
+    RED,
+    BLUE
+};
+typedef enum color color_t;
+
+enum distnorm {
+    FIRST_CASE,
+    SECOND_CASE,
+    THIRD_CASE,
+    OUT_MAP
+};
+typedef enum distnorm distnorm_t;
+
+#define LED_ON   1
+#define LED_OFF 0
+#define STATE_EASY 0
+#define STATE_HARD 1
+#define STATE_PLAYING 2
+#define STATE_WAITING_FOR_PLAYER 3
+
+#define IR_LEFT 6
+#define IR_RIGHT 3
+
+#define IMAGE_BUFFER_SIZE		640
 #endif /*CONSTANTS_H*/

@@ -12,7 +12,12 @@ CSRC += ./src/main.c \
 		./src/scan.c \
 		./src/path.c \
 		./src/utils.c \
-		./src/place.c
+		./src/place.c \
+		./src/table.c \
+		./src/infra.c \
+		./src/distance.c \
+		./src/color.c \
+		./src/algorithm.c
 
 #Header folders to include
 INCDIR += 

@@ -35,9 +35,17 @@
 			"chconf.h": "c",
 			"movement.h": "c",
 			"shared_var.h": "c",
+<<<<<<< HEAD
 			"constants.h": "c",
 			"typedef.h": "c",
 			"utils.h": "c"
+=======
+			"leds.h": "c",
+			"messagebus.h": "c",
+			"CHSCHD.H": "cpp",
+			"vl53l0x.h": "c",
+			"spi_comm.h": "c"
+>>>>>>> Alex
 		},
 		"cortex-debug.showRTOS": true
 	}

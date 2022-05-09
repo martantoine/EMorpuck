@@ -1,14 +1,3 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <math.h>
-
-#include <ch.h>
-#include <hal.h>
-#include <memory_protection.h>
-#include <usbcfg.h>
-#include <chprintf.h>
-
 #include "main.h"
 #include "shared_var.h"
 #include "movements.h"
@@ -16,10 +5,41 @@
 #include "scan.h"
 #include "place.h"
 
-int main(void) {
+#include "msgbus/messagebus.h"
+#include "parameter/parameter.h"
+#include "spi_comm.h"
+#include "camera/dcmi_camera.h"
+#include <camera/po8030.h>
+#include "i2c_bus.h"
+
+messagebus_t bus;
+MUTEX_DECL(bus_lock);
+CONDVAR_DECL(bus_condvar);
+
+int main(void)
+{
+    /** Inits the Inter Process Communication bus. */
+    messagebus_init(&bus, &bus_lock, &bus_condvar);
     halInit();
-    chSysInit();
     mpu_init();
+    chSysInit();
+
+    spi_comm_start();
+    //proximity_start();
+    //ir_button_start();
+
+    //calibrate_ir();
+    //clear_leds();
+    distance_start();
+    VL53L0X_start();
+    // set_stateofgame(STATE_WAITING_FOR_PLAYER);
+
+    // starts the camera
+    cam_start();
+    dcmi_start();
+    po8030_start();
+    process_image_start();
+
 
     coord_t position = {
         .x = GAMEMAP_CENTER,
@@ -40,7 +60,6 @@ int main(void) {
         mvt_executePath(&position, path);
         path = findPath(position, (coord_t){.x=2, .y=6, .t=S});
         mvt_executePath(&position, path);
-        //updateMap(&position);
     }
 }
 
