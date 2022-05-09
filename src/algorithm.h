@@ -12,20 +12,12 @@
 #ifndef TABLE_H
 #define TABLE_H
 
-#include <stdio.h>
 #include <stdint.h>
-#include <ch.h>
-#include <time.h>
 
-#include "constants.h"
-#include "table.h"
+void place_easy(uint8_t **table);
+/*
+void place_hard(void);
+void end_game(void); //asian mode
+*/
 
-
-
-void place_easy(uint8_t * table[GAMEMAP_SIDE_NCELL][GAMEMAP_SIDE_NCELL]);
-
-void place_hard();
-
-
-void end_game();
 #endif /*SHARED_VAR*/

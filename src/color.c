@@ -1,14 +1,13 @@
 
-#include "ch.h"
-#include "hal.h"
-#include <chprintf.h>
-#include <usbcfg.h>
+#include <ch.h>
 #include <leds.h>
 #include <main.h>
 #include <camera/po8030.h>
+#include "camera/dcmi_camera.h"
 #include "constants.h"
 #include "color.h"
 #include "spi_comm.h"
+
 
 // semaphore
 static semaphore_t color_sem;
@@ -22,9 +21,9 @@ color_t scanColor(void)
     color_t c;
     chSemWait(&color_sem);
     if((r>g) | (b>g))
-    {       
+    {
          r = r - g;
-         b = b - g; 
+         b = b - g;
     }
     if(r>b)
     {
@@ -120,7 +119,7 @@ static THD_FUNCTION(ProcessImage, arg)
         g = mean_center(image_green);
         chSemSignal(&color_sem);
         chThdSleepMilliseconds(100);
-  /*      
+  /*
         if (r >= b)
 
         {
@@ -145,8 +144,6 @@ static THD_FUNCTION(ProcessImage, arg)
 
 void process_image_start(void)
 {
-    /*chThdCreateStatic(waProcessImage, sizeof(waProcessImage), NORMALPRIO, ProcessImage, NULL);
-    chThdCreateStatic(waCaptureImage, sizeof(waCaptureImage), NORMALPRIO, CaptureImage, NULL); */
     chThdCreateStatic(waProcessImage, sizeof(waProcessImage), NORMALPRIO, ProcessImage, NULL);
     chThdCreateStatic(waCaptureImage, sizeof(waCaptureImage), NORMALPRIO, CaptureImage, NULL);
 }
