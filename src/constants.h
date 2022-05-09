@@ -47,8 +47,19 @@
 #define STATE_HARD                  1
 #define STATE_PLAYING               2
 #define STATE_WAITING_FOR_PLAYER    3
+// replace it with the following, look sick
+#define DIFFICULTY_BITS             ((uint8_t) (1 << 0))
+#define DIFFICULTY_EASY             ((uint8_t) (0 << 0))
+#define DIFFICULTY_HARD             ((uint8_t) (1 << 0))
+#define GAMESTATE_BITS              ((uint8_t) (1 << 1))
+#define GAMESTATE_PLAYING           ((uint8_t) (0 << 1))
+#define GAMESTATE_WAITING_PLAYER    ((uint8_t) (1 << 1))
+
+
+//what is this ?
 #define IR_LEFT                     6
 #define IR_RIGHT                    3
+
 
 #define IMAGE_BUFFER_SIZE		    640
 
