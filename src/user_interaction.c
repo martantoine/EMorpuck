@@ -1,5 +1,4 @@
 #include "user_interaction.h""
-
 #include <stdio.h>
 #include <stdint.h>
 #include <ch.h>

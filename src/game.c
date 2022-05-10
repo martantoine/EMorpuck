@@ -79,6 +79,12 @@ line_t check_winning_condition(cell_t **gameMap) {
 }
 
 void place_easy(cell_t **gameMap){
+    //place the center first if not played by the player. 
+    if( gameMap[1][1].state& OBSTRUCTION_BITS== CELL_FREE )
+    {
+        gameMap[1][1].state |= CELL_OCCUPED_RED;
+        return;
+    }
     for(;;) {
         srand(time(0)); //init should be done only once (separate function called by main)
         //assign 2 random coordinates between 0 and 3
@@ -102,16 +108,13 @@ void place_hard(cell_t **gameMap) {
      * this strategy is probabilistic based, is better than the true random strategy "play_easy"
      * however, it doesn't guarantee a 100% winning rate
      */
-    const uint8_t table_probabilist[15][2] = {
+    const uint8_t table_probabilist[12][2] = {
         {0, 0},
         {0, 0},
         {0, 1},
         {0, 2},
         {0, 2},
         {1, 0},
-        {1, 1},
-        {1, 1},
-        {1, 1},
         {1, 2},
         {2, 0},
         {2, 0},
@@ -119,10 +122,14 @@ void place_hard(cell_t **gameMap) {
         {2, 2},
         {2, 2}
     };
-
+    if( gameMap[1][1].state& OBSTRUCTION_BITS== CELL_FREE )
+    {
+        gameMap[1][1].state |= CELL_OCCUPED_RED;
+        return;
+    }
     for(;;) {
         srand(time(0));
-        uint8_t k = rand() % 16; // assign 1 random number between 0 and 3
+        uint8_t k = rand() % 13; // assign 1 random number between 0 and 3
         uint8_t i = table_probabilist[k][0];
         uint8_t j = table_probabilist[k][1];
         if((gameMap[i][j].state & OBSTRUCTION_BITS) == CELL_FREE) {
