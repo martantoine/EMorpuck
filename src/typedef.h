@@ -56,4 +56,11 @@ enum distnorm {
 };
 typedef enum distnorm distnorm_t;
 
+enum line{
+    BLUE_LINE,
+    RED_LINE,
+    NO_LINE
+};
+typedef enum line line_t;
+
 #endif /*TYPEDEF_H*/

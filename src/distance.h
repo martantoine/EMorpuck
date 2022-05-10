@@ -26,7 +26,11 @@
 #include "sensors\VL53L0X\VL53L0X.h"
 #include "leds.h"
 #include "shared_var.h"
+#include "constants.h"
 
 void distance_start(void);
 distnorm_t scanDistance(void);
+
+extern uint16_t d_mm;
+extern distnorm_t d;
 #endif /*DISTANCE_H*/

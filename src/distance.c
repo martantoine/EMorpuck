@@ -1,17 +1,16 @@
 #include "distance.h"
 #include "constants.h"
 
-static semaphore_t distance_sem;
-static uint16_t d_mm = 0;
-
+// semaphore
+static BSEMAPHORE_DECL(image_ready_sem, TRUE);
+///static semaphore_t distance_sem;
+uint16_t d_mm =0;
 /*
- *  Returns the line's width extracted from the image buffer given
- *  Returns 0 if line not found
+ *  Returns the case in wich the object facing the Epuck is
  */
 distnorm_t scanDistance(void) {
     distnorm_t d;
-
-    chSemWait(&distance_sem);
+    //chSemWait(&distance_sem);
     if(d_mm < 1 * CELL_WIDTH)
         d = FIRST_CASE;
     else if((d_mm > 1 * CELL_WIDTH) && (d_mm < 2 * CELL_WIDTH))
@@ -20,8 +19,7 @@ distnorm_t scanDistance(void) {
         d = THIRD_CASE;
     else if(d_mm > 3 * CELL_WIDTH)
         d = OUT_MAP;
-    chSemSignal(&distance_sem);
-
+    //chSemSignal(&distance_sem);
     return d;
 }
 
@@ -31,10 +29,9 @@ static THD_FUNCTION(distance, arg) {
     (void)arg;
 
     for(;;) {
-        chSemWait(&distance_sem);
+        //chSemWait(&distance_sem);
         d_mm = VL53L0X_get_dist_mm();
-        chSemSignal(&distance_sem);
-
+        //chSemSignal(&distance_sem);
         chThdSleepMilliseconds(100);
     }
 }

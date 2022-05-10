@@ -13,15 +13,14 @@ CSRC += ./src/main.c \
 		./src/path.c \
 		./src/utils.c \
 		./src/place.c \
-		./src/table.c \
-		./src/infra.c \
-		./src/distance.c \
-		./src/color.c \
-		./src/algorithm.c
+		./src/game.c \
+		./src/user_interaction.c \
+		./src/distance.c\
+		./src/color_scan.c
 
 #Header folders to include
-INCDIR += 
-	
+INCDIR +=
+
 #Jump to the main Makefile
 include $(GLOBAL_PATH)/Makefile
 
@@ -30,7 +29,7 @@ clean-libssp:
 	-rm libssp.a libssp_nonshared.a
 	@echo
 	@echo Done
-	
+
 CSRC := $(filter-out $(GLOBAL_PATH)/src/motors.c, $(CSRC))
 
 USE_OPT := $(filter-out -O2, $(USE_OPT)) -O0

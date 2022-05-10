@@ -39,27 +39,29 @@
  * for sake of simplicity only horizontal and vertical crossing is possible
  */
 
+#define LED_ON   1
+#define LED_OFF 0
+#define STATE_EASY 0
+#define STATE_HARD 1
+#define STATE_PLAYING 2
+#define STATE_WAITING_FOR_PLAYER 3
 
-// Really usefull ?
-#define LED_ON                      1
-#define LED_OFF                     0
-#define STATE_EASY                  0
-#define STATE_HARD                  1
-#define STATE_PLAYING               2
-#define STATE_WAITING_FOR_PLAYER    3
-// replace it with the following, look sick
 #define DIFFICULTY_BITS             ((uint8_t) (1 << 0))
 #define DIFFICULTY_EASY             ((uint8_t) (0 << 0))
 #define DIFFICULTY_HARD             ((uint8_t) (1 << 0))
-#define GAMESTATE_BITS              ((uint8_t) (1 << 1))
-#define GAMESTATE_PLAYING           ((uint8_t) (0 << 1))
-#define GAMESTATE_WAITING_PLAYER    ((uint8_t) (1 << 1))
+#define GAMESTATE_BITS              ((uint8_t) (1 << 2) | (1 << 1))
+#define GAMESTATE_START             ((uint8_t) (0 << 2) | (0 << 1))
+#define GAMESTATE_PLAYING           ((uint8_t) (0 << 2) | (1 << 1))
+#define GAMESTATE_WAITING_PLAYER    ((uint8_t) (1 << 2) | (0 << 1))
+#define GAMESTATE_END               ((uint8_t) (1 << 2) | (1 << 1))
 
+#define LED_ON                      1
+#define LED_OFF                     0
 
-//what is this ?
+// IR Related Defines
+#define IR_THRESHOLD                100
 #define IR_LEFT                     6
 #define IR_RIGHT                    3
-
 
 #define IMAGE_BUFFER_SIZE		    640
 

@@ -1,5 +1,4 @@
 #include "main.h"
-#include "shared_var.h"
 #include "movements.h"
 #include "path.h"
 #include "scan.h"
@@ -20,19 +19,20 @@ int main(void)
 {
     /** Inits the Inter Process Communication bus. */
     messagebus_init(&bus, &bus_lock, &bus_condvar);
+
     halInit();
     mpu_init();
     chSysInit();
-
     spi_comm_start();
-    //proximity_start();
-    //ir_button_start();
 
-    //calibrate_ir();
-    //clear_leds();
+    // starts the proximity sensors
+    proximity_start();
+    ir_button_start();
+    calibrate_ir();
+
+    // starts the distance measuring sensor
     distance_start();
     VL53L0X_start();
-    // set_stateofgame(STATE_WAITING_FOR_PLAYER);
 
     // starts the camera
     cam_start();
@@ -40,6 +40,29 @@ int main(void)
     po8030_start();
     process_image_start();
 
+    set_stateofgame(STATE_WAITING_FOR_PLAYER);
+
+    while (true)
+    {
+
+        chThdSleepMilliseconds(1000);
+
+        test_captors();
+    }
+    return 0;
+}
+
+//fonction de tests des fonctions de mesures de distance et de couleurs
+void test_captors(void)
+{
+    if (scanDistance() == FIRST_CASE)
+    {
+        set_body_led(LED_ON);
+    }
+    else
+    {
+        set_body_led(LED_OFF);
+    }
 
     coord_t position = {
         .x = GAMEMAP_CENTER,
@@ -48,7 +71,7 @@ int main(void)
     };
     step_t* path;
     init_gameMap();
-    
+
     mvt_init();
 
     while (true) {
