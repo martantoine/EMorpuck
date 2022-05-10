@@ -14,36 +14,26 @@
 
 #include "typedef.h"
 
-/*
- * this function checks if there is still free space in the map
- */
+extern semaphore_t gamestates_sem;
+extern uint8_t gamestates;
+
+//This function checks if there is still free space in the map
 bool check_if_full(cell_t **gameMap);
 
-/*
- * This function checks if 3 similar signs are aligned
- * Returns the type of the 3 alligned signs or a NO_SIGNES
- */
+// Checks if 3 similar signs are aligned, returns the type of the 3 alligned signs or a NO_SIGNES
 line_t check_winning_condition(cell_t **gameMap);
 
-/*
- * this function is the strategy of the Epuck to place a sign in a case. Here in easy mode.
- * The Epuck plays randomly, it should be easy to beat it.
- */
+// A strategy of the Epuck to place a sign in a case. Here in easy mode.
+// The Epuck plays randomly, should be easy to beat it.
 void place_easy(cell_t **gameMap);
 
-/*
- * this function is another strategy of the Epuck to place a sign in a case. Here in hard mode.
- * The Epcuck plays randomly but it emphasis on taking the powerful cells. 
- */
+// Another strategy of the Epuck to place a sign in a case. Here in hard mode.
+// The Epcuck plays randomly but it emphasis on taking the most intesting cells.
 void place_hard(cell_t **gameMap);
 
-/*
- * checks the condition of winning and losing
- */
+// Checks the condition of winning and losing
 bool end_game(cell_t **gameMap);
 
 void init_game(void);
-uint8_t get_difficulty(void);
-uint8_t get_state(void);
 
 #endif /*SHARED_VAR*/

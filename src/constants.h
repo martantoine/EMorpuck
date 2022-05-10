@@ -39,29 +39,28 @@
  * for sake of simplicity only horizontal and vertical crossing is possible
  */
 
-#define LED_ON   1
-#define LED_OFF 0
-#define STATE_EASY 0
-#define STATE_HARD 1
-#define STATE_PLAYING 2
-#define STATE_WAITING_FOR_PLAYER 3
-
 #define DIFFICULTY_BITS             ((uint8_t) (1 << 0))
 #define DIFFICULTY_EASY             ((uint8_t) (0 << 0))
 #define DIFFICULTY_HARD             ((uint8_t) (1 << 0))
-#define GAMESTATE_BITS              ((uint8_t) (1 << 2) | (1 << 1))
-#define GAMESTATE_START             ((uint8_t) (0 << 2) | (0 << 1))
-#define GAMESTATE_PLAYING           ((uint8_t) (0 << 2) | (1 << 1))
-#define GAMESTATE_WAITING_PLAYER    ((uint8_t) (1 << 2) | (0 << 1))
-#define GAMESTATE_END               ((uint8_t) (1 << 2) | (1 << 1))
+#define STATE_BITS              ((uint8_t) (1 << 2) | (1 << 1))
+#define STATE_START             ((uint8_t) (0 << 2) | (0 << 1))
+#define STATE_PLAYING           ((uint8_t) (0 << 2) | (1 << 1))
+#define STATE_WAITING_PLAYER    ((uint8_t) (1 << 2) | (0 << 1))
+#define STATE_END               ((uint8_t) (1 << 2) | (1 << 1))
 
 #define LED_ON                      1
 #define LED_OFF                     0
 
 // IR Related Defines
 #define IR_THRESHOLD                100
-#define IR_LEFT                     6
-#define IR_RIGHT                    3
+#define IR_1                        0
+#define IR_2                        1
+#define IR_3                        6
+#define IR_4                        3
+#define HOLD_LONG                   1000 // in ms
+#define HOLD_SHORT                  500 // in ms
+#define IR_REFRESH_PERIOD           100 // in ms
+
 
 #define IMAGE_BUFFER_SIZE		    640
 

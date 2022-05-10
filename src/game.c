@@ -3,6 +3,10 @@
 #include <stdlib.h>
 #include <time.h>
 #include <leds.h>
+#include <ch.h>
+
+semaphore_t gamestates_sem;
+uint8_t gamestates;
 
 bool check_if_full(cell_t **gameMap) {
     for (int i = -1; i < 3; ++i)
@@ -79,7 +83,7 @@ line_t check_winning_condition(cell_t **gameMap) {
 }
 
 void place_easy(cell_t **gameMap){
-    //place the center first if not played by the player. 
+    //place the center first if not played by the player.
     if( gameMap[1][1].state& OBSTRUCTION_BITS== CELL_FREE )
     {
         gameMap[1][1].state |= CELL_OCCUPED_RED;
@@ -161,17 +165,9 @@ bool end_game(cell_t **gameMap) {
     return false;
 }
 
-void init_game(void) {
+void init_gamestates(void) {
     chSemObjectInit(&gamestate_sem);
-    gameState = 0;
-}
-
-void get_difficulty(uint8_t *a) {
-    chSemWait(&gamestate_sem);
-    *a = gamestate & GAMESTATE_BITS;
-    chSemSignal(&gamestate_sem);
-}
-
-uint8_t get_state(void) {
-
+    chSemWait(&gamestates_sem);
+    gameStates = 0;
+    chSemSignal(&gamestates_sem);
 }
