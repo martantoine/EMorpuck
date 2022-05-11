@@ -21,16 +21,16 @@
 //#define NTURNS_TURN_360     (WHEEL_SPACE / WHEEL_DIAMETER)
 //#define STEPS_TURN_360      (NTURNS_TURN_360 * NSTEP_ONE_TURN)
 
-#define OBSTRUCTION_BITS    ((uint8_t) (1 << 1) | (1 << 0))
-#define CELL_FREE           ((uint8_t) (0 << 0))
-#define CELL_OCCUPED_RED    ((uint8_t) (1 << 0))
-#define CELL_OCCUPED_BLUE   ((uint8_t) (1 << 1) | (0 << 0))
-#define PATH_FIND_BITS      ((uint8_t) (1 << 3) | (1 << 2))
-#define CELL_BLANK          ((uint8_t) (0 << 3) | (0 << 2))
-#define CELL_OPEN           ((uint8_t) (0 << 3) | (1 << 2))
-#define CELL_CLOSED         ((uint8_t) (1 << 3) | (0 << 2))
-#define CELL_UNKNOWN        ((uint8_t) (0 << 4))
-#define CELL_KNOWN          ((uint8_t) (1 << 4))
+#define OBSTRUCTION_BITS            ((uint8_t) (1 << 1) | (1 << 0))
+#define CELL_FREE                   ((uint8_t) (0 << 0))
+#define CELL_OCCUPED_RED            ((uint8_t) (1 << 0))
+#define CELL_OCCUPED_BLUE           ((uint8_t) (1 << 1) | (0 << 0))
+#define PATH_FIND_BITS              ((uint8_t) (1 << 3) | (1 << 2))
+#define CELL_BLANK                  ((uint8_t) (0 << 3) | (0 << 2))
+#define CELL_OPEN                   ((uint8_t) (0 << 3) | (1 << 2))
+#define CELL_CLOSED                 ((uint8_t) (1 << 3) | (0 << 2))
+#define CELL_UNKNOWN                ((uint8_t) (0 << 4))
+#define CELL_KNOWN                  ((uint8_t) (1 << 4))
 
 #define PATH_UNIT_LENGTH 10
 /*
@@ -42,16 +42,16 @@
 #define DIFFICULTY_BITS             ((uint8_t) (1 << 0))
 #define DIFFICULTY_EASY             ((uint8_t) (0 << 0))
 #define DIFFICULTY_HARD             ((uint8_t) (1 << 0))
-#define STATE_BITS              ((uint8_t) (1 << 2) | (1 << 1))
-#define STATE_START             ((uint8_t) (0 << 2) | (0 << 1))
-#define STATE_PLAYING           ((uint8_t) (0 << 2) | (1 << 1))
-#define STATE_WAITING_PLAYER    ((uint8_t) (1 << 2) | (0 << 1))
-#define STATE_END               ((uint8_t) (1 << 2) | (1 << 1))
+#define STATE_BITS                  ((uint8_t) (1 << 2) | (1 << 1))
+#define STATE_START                 ((uint8_t) (0 << 2) | (0 << 1))
+#define STATE_PLAYING               ((uint8_t) (0 << 2) | (1 << 1))
+#define STATE_WAITING_PLAYER        ((uint8_t) (1 << 2) | (0 << 1))
+#define STATE_END                   ((uint8_t) (1 << 2) | (1 << 1))
 
 #define LED_ON                      1
 #define LED_OFF                     0
 
-// IR Related Defines
+// USER_INTERACTION (~Infrared sensors) related #defines
 #define IR_THRESHOLD                100
 #define IR_1                        0
 #define IR_2                        1
@@ -59,8 +59,10 @@
 #define IR_4                        3
 #define HOLD_LONG                   1000 // in ms
 #define HOLD_SHORT                  500 // in ms
-#define IR_REFRESH_PERIOD           100 // in ms
-
+#define USERINTERACTION_REFRESH_T   100 // in ms
+#define USERINTERACTION_PRIORITY    (NORMALPRIO + 1)
+#define TOF_REFRESH_T               100 // in ms
+#define TOF_PRIORITY                (NORMALPRIO + 1)
 
 #define IMAGE_BUFFER_SIZE		    640
 

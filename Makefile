@@ -15,7 +15,7 @@ CSRC += ./src/main.c \
 		./src/place.c \
 		./src/game.c \
 		./src/user_interaction.c \
-		./src/distance.c\
+		./src/tof.c\
 		./src/color_scan.c
 
 #Header folders to include

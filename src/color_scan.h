@@ -11,6 +11,7 @@
 #ifndef COLOR_H
 #define COLOR_H
 
+#include "typedef.h"
 
 void process_image_start(void);
 color_t scanColor(void);

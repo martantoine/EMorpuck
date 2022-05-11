@@ -1,51 +1,44 @@
-#include "user_interaction.h""
-#include <stdio.h>
-#include <stdint.h>
-#include <ch.h>
-#include <time.h>
-#include <math.h>
-#include <memory_protection.h>
-//#include <usbcfg.h>
-#include <chprintf.h>
-
+#include "user_interaction.h"
 #include "sensors\proximity.h"
 #include "leds.h"
 #include "shared_var.h"
 #include "game.h"
 
-inline void ingame_check(void);
-inline void show_stateofgame(void);
+#include <ch.h>
+#include <memory_protection.h>
+//#include <usbcfg.h>
 
 inline void measure_irs(uint8_t *irs);
 inline void start_check(uint8_t *irs);
+inline void ingame_check(uint8_t *irs);
+inline void show_stateofgame(void);
 
-static THD_WORKING_AREA(waIR_BUTTON, 128);
-static THD_FUNCTION(Ir_button, arg) {
+static THD_WORKING_AREA(waUserInteraction, 128);
+static THD_FUNCTION(UserInteraction, arg) {
     chRegSetThreadName(__FUNCTION__);
     (void)arg;
+
     uint8_t ir_over_threshold[2];
     for(;;) {
-        measure_irs(&ir_over_threshold);
-        switch(getGameState()) {
-            case STATE_START:
-                start_check(&ir_over_threshold);
-                break;
-            case STATE_WAITING_PLAYER:
-                stop_check();
-                break;
-            case STATE_PLAYING:
-                stop_check();
-                break;
-            case STATE_END:
-                break;
-        }
+        measure_irs(ir_over_threshold);
+        chSemWait(&gamestates_sem);
+        uint8_t gamestates_tmp = gamestates;
+        chSemSignal(&gamestates_sem);
+        if((gamestates_tmp & STATE_BITS) == STATE_START)
+                start_check(ir_over_threshold);
+        else if((gamestates_tmp & STATE_BITS) == STATE_WAITING_PLAYER)
+                ingame_check(ir_over_threshold);
+        else if((gamestates_tmp & STATE_BITS) == STATE_PLAYING)
+                ingame_check(ir_over_threshold);
         show_stateofgame();
-        chThdSleepMilliseconds(IR_REFRESH_PERIOD);
+        chThdSleepMilliseconds(USERINTERACTION_REFRESH_T);
     }
 }
 
-void ir_button_start(void) {
-	chThdCreateStatic(waIR_BUTTON, sizeof(waIR_BUTTON), NORMALPRIO+1, Ir_button, NULL);
+void user_interaction_init(void) {
+    proximity_start();
+	chThdCreateStatic(UserInteraction, sizeof(waUserInteraction), IR_THD_PRIOTIRY, UserInteraction, NULL);
+    calibrate_ir();
 }
 
 void measure_irs(uint8_t *irs) {
@@ -61,39 +54,36 @@ void measure_irs(uint8_t *irs) {
 
 void start_check(uint8_t *irs) {
     chSemWait(&gamestates_sem);
-    if     ((irs[0] > (HOLD_SHORT / IR_REFRESH_PERIOD)) && (irs[1] < (HOLD_SHORT / IR_REFRESH_PERIOD)))
+    if     ((irs[0] > (HOLD_SHORT / USERINTERACTION_REFRESH_T)) && (irs[1] < (HOLD_SHORT / USERINTERACTION_REFRESH_T)))
         gamestates = (gamestates & ~DIFFICULTY_BITS) | DIFFICULTY_EASY;
-    else if((irs[0] < (HOLD_SHORT / IR_REFRESH_PERIOD)) && (irs[1] > (HOLD_SHORT / IR_REFRESH_PERIOD)))
+    else if((irs[0] < (HOLD_SHORT / USERINTERACTION_REFRESH_T)) && (irs[1] > (HOLD_SHORT / USERINTERACTION_REFRESH_T)))
         gamestates = (gamestates & ~DIFFICULTY_BITS) | DIFFICULTY_HARD;
-    else if((irs[0] > (HOLD_SHORT / IR_REFRESH_PERIOD)) && (irs[1] > (HOLD_SHORT / IR_REFRESH_PERIOD)))
+    else if((irs[0] > (HOLD_SHORT / USERINTERACTION_REFRESH_T)) && (irs[1] > (HOLD_SHORT / USERINTERACTION_REFRESH_T)))
         gamestates = (gamestates & ~STATE_BITS) | STATE_WAITING_PLAYER;
-    else if((irs[0] > (HOLD_LONG / IR_REFRESH_PERIOD))  && (irs[1] > (HOLD_LONG / IR_REFRESH_PERIOD)))
+    else if((irs[0] > (HOLD_LONG / USERINTERACTION_REFRESH_T))  && (irs[1] > (HOLD_LONG / USERINTERACTION_REFRESH_T)))
         gamestates = (gamestates & ~STATE_BITS) | STATE_PLAYING;
     chSemSignal(&gamestates_sem);
 }
 
-void ingame_check(void) {
-    if((get_calibrated_prox(IR_RIGHT) > IR_THRESHOLD) && (get_calibrated_prox(IR_LEFT) > IR_THRESHOLD))
+void ingame_check(uint8_t *irs) {
+    chSemWait(&gamestates_sem);
+    if((irs[0] > (HOLD_LONG / USERINTERACTION_REFRESH_T)) && (irs[1] > (HOLD_LONG / USERINTERACTION_REFRESH_T)))
         gamestates = (gamestates & ~STATE_BITS) | STATE_END;
+    chSemSignal(&gamestates_sem);
 }
 
 void show_stateofgame(void) {
-   swicht(get_difficulty()) {
-    case DIFFICULTY_EASY:
-        set_body_led(LED_OFF);
-        set_led(LED7, LED_ON);
-        break;
-    case DIFFICULTY_HARD:
-        set_body_led(LED_OFF);
-        set_led(LED3, LED_ON);
-        break;
+    chSemWait(&gamestates_sem);
+    if((gamestates & DIFFICULTY_BITS) == DIFFICULTY_EASY) {
+        // Set color to blue
+    }
+    else if((gamestates & DIFFICULTY_BITS) == DIFFICULTY_HARD) {
+        // Set color to red
     }
 
-    if(get_state() == STATE_PLAYING) {
-        set_body_led(LED_OFF);
-        set_led(LED1, LED_ON);
-    }
-    if(get_state() == STATE_WAITING_FOR_PLAYER) {
+    if((gamestates & STATE_BITS) == STATE_PLAYING)
         set_body_led(LED_ON);
-    }
+    else if((gamestates & STATE_BITS) == STATE_WAITING_PLAYER)
+        set_body_led(LED_OFF);
+    chSemSignal(&gamestates_sem);
 }

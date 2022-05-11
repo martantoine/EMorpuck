@@ -166,8 +166,8 @@ bool end_game(cell_t **gameMap) {
 }
 
 void init_gamestates(void) {
-    chSemObjectInit(&gamestate_sem);
+    chSemObjectInit(&gamestates_sem, 1);
     chSemWait(&gamestates_sem);
-    gameStates = 0;
+    gamestates = 0;
     chSemSignal(&gamestates_sem);
 }

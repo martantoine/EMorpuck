@@ -13,6 +13,7 @@
 #define TABLE_H
 
 #include "typedef.h"
+#include <ch.h>
 
 extern semaphore_t gamestates_sem;
 extern uint8_t gamestates;
