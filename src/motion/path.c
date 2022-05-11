@@ -1,15 +1,13 @@
 #include <stdlib.h>
-#include <math.h>
 #include "path.h"
 
 /*
  * those functions are inline because they are only used once by findPath()
  */
-inline void pathFindingReset(cell_t **gameMap);
-inline step_t* generatePathCode(cell_t **gameMap, coord_t current, coord_t target);
-inline uint8_t getDistance(coord_t A, coord_t B);
+inline void pathFindingReset(cell_t gameMap[SIDE_NCELL][SIDE_NCELL]);
+inline step_t* generatePathCode(cell_t gameMap[SIDE_NCELL][SIDE_NCELL], coord_t current, coord_t target);
 
-step_t* findPath(cell_t **gameMap, coord_t current, const coord_t target) {
+step_t* findPath(cell_t gameMap[SIDE_NCELL][SIDE_NCELL], coord_t current, const coord_t target) {
     pathFindingReset(gameMap);
 
     /*
@@ -30,8 +28,8 @@ step_t* findPath(cell_t **gameMap, coord_t current, const coord_t target) {
         * TODO: test if uint8_t is enough for the f_score & g_score
         */
         f_min = 0xFF;
-        for(uint8_t x = 0; x < GAMEMAP_SIDE_NCELL; x++)
-            for(uint8_t y = 0; y < GAMEMAP_SIDE_NCELL; y++)
+        for(uint8_t x = 0; x < SIDE_NCELL; x++)
+            for(uint8_t y = 0; y < SIDE_NCELL; y++)
                 if(((gameMap[x][y].state & PATH_FIND_BITS) == CELL_OPEN) && (gameMap[x][y].f_score <= f_min)) {
                     f_min = gameMap[x][y].f_score;
                     x_min = x;
@@ -47,7 +45,7 @@ step_t* findPath(cell_t **gameMap, coord_t current, const coord_t target) {
             int8_t y = y_min + nearest[w].y;
 
             // Check boundaries
-            if((x < 0) || (x >= GAMEMAP_SIDE_NCELL) || (y < 0) || (y >= GAMEMAP_SIDE_NCELL)) {}
+            if((x < 0) || (x >= SIDE_NCELL) || (y < 0) || (y >= SIDE_NCELL)) {}
 
             // Check for obstacles and already checked cells
             else if(((gameMap[x][y].state & OBSTRUCTION_BITS) == CELL_OCCUPED_BLUE) ||
@@ -70,7 +68,7 @@ step_t* findPath(cell_t **gameMap, coord_t current, const coord_t target) {
     return generatePathCode(gameMap, current, target);
 }
 
-step_t* generatePathCode(cell_t **gameMap, coord_t current, coord_t target) {
+step_t* generatePathCode(cell_t gameMap[SIDE_NCELL][SIDE_NCELL], coord_t current, coord_t target) {
     cell_t* icell = &gameMap[current.x][current.y];
     cell_t* icell_old = NULL;
     int8_t delta_x = 0, delta_y = 0;
@@ -86,11 +84,11 @@ step_t* generatePathCode(cell_t **gameMap, coord_t current, coord_t target) {
         int32_t delta_addr = (icell - icell_old);
 
         switch(delta_addr) {
-            case +GAMEMAP_SIDE_NCELL:
+            case +SIDE_NCELL:
                 delta_x = +1;
                 delta_y = 0;
                 break;
-            case -GAMEMAP_SIDE_NCELL:
+            case -SIDE_NCELL:
                 delta_x = -1;
                 delta_y = 0;
                 break;
@@ -225,9 +223,9 @@ step_t* generatePathCode(cell_t **gameMap, coord_t current, coord_t target) {
     return path;
 }
 
-void pathFindingReset(cell_t **gameMap) {
-    for(uint8_t x = 0; x < GAMEMAP_SIDE_NCELL; x++)
-        for(uint8_t y = 0; y < GAMEMAP_SIDE_NCELL; y++) {
+void pathFindingReset(cell_t gameMap[SIDE_NCELL][SIDE_NCELL]) {
+    for(uint8_t x = 0; x < SIDE_NCELL; x++)
+        for(uint8_t y = 0; y < SIDE_NCELL; y++) {
             //set to zero state's bits related to path finding
             gameMap[x][y].state &= ~PATH_FIND_BITS;
             gameMap[x][y].f_score = 0xFF;
@@ -235,10 +233,4 @@ void pathFindingReset(cell_t **gameMap) {
             gameMap[x][y].g_score = 0xFF;
             gameMap[x][y].parent = NULL;
         }
-}
-
-uint8_t getDistance(coord_t A, coord_t B) {
-    int8_t delta_x = A.x - B.x;
-    int8_t delta_y = A.y - B.y;
-    return (uint8_t)(PATH_UNIT_LENGTH * sqrt(delta_x*delta_x+delta_y*delta_y));
 }

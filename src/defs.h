@@ -56,16 +56,17 @@ enum distnorm {
 };
 typedef enum distnorm distnorm_t;
 
-enum line{
-    BLUE_LINE,
-    RED_LINE,
-    NO_LINE
+enum winner{
+    PLAYER_BLUE,
+    PLAYER_RED,
+    DRAW,
+    NONE
 };
-typedef enum line line_t;
+typedef enum winner winner_t;
 
 #define MAX_PATH_SIZE       30
-#define GAMEMAP_SIDE_NCELL  9
-#define GAMEMAP_CENTER      ((GAMEMAP_SIDE_NCELL - 1) / 2)
+#define SIDE_NCELL          9
+#define GAMEMAP_CENTER      ((SIDE_NCELL - 1) / 2)
 #define CELL_WIDTH          100 // in mm
 
 #define NSTEP_ONE_TURN      1000 // number of full steps for 1 turn of the motor
@@ -116,28 +117,29 @@ typedef enum line line_t;
 #define LED_OFF                     0
 
 // USER_INTERACTION (~Infrared sensors) related #defines
-#define IR_THRESHOLD                100
+#define SENSOR_IR_THRESHOLD   100
 #define IR_1                        0
 #define IR_2                        1
 #define IR_3                        6
 #define IR_4                        3
 #define HOLD_LONG                   1000 // in ms
 #define HOLD_SHORT                  500 // in ms
-#define USERINTERACTION_REFRESH_T   100 // in ms
-#define USERINTERACTION_PRIORITY    (NORMALPRIO + 1)
-#define TOF_REFRESH_T               100 // in ms
-#define TOF_PRIORITY                (NORMALPRIO + 1)
+
+#define SENSOR_IR_REFRESH_T         100 // in ms
+#define SENSOR_IR_PRIORITY          (NORMALPRIO + 1)
+#define SENSOR_DISTANCE_REFRESH_T   100 // in ms
+#define SENSOR_DISTANCE_PRIORITY    (NORMALPRIO + 1)
 
 #define IMAGE_BUFFER_SIZE		    640
 
-const coord_t nearest[4] = {
+static const coord_t nearest[4] = {
     {-1,  0, E},
     {+1,  0, W},
     { 0, -1, S},
     { 0, +1, N}
 };
 
-const coord_t storage[12] = {
+static const coord_t storage[12] = {
     { GAMEMAP_CENTER - 3, GAMEMAP_CENTER - 1, E},
     { GAMEMAP_CENTER - 3, GAMEMAP_CENTER    , E},
     { GAMEMAP_CENTER - 3, GAMEMAP_CENTER + 1, E},
@@ -154,5 +156,7 @@ const coord_t storage[12] = {
     { GAMEMAP_CENTER    , GAMEMAP_CENTER + 3, N},
     { GAMEMAP_CENTER + 1, GAMEMAP_CENTER + 3, N}
 };
+
+uint8_t getDistance(coord_t A, coord_t B);
 
 #endif /*CONSTANTS_H*/

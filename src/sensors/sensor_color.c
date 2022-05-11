@@ -3,9 +3,10 @@
 #include <camera/dcmi_camera.h>
 #include <spi_comm.h>
 #include <ch.h>
+#include <usbcfg.h>
 
 //static semaphore_t color_sem;
-static semaphore_t image_ready_sem;
+static BSEMAPHORE_DECL(image_ready_sem, TRUE);
 uint8_t r = 0,g = 0, b = 0;
 
 /*
@@ -14,15 +15,6 @@ uint8_t r = 0,g = 0, b = 0;
  */
 
 uint8_t averageBuffer (uint8_t *buffer);
-
-void sensor_color_init(void) {
-    cam_start();
-    dcmi_start();
-    po8030_start();
-
-    chThdCreateStatic(waProcessImage, sizeof(waProcessImage), NORMALPRIO, ProcessImage, NULL);
-    chThdCreateStatic(waCaptureImage, sizeof(waCaptureImage), NORMALPRIO, CaptureImage, NULL);
-}
 
 color_t sensor_measure_color(void)
 {
@@ -123,4 +115,13 @@ static THD_FUNCTION(ProcessImage, arg) {
         chThdSleepMilliseconds(100);
         dcmi_reset_error();
     }
+}
+
+void sensor_color_init(void) {
+    cam_start();
+    dcmi_start();
+    po8030_start();
+
+    chThdCreateStatic(waProcessImage, sizeof(waProcessImage), NORMALPRIO, ProcessImage, NULL);
+    chThdCreateStatic(waCaptureImage, sizeof(waCaptureImage), NORMALPRIO, CaptureImage, NULL);
 }

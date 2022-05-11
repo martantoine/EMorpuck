@@ -4,6 +4,7 @@
 #include <ch.h>
 #include <memory_protection.h>
 #include <leds.h>
+#include <sensors/proximity.h>
 //#include <usbcfg.h>
 
 inline void sensor_ir_measure(uint8_t *IRs);

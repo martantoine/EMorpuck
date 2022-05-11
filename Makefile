@@ -11,9 +11,10 @@ CSRC += ./src/motion/motors_driver.c \
 		./src/sensors/sensor_color.c \
 		./src/sensors/sensor_distance.c\
 		./src/sensors/sensor_ir.c \
-		./src/scan.c \
+		./src/defs.c \
 		./src/game.c \
-		./src/main.c
+		./src/main.c \
+		./src/scan.c
 
 #Header folders to include
 INCDIR +=

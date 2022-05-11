@@ -1,7 +1,9 @@
 #include <ch.h>
 #include <stdlib.h>
+#include <math.h>
 #include "movements.h"
 #include "motors_driver.h"
+#include "path.h"
 
 inline void updatePosition(coord_t *position, step_t step); //inline because used only in one place : 1 line in mvt_executablePath
 
@@ -76,7 +78,7 @@ void updatePosition(coord_t *position, step_t step) {
     }
 }
 
-void mvt_place(cell_t **gameMap, coord_t *position, const coord_t target) {
+void mvt_place(cell_t gameMap[SIDE_NCELL][SIDE_NCELL], coord_t *position, const coord_t target) {
     coord_t min, tmp;
     uint8_t min_dist = 0xFF;
 
@@ -84,7 +86,7 @@ void mvt_place(cell_t **gameMap, coord_t *position, const coord_t target) {
     for(uint8_t i = 0; i < 12; i++) {
         tmp = storage[i];
         if((gameMap[tmp.x][tmp.y].state & OBSTRUCTION_BITS) == CELL_OCCUPED_RED) {
-            uint8_t dist = getDistance((coord_t){.x=tmp.x, .y=tmp.y, .t=tmp.t}, *target);
+            uint8_t dist = getDistance((coord_t){.x=tmp.x, .y=tmp.y, .t=tmp.t}, target);
             if(dist <= min_dist) {
                 min = tmp;
                 min_dist = dist;
