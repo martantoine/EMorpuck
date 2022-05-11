@@ -4,6 +4,7 @@
 #include <spi_comm.h>
 #include <ch.h>
 #include <usbcfg.h>
+#include <i2c_bus.h>
 
 static semaphore_t color_sem;
 static BSEMAPHORE_DECL(image_ready_sem, TRUE);
@@ -101,9 +102,10 @@ static THD_FUNCTION(ProcessImage, arg) {
 }
 
 void sensor_color_init(void) {
+    i2c_start();
+    po8030_start();
     cam_start();
     dcmi_start();
-    po8030_start();
 
     chThdCreateStatic(waProcessImage, sizeof(waProcessImage), NORMALPRIO, ProcessImage, NULL);
     chThdCreateStatic(waCaptureImage, sizeof(waCaptureImage), NORMALPRIO, CaptureImage, NULL);
