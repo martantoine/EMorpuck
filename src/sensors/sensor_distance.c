@@ -36,6 +36,6 @@ static THD_FUNCTION(SensorDistance, arg) {
 
 void sensor_distance_init(void) {
     chSemObjectInit(&dist_sem, 1);
+    chThdCreateStatic(waSensorDistance, sizeof(waSensorDistance), NORMALPRIO, SensorDistance, NULL);
     VL53L0X_start();
-	chThdCreateStatic(waSensorDistance, sizeof(waSensorDistance), SENSOR_DISTANCE_PRIORITY, SensorDistance, NULL);
 }

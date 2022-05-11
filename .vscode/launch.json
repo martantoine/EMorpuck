@@ -12,6 +12,7 @@
             "type": "cortex-debug",
             "servertype": "bmp",
             "interface": "swd",
+            "stopAtEntry": false,
             "device": "STM32F407",
             "BMPGDBSerialPort" : "COM4", //change to your need
             "runToMain": true,

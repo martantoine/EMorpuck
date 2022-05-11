@@ -37,7 +37,7 @@ static THD_FUNCTION(SensorIR, arg) {
 void sensor_ir_init(void) {
     chSemObjectInit(&gamestates_sem, 1);
     proximity_start();
-	chThdCreateStatic(waSensorIR, sizeof(waSensorIR), SENSOR_IR_PRIORITY, SensorIR, NULL);
+	chThdCreateStatic(waSensorIR, sizeof(waSensorIR), NORMALPRIO, SensorIR, NULL);
     calibrate_ir();
 }
 

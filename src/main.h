@@ -14,9 +14,9 @@ extern "C" {
 
     /** Robot wide IPC bus. */
 
-//extern messagebus_t bus;
-extern parameter_namespace_t parameter_root;
+extern messagebus_t bus;
 
+extern parameter_namespace_t parameter_root;
 
 
 void test_captors (void);

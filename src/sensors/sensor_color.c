@@ -44,7 +44,7 @@ static THD_FUNCTION(CaptureImage, arg) {
     // Takes pixels 0 to IMAGE_BUFFER_SIZE of the line 10 + 11 (minimum 2 lines because reasons)
     po8030_advanced_config(PO8030_FORMAT_RGB565, 0, 10, IMAGE_BUFFER_SIZE, 2, SUBSAMPLING_X1, SUBSAMPLING_X1);
     //desactivate white balance to keep values non adaptative to the image
-    po8030_set_awb(0);
+   // po8030_set_awb(0);
     dcmi_enable_double_buffering();
     dcmi_set_capture_mode(CAPTURE_ONE_SHOT);
     dcmi_prepare();
@@ -102,10 +102,10 @@ static THD_FUNCTION(ProcessImage, arg) {
 }
 
 void sensor_color_init(void) {
-    i2c_start();
-    po8030_start();
+    //i2c_start();
     cam_start();
     dcmi_start();
+    po8030_start();
 
     chThdCreateStatic(waProcessImage, sizeof(waProcessImage), NORMALPRIO, ProcessImage, NULL);
     chThdCreateStatic(waCaptureImage, sizeof(waCaptureImage), NORMALPRIO, CaptureImage, NULL);
