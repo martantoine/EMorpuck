@@ -1,18 +1,16 @@
 #include <stdlib.h>
+#include <math.h>
 #include "path.h"
-#include "constants.h"
-#include "shared_var.h"
-#include "game.h"
-#include "utils.h"
 
 /*
  * those functions are inline because they are only used once by findPath()
  */
-inline void pathFindingReset(void);
-inline step_t* generatePathCode(coord_t current, coord_t target);
+inline void pathFindingReset(cell_t **gameMap);
+inline step_t* generatePathCode(cell_t **gameMap, coord_t current, coord_t target);
+inline uint8_t getDistance(coord_t A, coord_t B);
 
-step_t* findPath(coord_t current, coord_t target) {
-    pathFindingReset();
+step_t* findPath(cell_t **gameMap, coord_t current, const coord_t target) {
+    pathFindingReset(gameMap);
 
     /*
      * the pahtfinding algorithm start from the target and search the path toward the current position
@@ -20,11 +18,11 @@ step_t* findPath(coord_t current, coord_t target) {
      * from the current position is in the right order (current_pos -> intermediate pos -> ... -> target)
      * Otherwise the path's would be reversed (target -> intermiate pos -> ... -> current_pos)
      * this later form needs further process : inverse the list, or process it backward; not handy in any case
-     */ 
+     */
     gameMap[current.x][current.y].parent = NULL; // stop code for the generatePathCode's loop
     gameMap[target.x][target.y].state |= CELL_OPEN;
     uint8_t f_min, x_min = 0, y_min = 0;
-    
+
     for(;;) { //use of for(;;) instead of while(true) for compatibility reasons
         /*
         * the default f_min value is 0xFF (0xFF)
@@ -43,36 +41,36 @@ step_t* findPath(coord_t current, coord_t target) {
         // The current position has been reached (starting from the target)
         if((x_min == current.x) && (y_min == current.y))
             break;
-        
+
         for(uint8_t w = 0; w < 4; w++) {
             int8_t x = x_min + nearest[w].x;
             int8_t y = y_min + nearest[w].y;
 
             // Check boundaries
             if((x < 0) || (x >= GAMEMAP_SIDE_NCELL) || (y < 0) || (y >= GAMEMAP_SIDE_NCELL)) {}
-            
+
             // Check for obstacles and already checked cells
             else if(((gameMap[x][y].state & OBSTRUCTION_BITS) == CELL_OCCUPED_BLUE) ||
                     ((gameMap[x][y].state & OBSTRUCTION_BITS) == CELL_OCCUPED_RED)  ||
                     ((gameMap[x][y].state & PATH_FIND_BITS) == CELL_CLOSED)) {}
 
-            // Update scores, parents & state if cell blank or a shorter path to the (x,y) cell was found 
+            // Update scores, parents & state if cell blank or a shorter path to the (x,y) cell was found
             else if((gameMap[x_min][y_min].g_score + PATH_UNIT_LENGTH < gameMap[x][y].g_score) ||
-                   ((gameMap[x][y].state & PATH_FIND_BITS) == CELL_BLANK)) 
+                   ((gameMap[x][y].state & PATH_FIND_BITS) == CELL_BLANK))
             {
                 gameMap[x][y].g_score = gameMap[x_min][y_min].g_score + PATH_UNIT_LENGTH;
                 gameMap[x][y].f_score = gameMap[x][y].g_score + getDistance((coord_t){.x=x, .y=y}, current);
-                
-                
+
+
                 gameMap[x][y].parent = &gameMap[x_min][y_min];
                 gameMap[x][y].state = (gameMap[x][y].state & ~PATH_FIND_BITS) | CELL_OPEN;
             }
         }
     }
-    return generatePathCode(current, target);
+    return generatePathCode(gameMap, current, target);
 }
 
-step_t* generatePathCode(coord_t current, coord_t target) {
+step_t* generatePathCode(cell_t **gameMap, coord_t current, coord_t target) {
     cell_t* icell = &gameMap[current.x][current.y];
     cell_t* icell_old = NULL;
     int8_t delta_x = 0, delta_y = 0;
@@ -81,7 +79,7 @@ step_t* generatePathCode(coord_t current, coord_t target) {
     uint16_t path_allocated = MAX_PATH_SIZE;
     uint16_t path_used = 0;
     step_t* path = calloc(path_allocated, sizeof(step_t)); //use of calloc to default initiate to zero (=STOP)
-    
+
     while(icell->parent != NULL) {
         icell_old = icell;
         icell = icell_old->parent;
@@ -116,7 +114,7 @@ step_t* generatePathCode(coord_t current, coord_t target) {
         if(path_used + 2 >= path_allocated) {
             path_allocated += 10;
             path = realloc(path, path_allocated*sizeof(step_t));
-            for(uint8_t i = path_allocated - 10; i < path_allocated; i++) 
+            for(uint8_t i = path_allocated - 10; i < path_allocated; i++)
                 path[i] = STOP;
         }
 
@@ -130,7 +128,7 @@ step_t* generatePathCode(coord_t current, coord_t target) {
                     path[path_used++] = RIGHT;
                     path[path_used++] = FORWARD;
                     tmp_t = S;
-                } 
+                }
                 else if(delta_y == -1) {
                     path[path_used++] = LEFT;
                     path[path_used++] = FORWARD;
@@ -162,7 +160,7 @@ step_t* generatePathCode(coord_t current, coord_t target) {
                     path[path_used++] = LEFT;
                     path[path_used++] = FORWARD;
                     tmp_t = S;
-                } 
+                }
                 else if(delta_y == -1) {
                     path[path_used++] = RIGHT;
                     path[path_used++] = FORWARD;
@@ -223,11 +221,11 @@ step_t* generatePathCode(coord_t current, coord_t target) {
             }
             break;
     }
-    
+
     return path;
 }
 
-void pathFindingReset(void) {
+void pathFindingReset(cell_t **gameMap) {
     for(uint8_t x = 0; x < GAMEMAP_SIDE_NCELL; x++)
         for(uint8_t y = 0; y < GAMEMAP_SIDE_NCELL; y++) {
             //set to zero state's bits related to path finding
@@ -235,6 +233,12 @@ void pathFindingReset(void) {
             gameMap[x][y].f_score = 0xFF;
             //reset of parent & g_score not really necessary, test before remove
             gameMap[x][y].g_score = 0xFF;
-            gameMap[x][y].parent = NULL;           
+            gameMap[x][y].parent = NULL;
         }
+}
+
+uint8_t getDistance(coord_t A, coord_t B) {
+    int8_t delta_x = A.x - B.x;
+    int8_t delta_y = A.y - B.y;
+    return (uint8_t)(PATH_UNIT_LENGTH * sqrt(delta_x*delta_x+delta_y*delta_y));
 }

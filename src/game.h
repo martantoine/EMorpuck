@@ -1,31 +1,11 @@
-/**
- * @file table_emo.h
- * @author Alexandre Duval(alduval0305@gmail.com)
- * @brief 
- * @version 0.1
- * @date 2022-04-26
- * 
- * @copyright Copyright (c) 2022
- * 
- */
+#ifndef GAME_H
+#define GAME_H
 
-#ifndef TABLE_H
-#define TABLE_H
-
-#include "constants.h"
-#include "typedef.h"
+#include "defs.h"
 #include <ch.h>
 
 extern semaphore_t gamestates_sem;
 extern uint8_t gamestates;
-// this semaphore might disappear if used in only one thread, in this case this variable would become local to main()
-/*
- * the cell's position is stored implincitly in the address :
- * the cell of position (i,j) is accesssed with gameMap[i,j]
- */ 
-extern semaphore_t gameMap_s;
-extern cell_t gameMap[GAMEMAP_SIDE_NCELL][GAMEMAP_SIDE_NCELL];
-void gameMap_init(void);
 
 //This function checks if there is still free space in the map
 bool check_if_full(cell_t **gameMap);
@@ -44,4 +24,4 @@ bool end_game(cell_t **gameMap);
 
 void init_game(void);
 
-#endif /*SHARED_VAR*/
+#endif /*GAME_H*/

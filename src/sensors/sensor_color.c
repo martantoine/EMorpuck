@@ -1,29 +1,11 @@
-/**
- * @file color_scan.h
- * @author Alexandre Duval(alduval0305@gmail.com)
- * @brief 
- * @version 0.1
- * @date 2022-05-01
- * 
- * @copyright Copyright (c) 2022
- * 
- */
-#include "ch.h"
-#include "hal.h"
-#include <chprintf.h>
-#include <usbcfg.h>
-#include <leds.h>
-#include <main.h>
+#include "sensor_color.h"
 #include <camera/po8030.h>
-#include "camera/dcmi_camera.h"
-#include "constants.h"
-#include "color_scan.h"
-#include "spi_comm.h"
-#include "typedef.h"
+#include <camera/dcmi_camera.h>
+#include <spi_comm.h>
+#include <ch.h>
 
-// semaphore
 //static semaphore_t color_sem;
-static semaphore_t   image_ready_sem;
+static semaphore_t image_ready_sem;
 uint8_t r = 0,g = 0, b = 0;
 
 /*
@@ -33,16 +15,25 @@ uint8_t r = 0,g = 0, b = 0;
 
 uint8_t averageBuffer (uint8_t *buffer);
 
-color_t scanColor(void)
+void sensor_color_init(void) {
+    cam_start();
+    dcmi_start();
+    po8030_start();
+
+    chThdCreateStatic(waProcessImage, sizeof(waProcessImage), NORMALPRIO, ProcessImage, NULL);
+    chThdCreateStatic(waCaptureImage, sizeof(waCaptureImage), NORMALPRIO, CaptureImage, NULL);
+}
+
+color_t sensor_measure_color(void)
 {
     color_t c;
   //  chSemWait(&color_sem);
-  /*  
+  /*
     //fonction de test
     if((r>g) | (b>g))
-    {       
+    {
          r = r - (r+g+b)/3;
-         b = b - (r+g+b)/3; 
+         b = b - (r+g+b)/3;
     }
     // no else for the previous if ??
     if(r > b)
@@ -132,13 +123,4 @@ static THD_FUNCTION(ProcessImage, arg) {
         chThdSleepMilliseconds(100);
         dcmi_reset_error();
     }
-}
-
-void color_init(void) {
-    cam_start();
-    dcmi_start();
-    po8030_start();
-
-    chThdCreateStatic(waProcessImage, sizeof(waProcessImage), NORMALPRIO, ProcessImage, NULL);
-    chThdCreateStatic(waCaptureImage, sizeof(waCaptureImage), NORMALPRIO, CaptureImage, NULL);
 }

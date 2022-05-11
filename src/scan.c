@@ -6,7 +6,7 @@
 #include "path.h"
 #include "movements.h"
 
-void updateMap(coord_t *position) {
+void updateMap(cell_t **gameMap, coord_t *position) {
     coord_t tocheck;
     step_t *path;
 
@@ -31,8 +31,8 @@ void updateMap(coord_t *position) {
                         if((gameMap[GAMEMAP_CENTER + nearest[w].x][GAMEMAP_CENTER + nearest[w].y].state & OBSTRUCTION_BITS) == CELL_FREE)
                             tocheck = (coord_t){.x=GAMEMAP_CENTER+nearest[w].x, .y=GAMEMAP_CENTER+nearest[w].y, .t=nearest[w].t};
                 }
-                path = findPath(*position, tocheck);
-                mvt_executePath(position, path);
+                path = findPath(gameMap, *position, tocheck);
+                mvt_executePath(gameMap, position, path);
 
                 //uint8_t result = scanLine();
                 //gameMap[i + GAMEMAP_CENTER][j + GAMEMAP_CENTER].state += result;

@@ -5,18 +5,15 @@ PROJECT = EMorpuck
 GLOBAL_PATH = e-puck2_main-processor
 
 #Source files to include
-CSRC += ./src/main.c \
-		./src/shared_var.c \
-		./src/motors_driver.c \
-		./src/movements.c \
+CSRC += ./src/motion/motors_driver.c \
+		./src/motion/movements.c \
+		./src/motion/path.c \
+		./src/sensors/sensor_color.c \
+		./src/sensors/sensor_distance.c\
+		./src/sensors/sensor_ir.c \
 		./src/scan.c \
-		./src/path.c \
-		./src/utils.c \
-		./src/place.c \
 		./src/game.c \
-		./src/user_interaction.c \
-		./src/tof.c\
-		./src/color_scan.c
+		./src/main.c
 
 #Header folders to include
 INCDIR +=

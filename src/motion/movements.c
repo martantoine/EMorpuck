@@ -2,17 +2,13 @@
 #include <stdlib.h>
 #include "movements.h"
 #include "motors_driver.h"
-#include "shared_var.h"
-#include "constants.h"
 
-inline static void updatePosition(coord_t *position, step_t step); //inline because used only in one place : 1 line in mvt_executablePath
-static void calibrationPosition(void);
+inline void updatePosition(coord_t *position, step_t step); //inline because used only in one place : 1 line in mvt_executablePath
 
 void mvt_init(void) {
     motors_init();
-    right_motor_set_speed(400);
-    left_motor_set_speed(400);
-    calibrationPosition();
+    right_motor_set_speed(STEP_SPEED);
+    left_motor_set_speed(STEP_SPEED);
 }
 
 void mvt_executePath(coord_t *position, step_t *path) {
@@ -20,13 +16,13 @@ void mvt_executePath(coord_t *position, step_t *path) {
         uint8_t i = 0;
         while(path[i] != STOP) {
             switch(path[i]) {
-                case FORWARD: 
+                case FORWARD:
                     mvt_forward();
                     break;
                 case BACKWARD:
                     mvt_backward();
                     break;
-                case LEFT: 
+                case LEFT:
                     mvt_left();
                     break;
                 case RIGHT:
@@ -44,7 +40,7 @@ void mvt_executePath(coord_t *position, step_t *path) {
         chSysHalt("path null");
 }
 
-static void updatePosition(coord_t *position, step_t step) {
+void updatePosition(coord_t *position, step_t step) {
     int8_t delta = 0;
     if(step == FORWARD)
         delta = 1;
@@ -80,10 +76,26 @@ static void updatePosition(coord_t *position, step_t step) {
     }
 }
 
-void calibrationPosition(void) {
-    /*
-     * Do some obscure things to align the robot with the game map
-     */
+void mvt_place(cell_t **gameMap, coord_t *position, const coord_t target) {
+    coord_t min, tmp;
+    uint8_t min_dist = 0xFF;
+
+    // find among all available pieces the cloest one to the target
+    for(uint8_t i = 0; i < 12; i++) {
+        tmp = storage[i];
+        if((gameMap[tmp.x][tmp.y].state & OBSTRUCTION_BITS) == CELL_OCCUPED_RED) {
+            uint8_t dist = getDistance((coord_t){.x=tmp.x, .y=tmp.y, .t=tmp.t}, *target);
+            if(dist <= min_dist) {
+                min = tmp;
+                min_dist = dist;
+            }
+        }
+    }
+    step_t *path = findPath(gameMap, *position, min);
+    mvt_executePath(position, path);
+    gameMap[min.x][min.y].state &= ~OBSTRUCTION_BITS; // the robot now see the cell free and can go through it
+    path = findPath(gameMap, *position, target);
+    mvt_executePath(position, path);
 }
 
 #define WAIT_MOTOR_TARGET_REACHED() \
