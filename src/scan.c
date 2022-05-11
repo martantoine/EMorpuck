@@ -1,6 +1,7 @@
 #include "scan.h"
 
 #include "shared_var.h"
+#include "game.h"
 #include "constants.h"
 #include "path.h"
 #include "movements.h"

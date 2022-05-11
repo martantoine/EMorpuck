@@ -2,6 +2,7 @@
 #include "path.h"
 #include "constants.h"
 #include "shared_var.h"
+#include "game.h"
 #include "utils.h"
 
 /*

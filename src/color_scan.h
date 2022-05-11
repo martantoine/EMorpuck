@@ -13,7 +13,9 @@
 
 #include "typedef.h"
 
-void process_image_start(void);
-color_t scanColor(void);
 extern  color_t c;
+
+void color_init(void);
+color_t scanColor(void);
+
 #endif /* COLOR_H */

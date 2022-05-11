@@ -4,6 +4,10 @@
 #include "scan.h"
 #include "place.h"
 #include "constants.h"
+#include "user_interaction.h"
+#include "tof.h"
+#include "color_scan.h"
+#include "game.h"
 
 #include "msgbus/messagebus.h"
 #include "parameter/parameter.h"
@@ -13,6 +17,8 @@
 #include "i2c_bus.h"
 #include <chprintf.h>
 #include <usbcfg.h>
+#include <stdlib.h>
+#include <time.h>
 
 messagebus_t bus;
 MUTEX_DECL(bus_lock);
@@ -28,15 +34,12 @@ int main(void)
     mpu_init();
     chSysInit();
     spi_comm_start();
+    srand(time(0));
 
+    // Sensors
     user_interaction_init();
     tof_init();
-
-    // starts the camera
-    cam_start();
-    dcmi_start();
-    po8030_start();
-    process_image_start();
+    color_init();
 
     coord_t position = {
         .x = GAMEMAP_CENTER,
@@ -44,20 +47,23 @@ int main(void)
         .t = N,
     };
     step_t* path;
-    init_gameMap();
+    gameMap_init();
 
     mvt_init();
 
     while (true)
     {
-        path = findPath(position, (coord_t){.x=6, .y=6, .t=E});
-        mvt_executePath(&position, path);
-        path = findPath(position, (coord_t){.x=6, .y=2, .t=N});
-        mvt_executePath(&position, path);
-        path = findPath(position, (coord_t){.x=2, .y=2, .t=W});
-        mvt_executePath(&position, path);
-        path = findPath(position, (coord_t){.x=2, .y=6, .t=S});
-        mvt_executePath(&position, path);
+        if((gamestates & STATE_BITS) == STATE_WAITING_PLAYER)
+            chThdSleepMilliseconds(500);
+        else if((gamestates & STATE_BITS) == STATE_PLAYING) {
+            updateMap(&position);
+            coord_t target;
+            if((gamestates & DIFFICULTY_BITS) == DIFFICULTY_EASY)
+                target = place_easy(gameMap);
+            else if((gamestates & DIFFICULTY_BITS) == DIFFICULTY_EASY)
+                target = place_hard(gameMap);
+            mvt_place(&position, &target);
+        }
         //chThdSleepMilliseconds(1000);
         //test_captors();
     }

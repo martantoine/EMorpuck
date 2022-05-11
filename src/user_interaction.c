@@ -37,7 +37,7 @@ static THD_FUNCTION(UserInteraction, arg) {
 
 void user_interaction_init(void) {
     proximity_start();
-	chThdCreateStatic(UserInteraction, sizeof(waUserInteraction), IR_THD_PRIOTIRY, UserInteraction, NULL);
+	chThdCreateStatic(UserInteraction, sizeof(waUserInteraction), USERINTERACTION_PRIORITY, UserInteraction, NULL);
     calibrate_ir();
 }
 

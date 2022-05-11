@@ -134,9 +134,11 @@ static THD_FUNCTION(ProcessImage, arg) {
     }
 }
 
-void process_image_start(void)
-{
-    //start the threads of the Process and of the Capture
+void color_init(void) {
+    cam_start();
+    dcmi_start();
+    po8030_start();
+
     chThdCreateStatic(waProcessImage, sizeof(waProcessImage), NORMALPRIO, ProcessImage, NULL);
     chThdCreateStatic(waCaptureImage, sizeof(waCaptureImage), NORMALPRIO, CaptureImage, NULL);
 }

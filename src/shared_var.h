@@ -12,29 +12,9 @@
 #ifndef SHARED_VAR
 #define SHARED_VAR
 
-#include <ch.h>
-#include "constants.h"
 #include "typedef.h"
 
 extern const coord_t nearest[4];
 extern const coord_t storage[12];
 
-// this semaphore might disappear if used in only one thread, in this case this variable would become local to main()
-/*
- * the cell's position is stored implincitly in the address :
- * the cell of position (i,j) is accesssed with gameMap[i,j]
- */ 
-extern semaphore_t gameMap_s;
-extern cell_t gameMap[GAMEMAP_SIDE_NCELL][GAMEMAP_SIDE_NCELL];
-void init_gameMap(void);
-
-extern uint8_t stateofgame;
-    /* 
-    0 -> easy 
-    1 -> hard 
-    2 -> playing
-    3 -> waiting for player
-    */
-void set_stateofgame(uint8_t state);
-uint8_t get_stateofgame(void);
 #endif /*SHARED_VAR*/
