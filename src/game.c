@@ -106,7 +106,7 @@ winner_t search_winner(cell_t gameMap[SIDE_NCELL][SIDE_NCELL]) {
 
 coord_t play_center(cell_t gameMap[SIDE_NCELL][SIDE_NCELL]) {
     if((gameMap[GAMEMAP_CENTER][GAMEMAP_CENTER].state & OBSTRUCTION_BITS) == CELL_FREE)
-        for(uint8_t w = 0; w < 4; w++)
+        for(uint8_t w = 0; w < 4; w++) 
             if((gameMap[GAMEMAP_CENTER + nearest[w].x][GAMEMAP_CENTER + nearest[w].y].state & OBSTRUCTION_BITS) == CELL_FREE)
                 return (coord_t){.x=GAMEMAP_CENTER, .y=GAMEMAP_CENTER, .t=nearest[w].t};
     return (coord_t){.x=0, .y=0, .t=E};

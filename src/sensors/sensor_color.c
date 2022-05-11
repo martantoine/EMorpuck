@@ -5,43 +5,24 @@
 #include <ch.h>
 #include <usbcfg.h>
 
-//static semaphore_t color_sem;
+static semaphore_t color_sem;
 static BSEMAPHORE_DECL(image_ready_sem, TRUE);
-uint8_t r = 0,g = 0, b = 0;
+uint8_t r = 0, g = 0, b = 0;
 
 /*
- *  Returns the line's width extracted from the image buffer given
- *  Returns 0 if line not found
+ * Returns the line's width extracted from the image buffer given
+ * Returns 0 if line not found
  */
-
 uint8_t averageBuffer (uint8_t *buffer);
 
-color_t sensor_measure_color(void)
-{
+color_t sensor_measure_color(void) {
     color_t c;
-  //  chSemWait(&color_sem);
-  /*
-    //fonction de test
-    if((r>g) | (b>g))
-    {
-         r = r - (r+g+b)/3;
-         b = b - (r+g+b)/3;
-    }
-    // no else for the previous if ??
-    if(r > b)
+    chSemWait(&color_sem);
+    if((r > b) && (r > g))
         c = RED;
-    else
-        c=BLUE;
-    } */
-    if((r>b) & (r>g))
-    {
-        c=RED;
-    }
-    if((b>r) & (b>g))
-    {
-        c=BLUE;
-    }
-   // chSemSignal(&color_sem);
+    if((b > r) && (b > g))
+        c = BLUE;
+    chSemSignal(&color_sem);
     return c;
 }
 
@@ -109,9 +90,11 @@ static THD_FUNCTION(ProcessImage, arg) {
             image_blue[j / 2] = (uint16_t)(img_buff_ptr[i + 1] & 0x1F) << 3;
             j += 2;
         }
+        chSemWait(&color_sem);
         r = averageBuffer(image_red);
         b = averageBuffer(image_blue);
         g = averageBuffer(image_green);
+        chSemSignal(&color_sem);
         chThdSleepMilliseconds(100);
         dcmi_reset_error();
     }

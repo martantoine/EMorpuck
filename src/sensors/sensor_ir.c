@@ -35,12 +35,14 @@ static THD_FUNCTION(SensorIR, arg) {
 }
 
 void sensor_ir_init(void) {
+    chSemObjectInit(&gamestates_sem, 1);
     proximity_start();
 	chThdCreateStatic(waSensorIR, sizeof(waSensorIR), SENSOR_IR_PRIORITY, SensorIR, NULL);
     calibrate_ir();
 }
 
 void sensor_ir_measure(uint8_t *IRs) {
+    chSemWait(&gamestates_sem);
     if(get_calibrated_prox(IR_1) > SENSOR_IR_THRESHOLD)
         IRs[0] = (IRs[0] < 0xFF) ? IRs[0] + 1 : IRs[0];
     else
@@ -49,6 +51,7 @@ void sensor_ir_measure(uint8_t *IRs) {
         IRs[1] = (IRs[1] < 0xFF) ? IRs[1] + 1 : IRs[1];
     else
         IRs[1] = 0;
+    chSemSignal(&gamestates_sem);
 }
 
 void check_at_start(uint8_t *IRs) {

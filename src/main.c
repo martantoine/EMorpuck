@@ -16,8 +16,7 @@ messagebus_t bus;
 MUTEX_DECL(bus_lock);
 CONDVAR_DECL(bus_condvar);
 
-int main(void)
-{
+int main(void) {
     /** Inits the Inter Process Communication bus. */
     messagebus_init(&bus, &bus_lock, &bus_condvar);
 
@@ -46,8 +45,7 @@ int main(void)
         .t = N,
     };
 
-    while (true)
-    {
+    for(;;) {
         if((gamestates & STATE_BITS) == STATE_WAITING_PLAYER)
             chThdSleepMilliseconds(500);
         else if((gamestates & STATE_BITS) == STATE_PLAYING) {
