@@ -8,12 +8,13 @@ extern "C" {
 #include <stdio.h>
 #include <stdint.h>
 #include <ch.h>
-#include <memory_protection.h>
+
+
 #include <msgbus/messagebus.h>
 #include <parameter/parameter.h>
+#include <camera/dcmi_camera.h>
 
-    /** Robot wide IPC bus. */
-
+/** Robot wide IPC bus. */
 extern messagebus_t bus;
 
 extern parameter_namespace_t parameter_root;

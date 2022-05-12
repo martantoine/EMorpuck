@@ -1,10 +1,10 @@
 #include "sensor_color.h"
 #include <camera/po8030.h>
-#include <camera/dcmi_camera.h>
+#include <main.h>
 #include <spi_comm.h>
 #include <ch.h>
 #include <usbcfg.h>
-#include <i2c_bus.h>
+
 
 static semaphore_t color_sem;
 static BSEMAPHORE_DECL(image_ready_sem, TRUE);
@@ -42,14 +42,14 @@ static THD_FUNCTION(CaptureImage, arg) {
     (void)arg;
 
     // Takes pixels 0 to IMAGE_BUFFER_SIZE of the line 10 + 11 (minimum 2 lines because reasons)
-    po8030_advanced_config(PO8030_FORMAT_RGB565, 0, 10, IMAGE_BUFFER_SIZE, 2, SUBSAMPLING_X1, SUBSAMPLING_X1);
+	po8030_advanced_config(FORMAT_RGB565, 0, 10, IMAGE_BUFFER_SIZE, 2, SUBSAMPLING_X1, SUBSAMPLING_X1);
     //desactivate white balance to keep values non adaptative to the image
    // po8030_set_awb(0);
     dcmi_enable_double_buffering();
     dcmi_set_capture_mode(CAPTURE_ONE_SHOT);
     dcmi_prepare();
 
-    for(;;) {
+    while(1) {
         // starts a capture
         dcmi_capture_start();
         // waits for the capture to be done
@@ -68,11 +68,9 @@ static THD_FUNCTION(ProcessImage, arg) {
     uint8_t image_red[IMAGE_BUFFER_SIZE / 5] = {0};
     uint8_t image_blue[IMAGE_BUFFER_SIZE / 5] = {0};
     uint8_t image_green[IMAGE_BUFFER_SIZE / 5] = {0};
-
     for(;;) {
         // waits until an image has been captured
-           chBSemWait(&image_ready_sem);
-        // set_front_led(1);
+        chBSemWait(&image_ready_sem);
         // gets the pointer to the array filled with the last image in RGB565
         img_buff_ptr = dcmi_get_last_image_ptr();
         for (uint8_t i; i < IMAGE_BUFFER_SIZE / 5; i += 1) {
@@ -97,16 +95,14 @@ static THD_FUNCTION(ProcessImage, arg) {
         g = averageBuffer(image_green);
         chSemSignal(&color_sem);
         chThdSleepMilliseconds(100);
-        dcmi_reset_error();
+        //dcmi_reset_error();
     }
 }
 
 void sensor_color_init(void) {
-    //i2c_start();
-    cam_start();
+    chSemObjectInit(&color_sem, 1);
     dcmi_start();
     po8030_start();
-
     chThdCreateStatic(waProcessImage, sizeof(waProcessImage), NORMALPRIO, ProcessImage, NULL);
     chThdCreateStatic(waCaptureImage, sizeof(waCaptureImage), NORMALPRIO, CaptureImage, NULL);
 }

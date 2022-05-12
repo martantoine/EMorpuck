@@ -1,5 +1,5 @@
-#ifndef CONSTANTS_H
-#define CONSTANTS_H
+#ifndef DEFS_H
+#define DEFS_H
 
 #include <stdint.h>
 
@@ -159,4 +159,4 @@ static const coord_t storage[12] = {
 
 uint8_t getDistance(coord_t A, coord_t B);
 
-#endif /*CONSTANTS_H*/
+#endif /*DEFS_H*/

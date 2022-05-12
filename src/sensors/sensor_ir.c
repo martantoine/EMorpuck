@@ -12,7 +12,7 @@ inline void check_at_start(uint8_t *IRs);
 inline void check_ingame(uint8_t *IRs);
 inline void show_stateofgame(void);
 
-static THD_WORKING_AREA(waSensorIR, 128);
+static THD_WORKING_AREA(waSensorIR, 256);
 static THD_FUNCTION(SensorIR, arg) {
     chRegSetThreadName(__FUNCTION__);
     (void)arg;

@@ -21,7 +21,7 @@ distnorm_t sensor_distance_norm(void) {
     return dist;
 }
 
-static THD_WORKING_AREA(waSensorDistance, 128);
+static THD_WORKING_AREA(waSensorDistance, 256);
 static THD_FUNCTION(SensorDistance, arg) {
     chRegSetThreadName(__FUNCTION__);
     (void)arg;

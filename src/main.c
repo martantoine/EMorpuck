@@ -5,31 +5,36 @@
 #include "sensors/sensor_ir.h"
 #include "game.h"
 #include "scan.h"
+#include "memory_protection.h"
 
 #include <ch.h>
 #include <hal.h>
 #include <spi_comm.h>
 #include <stdlib.h>
-//#include <time.h>
+#include <time.h>
+
+#include <camera/po8030.h>
+#include <spi_comm.h>
+#include <usbcfg.h>
 
 messagebus_t bus;
 MUTEX_DECL(bus_lock);
 CONDVAR_DECL(bus_condvar);
 
 int main(void) {
-    /** Inits the Inter Process Communication bus. */
-    messagebus_init(&bus, &bus_lock, &bus_condvar);
-
     // MCU, ChibiOS init
     halInit();
     mpu_init();
     chSysInit();
     spi_comm_start();
+    // Inits the Inter Process Communication bus
+    messagebus_init(&bus, &bus_lock, &bus_condvar);
+
     //srand(time(0));
     // Sensors
+    sensor_color_init();
     sensor_ir_init();
     sensor_distance_init();
-    sensor_color_init();
     // Actuators
     mvt_init();
 
@@ -37,7 +42,12 @@ int main(void) {
      * the cell's position is stored implincitly in the address :
      * the cell of position (i,j) is accesssed with gameMap[i,j]
      */
+    //cell_t **gameMap = (cell_t**)malloc(sizeof(cell_t*)*SIDE_NCELL);
+    //for(uint8_t i = 0; i < SIDE_NCELL; i++)
+    //    gameMap[i] = (cell_t*)malloc(sizeof(cell_t)*SIDE_NCELL);
+    //cell_t **gameMap = (cell_t**)malloc(sizeof(cell_t*)*SIDE_NCELL + sizeof(cell_t)*SIDE_NCELL*SIDE_NCELL);
     cell_t gameMap[SIDE_NCELL][SIDE_NCELL];
+ 
     game_init(gameMap);
     coord_t position = {
         .x = GAMEMAP_CENTER,
@@ -46,8 +56,7 @@ int main(void) {
     };
 
     for(;;) {
-        if((gamestates & STATE_BITS) == STATE_WAITING_PLAYER)
-            chThdSleepMilliseconds(500);
+        if((gamestates & STATE_BITS) == STATE_WAITING_PLAYER) {}
         else if((gamestates & STATE_BITS) == STATE_PLAYING) {
             updateMap(gameMap, &position);
             coord_t target;
@@ -57,9 +66,9 @@ int main(void) {
                 target = place_hard(gameMap);
             mvt_place(gameMap, &position, target);
         }
-        else if(((gamestates & STATE_BITS) == STATE_START) || ((gamestates & STATE_BITS) == STATE_END))
-            chThdSleepMilliseconds(1000);
+        else if(((gamestates & STATE_BITS) == STATE_START) || ((gamestates & STATE_BITS) == STATE_END)) {}
         check_end_game(gameMap);
+        chThdSleepMilliseconds(500);
     }
     return 0;
 }
