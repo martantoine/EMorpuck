@@ -12,6 +12,7 @@
 #include <spi_comm.h>
 #include <stdlib.h>
 #include <time.h>
+#include <leds.h>
 
 #include <camera/po8030.h>
 #include <spi_comm.h>
@@ -29,7 +30,7 @@ int main(void) {
     spi_comm_start();
     // Inits the Inter Process Communication bus
     messagebus_init(&bus, &bus_lock, &bus_condvar);
-
+    clear_leds();
     //srand(time(0));
     // Sensors
     sensor_color_init();

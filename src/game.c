@@ -138,12 +138,11 @@ coord_t place_hard(cell_t gameMap[SIDE_NCELL][SIDE_NCELL]) {
      * this strategy is probabilistic based, is better than the true random strategy "play_easy"
      * however, it doesn't guarantee a 100% winning rate
      */
-    const uint8_t table_probabilist[15][2] = {
+    const uint8_t table_probabilist[12][2] = {
         {0, 0}, {0, 0},
         {0, 1},
         {0, 2}, {0, 2},
         {1, 0},
-        {1, 1}, {1, 1}, {1, 1},
         {1, 2},
         {2, 0}, {2, 0},
         {2, 1},
@@ -155,7 +154,7 @@ coord_t place_hard(cell_t gameMap[SIDE_NCELL][SIDE_NCELL]) {
         return tmp;
 
     for(;;) {
-        uint8_t k = rand() % 16;
+        uint8_t k = rand() % 13;
         tmp = (coord_t) {
             .x = table_probabilist[k][0],
             .y = table_probabilist[k][1]
@@ -173,31 +172,31 @@ void check_end_game(cell_t gameMap[SIDE_NCELL][SIDE_NCELL]) {
             chSemWait(&gamestates_sem);
             gamestates = (gamestates & ~STATE_BITS) | STATE_END;
             chSemSignal(&gamestates_sem);
-            clear_leds();
+            /*clear_leds();
             set_rgb_led(0, 10, 0, 0);
             set_rgb_led(1, 10, 0, 0);
             set_rgb_led(2, 10, 0, 0);
-            set_rgb_led(3, 10, 0, 0);
+            set_rgb_led(3, 10, 0, 0);*/
             break;
         case PLAYER_BLUE:
             chSemWait(&gamestates_sem);
             gamestates = (gamestates & ~STATE_BITS) | STATE_END;
             chSemSignal(&gamestates_sem);
-            clear_leds();
+            /*clear_leds();
             set_rgb_led(0, 0, 0, 10);
             set_rgb_led(1, 0, 0, 10);
             set_rgb_led(2, 0, 0, 10);
-            set_rgb_led(3, 0, 0, 10);
+            set_rgb_led(3, 0, 0, 10);*/
             break;
         case DRAW:
             chSemWait(&gamestates_sem);
             gamestates = (gamestates & ~STATE_BITS) | STATE_END;
             chSemSignal(&gamestates_sem);
-            clear_leds();
+            /*clear_leds();
             set_rgb_led(0, 10, 10, 10);
             set_rgb_led(1, 10, 10, 10);
             set_rgb_led(2, 10, 10, 10);
-            set_rgb_led(3, 10, 10, 10);
+            set_rgb_led(3, 10, 10, 10);*/
             break;
         case NONE:
             break;
