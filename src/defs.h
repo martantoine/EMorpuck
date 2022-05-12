@@ -117,14 +117,14 @@ typedef enum winner winner_t;
 #define LED_OFF                     0
 
 // USER_INTERACTION (~Infrared sensors) related #defines
-#define SENSOR_IR_THRESHOLD         100
+#define SENSOR_IR_THRESHOLD         10
 #define IR_1                        0
 #define IR_2                        1
 #define IR_3                        6
 #define IR_4                        3
 #define IR_4                        3
-#define HOLD_LONG                   3000 // in ms
-#define HOLD_SHORT                  1000 // in ms
+#define HOLD_LONG                   400 // in ms
+#define HOLD_SHORT                  200 // in ms
 
 #define SENSOR_IR_REFRESH_T         100 // in ms
 #define SENSOR_IR_PRIORITY          (NORMALPRIO + 1)

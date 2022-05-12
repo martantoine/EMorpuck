@@ -16,7 +16,6 @@
 
 #include <camera/po8030.h>
 #include <spi_comm.h>
-#include <usbcfg.h>
 
 messagebus_t bus;
 MUTEX_DECL(bus_lock);
@@ -37,7 +36,7 @@ int main(void) {
     sensor_ir_init();
     sensor_distance_init();
     // Actuators
-    mvt_init();
+    //mvt_init();
 
     /*
      * the cell's position is stored implincitly in the address :
@@ -51,8 +50,8 @@ int main(void) {
  
     game_init(gameMap);
     coord_t position = {
-        .x = GAMEMAP_CENTER,
-        .y = GAMEMAP_CENTER,
+        .x = 0,
+        .y = SIDE_NCELL,
         .t = N,
     };
 

@@ -14,7 +14,7 @@ void mvt_init(void) {
 }
 
 void mvt_executePath(coord_t *position, step_t *path) {
-    if(path) {
+    //if(path != NULL) {
         uint8_t i = 0;
         while(path[i] != STOP) {
             switch(path[i]) {
@@ -37,8 +37,8 @@ void mvt_executePath(coord_t *position, step_t *path) {
             i++;
         }
         free(path); //better not forget to free unused memory
-    }
-    else
+    //}
+    //else
         chSysHalt("path null");
 }
 
