@@ -67,7 +67,7 @@ typedef struct coord coord_t;
 #define WHEEL_DIAMETER              41 // in mm
 #define WHEEL_SPACE                 53 // in mm
 #define STEPS_TURN_90               323
-#define NSTEPS_HALF_CELL            (CELL_WIDTH / (WHEEL_DIAMETER * PI) * NSTEP_ONE_TURN)
+#define NSTEPS_HALF_CELL            (CELL_WIDTH / (WHEEL_DIAMETER * PI) * NSTEP_ONE_TURN / 2)
 #define STEP_SPEED                  400
 
 /*

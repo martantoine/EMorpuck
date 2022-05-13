@@ -33,7 +33,7 @@ void updateMap(cell_t gameMap[SIDE_NCELL][SIDE_NCELL], coord_t *position) {
                             tocheck = (coord_t){.x=GAMEMAP_CENTER+nearest[w].x, .y=GAMEMAP_CENTER+nearest[w].y, .t=nearest[w].t};
                 }
                 path = findPath(gameMap, *position, tocheck);
-                mvt_executePath(position, path);
+                mvt_executePath(position, tocheck, path);
 
                 uint8_t c_result = sensor_measure_color();
                 uint8_t d_result = sensor_distance_norm();

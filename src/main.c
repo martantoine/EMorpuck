@@ -67,7 +67,8 @@ int main(void) {
         }
         else if(((gamestates & STATE_BITS) == STATE_START) || ((gamestates & STATE_BITS) == STATE_END)) {}
         check_end_game(gameMap);
-        chThdSleepMilliseconds(500);
+        show_stateofgame();
+        chThdSleepMilliseconds(200);
     }
     return 0;
 }

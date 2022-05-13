@@ -13,7 +13,7 @@ void mvt_init(void) {
     left_motor_set_speed(STEP_SPEED);
 }
 
-void mvt_executePath(coord_t *position, step_t *path) {
+void mvt_executePath(coord_t *position, const coord_t target, step_t *path) {
     //if(path != NULL) {
     uint8_t i = 0;
     while(path[i] != STOP) {
@@ -33,7 +33,8 @@ void mvt_executePath(coord_t *position, step_t *path) {
             default:
                 break;
         }
-        updatePosition(position, path[i]);
+        //updatePosition(position, path[i]);
+        *position = target;
         i++;
     }
     free(path); //better not forget to free unused memory
@@ -94,10 +95,10 @@ void mvt_place(cell_t gameMap[SIDE_NCELL][SIDE_NCELL], coord_t *position, const 
         }
     }
     step_t *path = findPath(gameMap, *position, min);
-    mvt_executePath(position, path);
+    mvt_executePath(position, target, path);
     gameMap[min.x][min.y].state &= ~OBSTRUCTION_BITS; // the robot now see the cell free and can go through it
     path = findPath(gameMap, *position, target);
-    mvt_executePath(position, path);
+    mvt_executePath(position, target, path);
 }
 
 #define WAIT_MOTOR_TARGET_REACHED() \

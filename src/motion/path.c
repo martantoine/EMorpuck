@@ -109,7 +109,7 @@ step_t* generatePathCode(cell_t gameMap[SIDE_NCELL][SIDE_NCELL], coord_t current
          * happens when the current size is close to the current limit and
          * will reserve 10 more free spaces
          */
-        if(path_used + 2 >= path_allocated) {
+        if(path_used + 3 >= path_allocated) {
             path_allocated += 10;
             path = realloc(path, path_allocated*sizeof(step_t));
             for(uint8_t i = path_allocated - 10; i < path_allocated; i++)
@@ -118,16 +118,22 @@ step_t* generatePathCode(cell_t gameMap[SIDE_NCELL][SIDE_NCELL], coord_t current
 
         switch(tmp_t) {
             case E:
-                if(delta_x == 1)
+                if(delta_x == 1) {
                     path[path_used++] = FORWARD;
-                else if(delta_x == -1)
+                    path[path_used++] = FORWARD;
+                }
+                else if(delta_x == -1) {
                     path[path_used++] = BACKWARD;
+                    path[path_used++] = BACKWARD;
+                }
                 else if(delta_y == 1) {
+                    path[path_used++] = FORWARD;
                     path[path_used++] = RIGHT;
                     path[path_used++] = FORWARD;
                     tmp_t = S;
                 }
                 else if(delta_y == -1) {
+                    path[path_used++] = FORWARD;
                     path[path_used++] = LEFT;
                     path[path_used++] = FORWARD;
                     tmp_t = N;
@@ -135,31 +141,43 @@ step_t* generatePathCode(cell_t gameMap[SIDE_NCELL][SIDE_NCELL], coord_t current
                 break;
             case N:
                 if(delta_x == 1) {
+                    path[path_used++] = FORWARD;
                     path[path_used++] = RIGHT;
                     path[path_used++] = FORWARD;
                     tmp_t = E;
                 }
                 else if(delta_x == -1) {
+                    path[path_used++] = FORWARD;
                     path[path_used++] = LEFT;
                     path[path_used++] = FORWARD;
                     tmp_t = W;
                 }
-                else if(delta_y == 1)
+                else if(delta_y == 1) {
                     path[path_used++] = BACKWARD;
-                else if(delta_y == -1)
+                    path[path_used++] = BACKWARD;
+                }
+                else if(delta_y == -1) {
                     path[path_used++] = FORWARD;
+                    path[path_used++] = FORWARD;
+                }
                 break;
             case W:
-                if(delta_x == 1)
+                if(delta_x == 1) {
                     path[path_used++] = BACKWARD;
-                else if(delta_x == -1)
+                    path[path_used++] = BACKWARD;
+                }
+                else if(delta_x == -1) {
                     path[path_used++] = FORWARD;
+                    path[path_used++] = FORWARD;
+                }
                 else if(delta_y == 1) {
+                    path[path_used++] = FORWARD;
                     path[path_used++] = LEFT;
                     path[path_used++] = FORWARD;
                     tmp_t = S;
                 }
                 else if(delta_y == -1) {
+                    path[path_used++] = FORWARD;
                     path[path_used++] = RIGHT;
                     path[path_used++] = FORWARD;
                     tmp_t = N;
@@ -167,19 +185,25 @@ step_t* generatePathCode(cell_t gameMap[SIDE_NCELL][SIDE_NCELL], coord_t current
                 break;
             case S:
                 if(delta_x == 1) {
+                    path[path_used++] = FORWARD;
                     path[path_used++] = LEFT;
                     path[path_used++] = FORWARD;
                     tmp_t = E;
                 }
                 else if(delta_x == -1) {
+                    path[path_used++] = FORWARD;
                     path[path_used++] = RIGHT;
                     path[path_used++] = FORWARD;
                     tmp_t = W;
                 }
-                else if(delta_y == 1)
+                else if(delta_y == 1) {
                     path[path_used++] = FORWARD;
-                else if(delta_y == -1)
+                    path[path_used++] = FORWARD;
+                }
+                else if(delta_y == -1) {
                     path[path_used++] = BACKWARD;
+                    path[path_used++] = BACKWARD;
+                }
                 break;
         }
     }
@@ -189,32 +213,32 @@ step_t* generatePathCode(cell_t gameMap[SIDE_NCELL][SIDE_NCELL], coord_t current
         case E:
             switch(target.t) {
                 case E: break;
-                case N: path[path_used++] = LEFT; break;
-                case W: path[path_used++] = LEFT; path[path_used++] = LEFT; break;
-                case S: path[path_used++] = RIGHT; break;
+                case N: path[path_used++] = FORWARD; path[path_used++] = LEFT; break;
+                case W: path[path_used++] = FORWARD; path[path_used++] = FORWARD; path[path_used++] = LEFT; path[path_used++] = LEFT; break;
+                case S: path[path_used++] = FORWARD; path[path_used++] = RIGHT; break;
             }
             break;
         case N:
             switch(target.t) {
-                case E: path[path_used++] = RIGHT; break;
+                case E: path[path_used++] = FORWARD; path[path_used++] = RIGHT; break;
                 case N: break;
-                case W: path[path_used++] = LEFT; break;
-                case S: path[path_used++] = LEFT; path[path_used++] = LEFT; break;
+                case W: path[path_used++] = FORWARD; path[path_used++] = LEFT; break;
+                case S: path[path_used++] = FORWARD; path[path_used++] = FORWARD; path[path_used++] = LEFT; path[path_used++] = LEFT; break;
             }
             break;
         case W:
             switch(target.t) {
-                case E: path[path_used++] = LEFT; path[path_used++] = LEFT; break;
-                case N: path[path_used++] = RIGHT; break;
+                case E: path[path_used++] = FORWARD; path[path_used++] = FORWARD; path[path_used++] = LEFT; path[path_used++] = LEFT; break;
+                case N: path[path_used++] = FORWARD; path[path_used++] = RIGHT; break;
                 case W: break;
-                case S: path[path_used++] = LEFT; break;
+                case S: path[path_used++] = FORWARD; path[path_used++] = LEFT; break;
             }
             break;
         case S:
             switch(target.t) {
-                case E: path[path_used++] = LEFT; break;
-                case N: path[path_used++] = LEFT; path[path_used++] = LEFT; break;
-                case W: path[path_used++] = RIGHT; break;
+                case E: path[path_used++] = FORWARD; path[path_used++] = LEFT; break;
+                case N: path[path_used++] = FORWARD; path[path_used++] = FORWARD; path[path_used++] = LEFT; path[path_used++] = LEFT; break;
+                case W: path[path_used++] = FORWARD; path[path_used++] = RIGHT; break;
                 case S: break;
             }
             break;

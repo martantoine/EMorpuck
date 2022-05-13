@@ -6,7 +6,6 @@
 #include <memory_protection.h>
 #include <leds.h>
 #include <sensors/proximity.h>
-//#include <usbcfg.h>
 
 inline void sensor_ir_measure(uint8_t *ir_count_1, uint8_t *ir_count_2, uint8_t *ir_state_1, uint8_t *ir_state_2);
 inline void check_at_start(uint8_t *ir_count_1, uint8_t *ir_count_2, uint8_t *ir_state_1, uint8_t *ir_state_2);
@@ -36,7 +35,7 @@ static THD_FUNCTION(SensorIR, arg) {
             default:
                 break;
         }
-        show_stateofgame();
+        //show_stateofgame();
         chSemSignal(&gamestates_sem);
 
         palTogglePad(GPIOD, GPIOD_LED_FRONT);
@@ -46,6 +45,7 @@ static THD_FUNCTION(SensorIR, arg) {
 }
 
 void sensor_ir_init(void) {
+    //spi_comm_start();
     proximity_start();
     calibrate_ir();
 	chThdCreateStatic(waSensorIR, sizeof(waSensorIR), NORMALPRIO+1, SensorIR, NULL);
@@ -78,13 +78,13 @@ void sensor_ir_measure(uint8_t *ir_count_1, uint8_t *ir_count_2, uint8_t *ir_sta
 
 void check_at_start(uint8_t *ir_count_1, uint8_t *ir_count_2, uint8_t *ir_state_1, uint8_t *ir_state_2) {
     if((*ir_state_1 == 1) && (*ir_state_2 == 1)) {
-        if     ((*ir_count_1 > (HOLD_LONG / SENSOR_IR_REFRESH_T)) && (*ir_count_2 < (HOLD_LONG / SENSOR_IR_REFRESH_T)))
+        if     ((*ir_count_1 > (HOLD_LONG / SENSOR_IR_REFRESH_T))  && (*ir_count_2 < (HOLD_LONG / SENSOR_IR_REFRESH_T)))
             gamestates = (gamestates & ~DIFFICULTY_BITS) | DIFFICULTY_EASY;
         else if((*ir_count_1 > (HOLD_SHORT / SENSOR_IR_REFRESH_T)) && (*ir_count_2 < (HOLD_SHORT / SENSOR_IR_REFRESH_T)))
             gamestates = (gamestates & ~DIFFICULTY_BITS) | DIFFICULTY_HARD;
-        else if((*ir_count_1 < (HOLD_LONG / SENSOR_IR_REFRESH_T)) && (*ir_count_2 > (HOLD_LONG / SENSOR_IR_REFRESH_T)))
+        else if((*ir_count_1 < (HOLD_LONG / SENSOR_IR_REFRESH_T))  && (*ir_count_2 > (HOLD_LONG / SENSOR_IR_REFRESH_T)))
             gamestates = (gamestates & ~STATE_BITS) | STATE_WAITING_PLAYER;
-        else if((*ir_count_1 < (HOLD_SHORT / SENSOR_IR_REFRESH_T))  && (*ir_count_2 > (HOLD_SHORT / SENSOR_IR_REFRESH_T)))
+        else if((*ir_count_1 < (HOLD_SHORT / SENSOR_IR_REFRESH_T)) && (*ir_count_2 > (HOLD_SHORT / SENSOR_IR_REFRESH_T)))
             gamestates = (gamestates & ~STATE_BITS) | STATE_PLAYING;
     }
 }
