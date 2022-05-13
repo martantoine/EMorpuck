@@ -34,30 +34,26 @@ int main(void) {
     // Sensors
     cell_t gameMap[SIDE_NCELL][SIDE_NCELL];
     game_init(gameMap);
-    //sensor_color_init();
+    sensor_color_init();
     sensor_ir_init();
-    //sensor_distance_init();
+    sensor_distance_init();
     // Actuators
-    //mvt_init();
+    mvt_init();
 
     /*
      * the cell's position is stored implincitly in the address :
      * the cell of position (i,j) is accesssed with gameMap[i,j]
      */
-    //cell_t **gameMap = (cell_t**)malloc(sizeof(cell_t*)*SIDE_NCELL);
-    //for(uint8_t i = 0; i < SIDE_NCELL; i++)
-    //    gameMap[i] = (cell_t*)malloc(sizeof(cell_t)*SIDE_NCELL);
-    //cell_t **gameMap = (cell_t**)malloc(sizeof(cell_t*)*SIDE_NCELL + sizeof(cell_t)*SIDE_NCELL*SIDE_NCELL);
-
- 
-
     coord_t position = {
-        .x = 0,
-        .y = SIDE_NCELL,
+        .x = 1,
+        .y = SIDE_NCELL-2,
         .t = N,
     };
+
+    //
     chThdSetPriority(NORMALPRIO);
-    for(;;) {/*
+    while(1) { 
+        //gamestates = WINNER_RED | STATE_END;
         if((gamestates & STATE_BITS) == STATE_WAITING_PLAYER) {}
         else if((gamestates & STATE_BITS) == STATE_PLAYING) {
             updateMap(gameMap, &position);
@@ -67,9 +63,10 @@ int main(void) {
             else if((gamestates & DIFFICULTY_BITS) == DIFFICULTY_EASY)
                 target = place_hard(gameMap);
             mvt_place(gameMap, &position, target);
+            gamestates = (gamestates & ~STATE_BITS) | STATE_WAITING_PLAYER;
         }
         else if(((gamestates & STATE_BITS) == STATE_START) || ((gamestates & STATE_BITS) == STATE_END)) {}
-        check_end_game(gameMap);*/
+        check_end_game(gameMap);
         chThdSleepMilliseconds(500);
     }
     return 0;

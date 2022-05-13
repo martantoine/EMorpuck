@@ -15,31 +15,31 @@ void mvt_init(void) {
 
 void mvt_executePath(coord_t *position, step_t *path) {
     //if(path != NULL) {
-        uint8_t i = 0;
-        while(path[i] != STOP) {
-            switch(path[i]) {
-                case FORWARD:
-                    mvt_forward();
-                    break;
-                case BACKWARD:
-                    mvt_backward();
-                    break;
-                case LEFT:
-                    mvt_left();
-                    break;
-                case RIGHT:
-                    mvt_right();
-                    break;
-                default:
-                    break;
-            }
-            updatePosition(position, path[i]);
-            i++;
+    uint8_t i = 0;
+    while(path[i] != STOP) {
+        switch(path[i]) {
+            case FORWARD:
+                mvt_forward();
+                break;
+            case BACKWARD:
+                mvt_backward();
+                break;
+            case LEFT:
+                mvt_left();
+                break;
+            case RIGHT:
+                mvt_right();
+                break;
+            default:
+                break;
         }
-        free(path); //better not forget to free unused memory
+        updatePosition(position, path[i]);
+        i++;
+    }
+    free(path); //better not forget to free unused memory
     //}
     //else
-        chSysHalt("path null");
+       // chSysHalt("path null");
 }
 
 void updatePosition(coord_t *position, step_t step) {

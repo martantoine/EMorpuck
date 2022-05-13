@@ -62,6 +62,23 @@
             ],
             //"preLaunchTask": "g++ build active file",
             "miDebuggerPath": "/usr/bin/gdb"
+          },
+          {
+              "name": "BMP Launch EPuck-2-Main_Processor",
+              "cwd": "${workspaceRoot}/debug",
+              "executable": "${workspaceRoot}/build/e-puck2_main-processor.elf",
+              "request": "launch",
+              "type": "cortex-debug",
+              "servertype": "bmp",
+              "interface": "swd",
+              "stopAtEntry": false,
+              "device": "STM32F407",
+              "BMPGDBSerialPort" : "COM4", //change to your need
+              "runToMain": true,
+              "svdFile": "${workspaceRoot}/debug/STM32F407.svd",
+              "preLaunchCommands":[
+                  "set mem inaccessible-by-default off",
+              ]
           }
     ]
 }

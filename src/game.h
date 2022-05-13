@@ -16,7 +16,7 @@ void game_init(cell_t gameMap[SIDE_NCELL][SIDE_NCELL]);
 coord_t place_easy(cell_t gameMap[SIDE_NCELL][SIDE_NCELL]);
 coord_t place_hard(cell_t gameMap[SIDE_NCELL][SIDE_NCELL]);
 
-winner_t search_winner(cell_t gameMap[SIDE_NCELL][SIDE_NCELL]);
+uint8_t search_winner(cell_t gameMap[SIDE_NCELL][SIDE_NCELL]);
 void check_end_game(cell_t gameMap[SIDE_NCELL][SIDE_NCELL]);
 
 #endif /*GAME_H*/

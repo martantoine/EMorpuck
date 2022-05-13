@@ -42,40 +42,33 @@ struct coord {
 };
 typedef struct coord coord_t;
 
-enum color {
-    RED,
-    BLUE
-};
-typedef enum color color_t;
 
-enum distnorm {
-    FIRST_CASE,
-    SECOND_CASE,
-    THIRD_CASE,
-    OUT_MAP
-};
-typedef enum distnorm distnorm_t;
+#define FIRST_CASE                  1
+#define SECOND_CASE                 2
+#define THIRD_CASE                  3
+#define OUT_MAP                     0xFF
 
-enum winner{
-    PLAYER_BLUE,
-    PLAYER_RED,
-    DRAW,
-    NONE
-};
-typedef enum winner winner_t;
+/* Those defines are used both to designate :
+ *  -scanning color : RED, BLUE or NONE
+ *  -winner : RED, BLUE, NONE or DRAW (match nul)
+ */
+#define RED                         0
+#define BLUE                        1
+#define NONE                        2
+#define DRAW                        3
 
-#define MAX_PATH_SIZE       30
-#define SIDE_NCELL          9
-#define GAMEMAP_CENTER      ((SIDE_NCELL - 1) / 2)
-#define CELL_WIDTH          100 // in mm
+#define MAX_PATH_SIZE               30
+#define SIDE_NCELL                  9
+#define GAMEMAP_CENTER              ((SIDE_NCELL - 1) / 2)
+#define CELL_WIDTH                  100 // in mm
 
-#define NSTEP_ONE_TURN      1000 // number of full steps for 1 turn of the motor
-#define PI                  3.14159
-#define WHEEL_DIAMETER      41 // in mm
-#define WHEEL_SPACE         53 // in mm
-#define STEPS_TURN_90       323
-#define NSTEPS_HALF_CELL    (CELL_WIDTH / (WHEEL_DIAMETER * PI) * NSTEP_ONE_TURN / 2)
-#define STEP_SPEED          400
+#define NSTEP_ONE_TURN              1000 // number of full steps for 1 turn of the motor
+#define PI                          3.14159
+#define WHEEL_DIAMETER              41 // in mm
+#define WHEEL_SPACE                 53 // in mm
+#define STEPS_TURN_90               323
+#define NSTEPS_HALF_CELL            (CELL_WIDTH / (WHEEL_DIAMETER * PI) * NSTEP_ONE_TURN)
+#define STEP_SPEED                  400
 
 /*
  * The 3 following defines are commented to show the derivation of of NTURNS_TURN_360
@@ -112,7 +105,16 @@ typedef enum winner winner_t;
 #define STATE_PLAYING               ((uint8_t) (0 << 2) | (1 << 1))
 #define STATE_WAITING_PLAYER        ((uint8_t) (1 << 2) | (0 << 1))
 #define STATE_END                   ((uint8_t) (1 << 2) | (1 << 1))
-
+#define SCANNING_BITS               ((uint8_t) (1 << 4) | (1 << 3))
+#define SCANNING_NOT_SCANNING       ((uint8_t) (0 << 4) | (0 << 3))
+#define SCANNING_RED                ((uint8_t) (0 << 4) | (1 << 3))
+#define SCANNING_BLUE               ((uint8_t) (1 << 4) | (0 << 3))
+#define SCANNING_NONE               ((uint8_t) (1 << 4) | (1 << 3))
+#define WINNER_BITS                 ((uint8_t) (1 << 6) | (1 << 5))
+#define WINNER_NONE                 ((uint8_t) (0 << 6) | (0 << 5))
+#define WINNER_RED                  ((uint8_t) (0 << 6) | (1 << 5))
+#define WINNER_BLUE                 ((uint8_t) (1 << 6) | (0 << 5))
+#define WINNER_DRAW                 ((uint8_t) (1 << 6) | (1 << 5))
 #define LED_ON                      1
 #define LED_OFF                     0
 
@@ -133,6 +135,9 @@ typedef enum winner winner_t;
 
 #define IMAGE_BUFFER_SIZE		    640
 
+/*those variables are static const and are used in multiple files,
+ * -> it's ok for them to be global
+ */
 static const coord_t nearest[4] = {
     {-1,  0, E},
     {+1,  0, W},

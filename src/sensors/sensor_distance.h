@@ -14,6 +14,6 @@
 #include "../defs.h"
 
 void sensor_distance_init(void);
-distnorm_t sensor_distance_norm(void);
+uint8_t sensor_distance_norm(void);
 
 #endif /*SENSOR_DISTANCE_H*/

@@ -16,13 +16,15 @@ uint8_t r = 0, g = 0, b = 0;
  */
 uint8_t averageBuffer (uint8_t *buffer);
 
-color_t sensor_measure_color(void) {
-    color_t c;
+uint8_t sensor_measure_color(void) {
+    uint8_t c;
     chSemWait(&color_sem);
     if((r > b) && (r > g))
         c = RED;
-    if((b > r) && (b > g))
+    else if((b > r) && (b > g))
         c = BLUE;
+    else
+        c = NONE;
     chSemSignal(&color_sem);
     return c;
 }
@@ -44,7 +46,7 @@ static THD_FUNCTION(CaptureImage, arg) {
     // Takes pixels 0 to IMAGE_BUFFER_SIZE of the line 10 + 11 (minimum 2 lines because reasons)
 	po8030_advanced_config(FORMAT_RGB565, 0, 10, IMAGE_BUFFER_SIZE, 2, SUBSAMPLING_X1, SUBSAMPLING_X1);
     //desactivate white balance to keep values non adaptative to the image
-   // po8030_set_awb(0);
+    po8030_set_awb(0);
     dcmi_enable_double_buffering();
     dcmi_set_capture_mode(CAPTURE_ONE_SHOT);
     dcmi_prepare();

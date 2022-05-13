@@ -6,16 +6,16 @@ static semaphore_t dist_sem;
 uint16_t dist_mm = 0;
 
 // Returns the case in wich the object facing the Epuck is
-distnorm_t sensor_distance_norm(void) {
-    distnorm_t dist;
+uint8_t sensor_distance_norm(void) {
+    uint8_t dist;
     chSemWait(&dist_sem);
-    if     ((dist_mm < 1 * CELL_WIDTH))
+    if((dist_mm < 1 * CELL_WIDTH))
         dist = FIRST_CASE;
     else if((dist_mm > 1 * CELL_WIDTH) && (dist_mm < 2 * CELL_WIDTH))
         dist = SECOND_CASE;
     else if((dist_mm > 2 * CELL_WIDTH) && (dist_mm < 3 * CELL_WIDTH))
         dist = THIRD_CASE;
-    else if((dist_mm > 3 * CELL_WIDTH))
+    else //((dist_mm > 3 * CELL_WIDTH))
         dist = OUT_MAP;
     chSemSignal(&dist_sem);
     return dist;

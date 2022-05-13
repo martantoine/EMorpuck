@@ -1,7 +1,6 @@
 #include "game.h"
 #include "defs.h"
 #include <stdlib.h>
-#include <leds.h>
 #include <ch.h>
 
 semaphore_t gamestates_sem;
@@ -32,39 +31,39 @@ void game_init(cell_t gameMap[SIDE_NCELL][SIDE_NCELL]) {
     chSemSignal(&gamestates_sem);
 }
 
-winner_t search_winner(cell_t gameMap[SIDE_NCELL][SIDE_NCELL]) {
+uint8_t search_winner(cell_t gameMap[SIDE_NCELL][SIDE_NCELL]) {
     int nb_of_red = 0;
     int nb_of_blue = 0;
 
-    for (int x = -1 + SIDE_NCELL; x < SIDE_NCELL + 3; x++) {
+    for (int x = -1 + GAMEMAP_CENTER; x < GAMEMAP_CENTER + 3; x++) {
         /*vertical*/
         nb_of_blue = 0;
         nb_of_red = 0;
-        for (int y = -1 + SIDE_NCELL; y < SIDE_NCELL + 3; y++) {
+        for (int y = -1 + GAMEMAP_CENTER; y < GAMEMAP_CENTER + 3; y++) {
             if ((gameMap[x][y].state & OBSTRUCTION_BITS) == CELL_OCCUPED_BLUE)
                 nb_of_blue++;
             else if((gameMap[x][y].state & OBSTRUCTION_BITS) == CELL_OCCUPED_RED)
                 nb_of_red++;
 
             if (nb_of_red == 3)
-                return PLAYER_RED;
+                return RED;
             else if (nb_of_blue == 3)
-                return PLAYER_BLUE;
+                return BLUE;
         }
 
         /*horizontal*/
         nb_of_blue = 0;
         nb_of_red = 0;
-        for (int y = -1 + SIDE_NCELL; y < SIDE_NCELL + 3; y++) {
+        for (int y = -1 + GAMEMAP_CENTER; y < GAMEMAP_CENTER + 3; y++) {
             if ((gameMap[y][x].state & OBSTRUCTION_BITS) == CELL_OCCUPED_BLUE)
                 nb_of_blue++;
             else if((gameMap[y][x].state & OBSTRUCTION_BITS) == CELL_OCCUPED_RED)
                 nb_of_red++;
 
             if (nb_of_red == 3)
-                return PLAYER_RED;
+                return RED;
             else if (nb_of_blue == 3)
-                return PLAYER_BLUE;
+                return BLUE;
         }
     }
 
@@ -73,31 +72,31 @@ winner_t search_winner(cell_t gameMap[SIDE_NCELL][SIDE_NCELL]) {
         ((gameMap[1][1].state & OBSTRUCTION_BITS) == CELL_OCCUPED_BLUE) &&
         ((gameMap[2][2].state & OBSTRUCTION_BITS) == CELL_OCCUPED_BLUE))
     {
-        return PLAYER_BLUE;
+        return BLUE;
     }
     else if (((gameMap[0][0].state & OBSTRUCTION_BITS) == CELL_OCCUPED_RED) &&
              ((gameMap[1][1].state & OBSTRUCTION_BITS) == CELL_OCCUPED_RED) &&
              ((gameMap[2][2].state & OBSTRUCTION_BITS) == CELL_OCCUPED_RED))
     {
-        return PLAYER_RED;
+        return RED;
     }
     else if (((gameMap[0][2].state & OBSTRUCTION_BITS) == CELL_OCCUPED_BLUE) &&
              ((gameMap[1][1].state & OBSTRUCTION_BITS) == CELL_OCCUPED_BLUE) &&
              ((gameMap[2][0].state & OBSTRUCTION_BITS) == CELL_OCCUPED_BLUE))
     {
-        return PLAYER_BLUE;
+        return BLUE;
     }
     else if (((gameMap[0][2].state & OBSTRUCTION_BITS) == CELL_OCCUPED_RED) &&
              ((gameMap[1][1].state & OBSTRUCTION_BITS) == CELL_OCCUPED_RED) &&
              ((gameMap[2][0].state & OBSTRUCTION_BITS) == CELL_OCCUPED_RED))
     {
-        return PLAYER_RED;
+        return RED;
     }
 
     bool full = true;
     for (int x = -1; x < 3; x++)
         for (int y = -1; y < 3; y++)
-            if ((gameMap[x + SIDE_NCELL][y + SIDE_NCELL].state & OBSTRUCTION_BITS) == CELL_FREE)
+            if ((gameMap[x + GAMEMAP_CENTER][y + GAMEMAP_CENTER].state & OBSTRUCTION_BITS) == CELL_FREE)
                 full = false;
     if(full == true)
         return DRAW;
@@ -122,8 +121,8 @@ coord_t place_easy(cell_t gameMap[SIDE_NCELL][SIDE_NCELL]) {
         //assign 2 random coordinates between 0 and 3
         //use of coord_t instead of 2 int because this struct takes 1 bytes instead of 2 bytes
         tmp = (coord_t) {
-            .x = SIDE_NCELL - 3 + (rand() % 4),
-            .y = SIDE_NCELL - 3 + (rand() % 4)
+            .x = GAMEMAP_CENTER - 3 + (rand() % 4),
+            .y = GAMEMAP_CENTER - 3 + (rand() % 4)
         };
 
         if((gameMap[tmp.x][tmp.y].state & OBSTRUCTION_BITS) == CELL_FREE)
@@ -168,37 +167,25 @@ coord_t place_hard(cell_t gameMap[SIDE_NCELL][SIDE_NCELL]) {
 
 void check_end_game(cell_t gameMap[SIDE_NCELL][SIDE_NCELL]) {
     switch(search_winner(gameMap)) {
-        case PLAYER_RED:
+        case RED:
             chSemWait(&gamestates_sem);
             gamestates = (gamestates & ~STATE_BITS) | STATE_END;
+            gamestates = (gamestates & ~WINNER_BITS) | WINNER_RED;
             chSemSignal(&gamestates_sem);
-            /*clear_leds();
-            set_rgb_led(0, 10, 0, 0);
-            set_rgb_led(1, 10, 0, 0);
-            set_rgb_led(2, 10, 0, 0);
-            set_rgb_led(3, 10, 0, 0);*/
             break;
-        case PLAYER_BLUE:
+        case BLUE:
             chSemWait(&gamestates_sem);
             gamestates = (gamestates & ~STATE_BITS) | STATE_END;
+            gamestates = (gamestates & ~WINNER_BITS) | WINNER_BLUE;
             chSemSignal(&gamestates_sem);
-            /*clear_leds();
-            set_rgb_led(0, 0, 0, 10);
-            set_rgb_led(1, 0, 0, 10);
-            set_rgb_led(2, 0, 0, 10);
-            set_rgb_led(3, 0, 0, 10);*/
             break;
         case DRAW:
             chSemWait(&gamestates_sem);
             gamestates = (gamestates & ~STATE_BITS) | STATE_END;
+            gamestates = (gamestates & ~WINNER_BITS) | WINNER_DRAW;
             chSemSignal(&gamestates_sem);
-            /*clear_leds();
-            set_rgb_led(0, 10, 10, 10);
-            set_rgb_led(1, 10, 10, 10);
-            set_rgb_led(2, 10, 10, 10);
-            set_rgb_led(3, 10, 10, 10);*/
             break;
-        case NONE:
+        default : //case NONE:
             break;
     }
 }

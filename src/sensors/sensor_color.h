@@ -4,6 +4,6 @@
 #include "../defs.h"
 
 void sensor_color_init(void);
-color_t sensor_measure_color(void);
+uint8_t sensor_measure_color(void);
 
 #endif /*SENSOR_COLOR_H*/
