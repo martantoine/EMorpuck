@@ -123,8 +123,8 @@ typedef enum winner winner_t;
 #define IR_3                        6
 #define IR_4                        3
 #define IR_4                        3
-#define HOLD_LONG                   400 // in ms
-#define HOLD_SHORT                  200 // in ms
+#define HOLD_LONG                   5000 // in ms
+#define HOLD_SHORT                  2000 // in ms
 
 #define SENSOR_IR_REFRESH_T         100 // in ms
 #define SENSOR_IR_PRIORITY          (NORMALPRIO + 1)

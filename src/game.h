@@ -5,7 +5,7 @@
 #include <ch.h>
 
 extern semaphore_t gamestates_sem;
-extern uint8_t gamestates;
+extern volatile uint8_t gamestates;
 
 void game_init(cell_t gameMap[SIDE_NCELL][SIDE_NCELL]);
 

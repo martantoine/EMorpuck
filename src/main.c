@@ -32,9 +32,11 @@ int main(void) {
     clear_leds();
     //srand(time(0));
     // Sensors
-    sensor_color_init();
+    cell_t gameMap[SIDE_NCELL][SIDE_NCELL];
+    game_init(gameMap);
+    //sensor_color_init();
     sensor_ir_init();
-    sensor_distance_init();
+    //sensor_distance_init();
     // Actuators
     //mvt_init();
 
@@ -46,16 +48,16 @@ int main(void) {
     //for(uint8_t i = 0; i < SIDE_NCELL; i++)
     //    gameMap[i] = (cell_t*)malloc(sizeof(cell_t)*SIDE_NCELL);
     //cell_t **gameMap = (cell_t**)malloc(sizeof(cell_t*)*SIDE_NCELL + sizeof(cell_t)*SIDE_NCELL*SIDE_NCELL);
-    cell_t gameMap[SIDE_NCELL][SIDE_NCELL];
+
  
-    game_init(gameMap);
+
     coord_t position = {
         .x = 0,
         .y = SIDE_NCELL,
         .t = N,
     };
-
-    for(;;) {
+    chThdSetPriority(NORMALPRIO);
+    for(;;) {/*
         if((gamestates & STATE_BITS) == STATE_WAITING_PLAYER) {}
         else if((gamestates & STATE_BITS) == STATE_PLAYING) {
             updateMap(gameMap, &position);
@@ -67,7 +69,7 @@ int main(void) {
             mvt_place(gameMap, &position, target);
         }
         else if(((gamestates & STATE_BITS) == STATE_START) || ((gamestates & STATE_BITS) == STATE_END)) {}
-        check_end_game(gameMap);
+        check_end_game(gameMap);*/
         chThdSleepMilliseconds(500);
     }
     return 0;

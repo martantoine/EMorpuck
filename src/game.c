@@ -5,7 +5,7 @@
 #include <ch.h>
 
 semaphore_t gamestates_sem;
-uint8_t gamestates;
+volatile uint8_t gamestates;
 
 void game_init(cell_t gameMap[SIDE_NCELL][SIDE_NCELL]) {
     for(uint8_t x = 0; x < SIDE_NCELL; x++)
