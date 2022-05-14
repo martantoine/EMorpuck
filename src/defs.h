@@ -169,15 +169,13 @@ static const coord_t scanning_order[9] = {
     { GAMEMAP_CENTER - 2, GAMEMAP_CENTER - 1, E},
     { GAMEMAP_CENTER - 2, GAMEMAP_CENTER    , E},
     { GAMEMAP_CENTER - 2, GAMEMAP_CENTER + 1, E},
-
-    { GAMEMAP_CENTER + 2, GAMEMAP_CENTER - 1, W},
-    { GAMEMAP_CENTER + 2, GAMEMAP_CENTER    , W},
+    { GAMEMAP_CENTER    , GAMEMAP_CENTER + 2, N},
     { GAMEMAP_CENTER + 2, GAMEMAP_CENTER + 1, W},
-
-    { GAMEMAP_CENTER    , GAMEMAP_CENTER - 1, S},
-    { GAMEMAP_CENTER    , GAMEMAP_CENTER + 1, N},
-    { GAMEMAP_CENTER    , GAMEMAP_CENTER    , S},
-}
+    { GAMEMAP_CENTER + 2, GAMEMAP_CENTER    , W},
+    { GAMEMAP_CENTER + 2, GAMEMAP_CENTER - 1, W},
+    { GAMEMAP_CENTER    , GAMEMAP_CENTER - 2, S},
+    { GAMEMAP_CENTER    , GAMEMAP_CENTER    , S}
+};
 
 uint8_t getDistance(coord_t A, coord_t B);
 
