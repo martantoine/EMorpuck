@@ -2,6 +2,7 @@
 #include "defs.h"
 #include <stdlib.h>
 #include <ch.h>
+#include <leds.h>
 
 semaphore_t gamestates_sem;
 volatile uint8_t gamestates;
@@ -15,6 +16,9 @@ void game_init(cell_t gameMap[SIDE_NCELL][SIDE_NCELL]) {
                 .g_score = 0xFF,
                 .parent = NULL
             };
+    //for(uint8_t x = GAMEMAP_CENTER-1; x <= GAMEMAP_CENTER+1; x++)
+    //    for(uint8_t y = GAMEMAP_CENTER-1; y <= GAMEMAP_CENTER+1; y++)
+    //        gameMap[x][y].state = CELL_OCCUPED;
 
     for(uint8_t i = 0; i < 12; i++) {
         if((i < 3) || ((i > 5) && (i < 9)))
@@ -187,5 +191,82 @@ void check_end_game(cell_t gameMap[SIDE_NCELL][SIDE_NCELL]) {
             break;
         default : //case NONE:
             break;
+    }
+}
+
+void toggle_rgb_leds(rgb_led_name_t led_number, uint8_t red_val, uint8_t green_val, uint8_t blue_val) {
+    static int b = 0;
+    if(b==0) {
+        set_rgb_led(led_number, red_val, green_val, blue_val);
+        b = 1;
+    }
+    else {
+        set_rgb_led(led_number, 0, 0, 0);
+        b = 0;
+    }
+}
+
+void show_stateofgame(void) {
+    
+    if((gamestates & STATE_BITS) != STATE_END) {
+        clear_leds();
+        if((gamestates & DIFFICULTY_BITS) == DIFFICULTY_EASY) {
+            set_rgb_led(LED8,0,0,0xFF);
+            set_rgb_led(LED2,0,0,0xFF);
+        }
+        else if((gamestates & DIFFICULTY_BITS) == DIFFICULTY_HARD) {
+            set_rgb_led(LED8,0xFF,0,0);
+            set_rgb_led(LED2,0xFF,0,0);
+        }
+    }
+    if((gamestates & STATE_BITS) == STATE_START) {
+        set_rgb_led(LED4,0,0xFF,0);
+        set_rgb_led(LED6,0,0xFF,0);
+    }
+    else if((gamestates & STATE_BITS) == STATE_PLAYING) {
+        set_rgb_led(LED4,0xFF,0,0);
+        set_rgb_led(LED6,0xFF,0,0);
+        if((gamestates & SCANNING_BITS) == SCANNING_RED) {
+            set_rgb_led(LED2,0xFF,0,0);
+            set_rgb_led(LED4,0xFF,0,0);
+            set_rgb_led(LED6,0xFF,0,0);
+            set_rgb_led(LED8,0xFF,0,0);
+        }
+        else if((gamestates & SCANNING_BITS) == SCANNING_BLUE) {
+            set_rgb_led(LED2,0,0,0xFF);
+            set_rgb_led(LED4,0,0,0xFF);
+            set_rgb_led(LED6,0,0,0xFF);
+            set_rgb_led(LED8,0,0,0xFF);
+        }
+        else if((gamestates & SCANNING_BITS) == SCANNING_NONE) {
+            set_rgb_led(LED2,0xFF,0xFF,0xFF);
+            set_rgb_led(LED4,0xFF,0xFF,0xFF);
+            set_rgb_led(LED6,0xFF,0xFF,0xFF);
+            set_rgb_led(LED8,0xFF,0xFF,0xFF);
+        }
+    }
+    else if((gamestates & STATE_BITS) == STATE_WAITING_PLAYER) {
+        set_rgb_led(LED4,0,0,0xFF);
+        set_rgb_led(LED6,0,0,0xFF);
+    }
+    else if((gamestates & STATE_BITS) == STATE_END) {
+        if((gamestates & WINNER_BITS) == WINNER_RED) {
+            toggle_rgb_leds(LED2,0xFF,0,0);
+            toggle_rgb_leds(LED4,0xFF,0,0);
+            toggle_rgb_leds(LED6,0xFF,0,0);
+            toggle_rgb_leds(LED8,0xFF,0,0);
+        }
+        else if((gamestates & WINNER_BITS) == WINNER_BLUE) {
+            toggle_rgb_leds(LED2,0,0,0xFF);
+            toggle_rgb_leds(LED4,0,0,0xFF);
+            toggle_rgb_leds(LED6,0,0,0xFF);
+            toggle_rgb_leds(LED8,0,0,0xFF);
+        }
+        else if((gamestates & WINNER_BITS) == WINNER_DRAW) {
+            toggle_rgb_leds(LED2,0xFF,0xFF,0xFF);
+            toggle_rgb_leds(LED4,0xFF,0xFF,0xFF);
+            toggle_rgb_leds(LED6,0xFF,0xFF,0xFF);
+            toggle_rgb_leds(LED8,0xFF,0xFF,0xFF);
+        }
     }
 }

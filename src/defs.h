@@ -80,15 +80,17 @@ typedef struct coord coord_t;
 //#define STEPS_TURN_360      (NTURNS_TURN_360 * NSTEP_ONE_TURN)
 
 #define OBSTRUCTION_BITS            ((uint8_t) (1 << 1) | (1 << 0))
-#define CELL_FREE                   ((uint8_t) (0 << 0))
-#define CELL_OCCUPED_RED            ((uint8_t) (1 << 0))
-#define CELL_OCCUPED_BLUE           ((uint8_t) (1 << 1) | (0 << 0))
+#define CELL_FREE                   ((uint8_t) (0 << 1) | (0 << 0))
+#define CELL_OCCUPED                ((uint8_t) (0 << 1) | (1 << 0))
+#define CELL_OCCUPED_RED            ((uint8_t) (1 << 1) | (0 << 0))
+#define CELL_OCCUPED_BLUE           ((uint8_t) (1 << 1) | (1 << 0))
 #define PATH_FIND_BITS              ((uint8_t) (1 << 3) | (1 << 2))
 #define CELL_BLANK                  ((uint8_t) (0 << 3) | (0 << 2))
 #define CELL_OPEN                   ((uint8_t) (0 << 3) | (1 << 2))
 #define CELL_CLOSED                 ((uint8_t) (1 << 3) | (0 << 2))
-#define CELL_UNKNOWN                ((uint8_t) (0 << 4))
-#define CELL_KNOWN                  ((uint8_t) (1 << 4))
+#define CELL_UNKNOWN                ((uint8_t) (1 << 4))
+#define CELL_KNOWN                  ((uint8_t) (0 << 4))
+#define KNOWLEDGE_BITS              ((uint8_t) (1 << 4))
 
 #define PATH_UNIT_LENGTH 10
 /*
@@ -147,8 +149,8 @@ static const coord_t nearest[4] = {
 
 static const coord_t storage[12] = {
     { GAMEMAP_CENTER - 3, GAMEMAP_CENTER - 1, E},
-    { GAMEMAP_CENTER - 3, GAMEMAP_CENTER    , E},
     { GAMEMAP_CENTER - 3, GAMEMAP_CENTER + 1, E},
+    { GAMEMAP_CENTER - 3, GAMEMAP_CENTER    , E},
 
     { GAMEMAP_CENTER + 3, GAMEMAP_CENTER - 1, W},
     { GAMEMAP_CENTER + 3, GAMEMAP_CENTER    , W},
@@ -162,6 +164,20 @@ static const coord_t storage[12] = {
     { GAMEMAP_CENTER    , GAMEMAP_CENTER + 3, N},
     { GAMEMAP_CENTER + 1, GAMEMAP_CENTER + 3, N}
 };
+
+static const coord_t scanning_order[9] = {
+    { GAMEMAP_CENTER - 2, GAMEMAP_CENTER - 1, E},
+    { GAMEMAP_CENTER - 2, GAMEMAP_CENTER    , E},
+    { GAMEMAP_CENTER - 2, GAMEMAP_CENTER + 1, E},
+
+    { GAMEMAP_CENTER + 2, GAMEMAP_CENTER - 1, W},
+    { GAMEMAP_CENTER + 2, GAMEMAP_CENTER    , W},
+    { GAMEMAP_CENTER + 2, GAMEMAP_CENTER + 1, W},
+
+    { GAMEMAP_CENTER    , GAMEMAP_CENTER - 1, S},
+    { GAMEMAP_CENTER    , GAMEMAP_CENTER + 1, N},
+    { GAMEMAP_CENTER    , GAMEMAP_CENTER    , S},
+}
 
 uint8_t getDistance(coord_t A, coord_t B);
 

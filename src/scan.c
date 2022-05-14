@@ -11,9 +11,17 @@ void updateMap(cell_t gameMap[SIDE_NCELL][SIDE_NCELL], coord_t *position) {
     coord_t tocheck;
     step_t *path;
 
+    for(int8_t i = -1 + GAMEMAP_CENTER; i <= 1 + GAMEMAP_CENTER; i++)
+        for(int8_t j = -1 + GAMEMAP_CENTER; j <= 1 + GAMEMAP_CENTER; j++) {
+            if((gameMap[i][j].state & OBSTRUCTION_BITS) == (CELL_OCCUPED_RED || CELL_OCCUPED_BLUE))
+                gameMap[i][j].state = (gameMap[i][j].state & ~KNOWLEDGE_BITS) | CELL_KNOWN;
+            else
+                gameMap[i][j].state = (gameMap[i][j].state & ~KNOWLEDGE_BITS) | CELL_UNKNOWN;
+        }
+
     for(int8_t i = -1; i <= 1; i++)
         for(int8_t j = -1; j <= 1; j++)
-            if((gameMap[i + GAMEMAP_CENTER][j + GAMEMAP_CENTER].state & OBSTRUCTION_BITS) == CELL_FREE) {
+            if((gameMap[i + GAMEMAP_CENTER][j + GAMEMAP_CENTER].state & OBSTRUCTION_BITS) != (CELL_OCCUPED_RED || CELL_OCCUPED_BLUE)) {
                 if(i == -1)
                     tocheck = (coord_t){.x=GAMEMAP_CENTER-2, .y=GAMEMAP_CENTER+j, .t=E};
                 else if(i == +1)
@@ -29,12 +37,11 @@ void updateMap(cell_t gameMap[SIDE_NCELL][SIDE_NCELL], coord_t *position) {
                      * This strategy simplify the scanning and is moreover the winning strategy
                      */
                     for(uint8_t w = 0; w < 4; w++)
-                        if((gameMap[GAMEMAP_CENTER + nearest[w].x][GAMEMAP_CENTER + nearest[w].y].state & OBSTRUCTION_BITS) == CELL_FREE)
+                        if((gameMap[GAMEMAP_CENTER + nearest[w].x][GAMEMAP_CENTER + nearest[w].y].state & OBSTRUCTION_BITS) != (CELL_OCCUPED_RED || CELL_OCCUPED_BLUE))
                             tocheck = (coord_t){.x=GAMEMAP_CENTER+nearest[w].x, .y=GAMEMAP_CENTER+nearest[w].y, .t=nearest[w].t};
                 }
                 path = findPath(gameMap, *position, tocheck);
                 mvt_executePath(position, tocheck, path);
-
                 uint8_t c_result = sensor_measure_color();
                 uint8_t d_result = sensor_distance_norm();
                 chSemWait(&gamestates_sem);
@@ -54,29 +61,20 @@ void updateMap(cell_t gameMap[SIDE_NCELL][SIDE_NCELL], coord_t *position) {
                     switch(position->t) {
                         case E:
                             gameMap[position->x+d_result][position->y].state |= CELL_OCCUPED_BLUE;
+                            gameMap[position->x+d_result][position->y].state &= ~KNOWLEDGE_BITS;
                             break;
                         case W:
                             gameMap[position->x-d_result][position->y].state |= CELL_OCCUPED_BLUE;
+                            gameMap[position->x-d_result][position->y].state &= ~KNOWLEDGE_BITS;
                             break;
                         case N:
                             gameMap[position->x][position->y-d_result].state |= CELL_OCCUPED_BLUE;
+                            gameMap[position->x][position->y-d_result].state &= ~KNOWLEDGE_BITS;
                             break;
                         case S:
                             gameMap[position->x][position->y+d_result].state |= CELL_OCCUPED_BLUE;
+                            gameMap[position->x][position->y+d_result].state &= ~KNOWLEDGE_BITS;
                             break;
                     }
             }
-}
-
-uint8_t scanLine(void)
-{
-    /*
-     * must read the camera shared memory and TOF shared memory
-     */
-    //chThdWait(camera_s);
-    //chThdWait(tof_s);
-    
-    //chThdSignal(camera_s);
-    //chThdSignal(tof_s);
-    return CELL_OCCUPED_BLUE;
 }

@@ -20,13 +20,13 @@ step_t* findPath(cell_t gameMap[SIDE_NCELL][SIDE_NCELL], coord_t current, const 
     gameMap[current.x][current.y].parent = NULL; // stop code for the generatePathCode's loop
     gameMap[target.x][target.y].state |= CELL_OPEN;
     uint8_t f_min, x_min = 0, y_min = 0;
-
     for(;;) { //use of for(;;) instead of while(true) for compatibility reasons
         /*
         * the default f_min value is 0xFF (0xFF)
         * considering the size of the gameMap a such value should never be obtained
         * TODO: test if uint8_t is enough for the f_score & g_score
         */
+       //kendrick amor
         f_min = 0xFF;
         for(uint8_t x = 0; x < SIDE_NCELL; x++)
             for(uint8_t y = 0; y < SIDE_NCELL; y++)
@@ -37,7 +37,7 @@ step_t* findPath(cell_t gameMap[SIDE_NCELL][SIDE_NCELL], coord_t current, const 
                 }
         gameMap[x_min][y_min].state = (gameMap[x_min][y_min].state & ~PATH_FIND_BITS) | CELL_CLOSED;
         // The current position has been reached (starting from the target)
-        if((x_min == current.x) && (y_min == current.y))
+        if(((x_min == current.x) && (y_min == current.y)))
             break;
 
         for(uint8_t w = 0; w < 4; w++) {
@@ -48,8 +48,10 @@ step_t* findPath(cell_t gameMap[SIDE_NCELL][SIDE_NCELL], coord_t current, const 
             if((x < 0) || (x >= SIDE_NCELL) || (y < 0) || (y >= SIDE_NCELL)) {}
 
             // Check for obstacles and already checked cells
-            else if(((gameMap[x][y].state & OBSTRUCTION_BITS) == CELL_OCCUPED_BLUE) ||
+            else if(((gameMap[x][y].state & OBSTRUCTION_BITS) == CELL_OCCUPED) ||
+                    ((gameMap[x][y].state & OBSTRUCTION_BITS) == CELL_OCCUPED_BLUE)  ||
                     ((gameMap[x][y].state & OBSTRUCTION_BITS) == CELL_OCCUPED_RED)  ||
+                    ((gameMap[x][y].state & KNOWLEDGE_BITS) == CELL_UNKNOWN)  ||
                     ((gameMap[x][y].state & PATH_FIND_BITS) == CELL_CLOSED)) {}
 
             // Update scores, parents & state if cell blank or a shorter path to the (x,y) cell was found
@@ -127,28 +129,28 @@ step_t* generatePathCode(cell_t gameMap[SIDE_NCELL][SIDE_NCELL], coord_t current
                     path[path_used++] = BACKWARD;
                 }
                 else if(delta_y == 1) {
-                    path[path_used++] = FORWARD;
                     path[path_used++] = RIGHT;
+                    path[path_used++] = FORWARD;
                     path[path_used++] = FORWARD;
                     tmp_t = S;
                 }
                 else if(delta_y == -1) {
-                    path[path_used++] = FORWARD;
                     path[path_used++] = LEFT;
+                    path[path_used++] = FORWARD;
                     path[path_used++] = FORWARD;
                     tmp_t = N;
                 }
                 break;
             case N:
                 if(delta_x == 1) {
-                    path[path_used++] = FORWARD;
                     path[path_used++] = RIGHT;
+                    path[path_used++] = FORWARD;
                     path[path_used++] = FORWARD;
                     tmp_t = E;
                 }
                 else if(delta_x == -1) {
-                    path[path_used++] = FORWARD;
                     path[path_used++] = LEFT;
+                    path[path_used++] = FORWARD;
                     path[path_used++] = FORWARD;
                     tmp_t = W;
                 }
@@ -171,28 +173,28 @@ step_t* generatePathCode(cell_t gameMap[SIDE_NCELL][SIDE_NCELL], coord_t current
                     path[path_used++] = FORWARD;
                 }
                 else if(delta_y == 1) {
-                    path[path_used++] = FORWARD;
                     path[path_used++] = LEFT;
+                    path[path_used++] = FORWARD;
                     path[path_used++] = FORWARD;
                     tmp_t = S;
                 }
                 else if(delta_y == -1) {
-                    path[path_used++] = FORWARD;
                     path[path_used++] = RIGHT;
+                    path[path_used++] = FORWARD;
                     path[path_used++] = FORWARD;
                     tmp_t = N;
                 }
                 break;
             case S:
                 if(delta_x == 1) {
-                    path[path_used++] = FORWARD;
                     path[path_used++] = LEFT;
+                    path[path_used++] = FORWARD;
                     path[path_used++] = FORWARD;
                     tmp_t = E;
                 }
                 else if(delta_x == -1) {
-                    path[path_used++] = FORWARD;
                     path[path_used++] = RIGHT;
+                    path[path_used++] = FORWARD;
                     path[path_used++] = FORWARD;
                     tmp_t = W;
                 }
@@ -213,32 +215,32 @@ step_t* generatePathCode(cell_t gameMap[SIDE_NCELL][SIDE_NCELL], coord_t current
         case E:
             switch(target.t) {
                 case E: break;
-                case N: path[path_used++] = FORWARD; path[path_used++] = LEFT; break;
-                case W: path[path_used++] = FORWARD; path[path_used++] = FORWARD; path[path_used++] = LEFT; path[path_used++] = LEFT; break;
-                case S: path[path_used++] = FORWARD; path[path_used++] = RIGHT; break;
+                case N: path[path_used++] = LEFT; break;
+                case W: path[path_used++] = LEFT; path[path_used++] = LEFT; break;
+                case S: path[path_used++] = RIGHT; break;
             }
             break;
         case N:
             switch(target.t) {
-                case E: path[path_used++] = FORWARD; path[path_used++] = RIGHT; break;
+                case E: path[path_used++] = RIGHT; break;
                 case N: break;
-                case W: path[path_used++] = FORWARD; path[path_used++] = LEFT; break;
-                case S: path[path_used++] = FORWARD; path[path_used++] = FORWARD; path[path_used++] = LEFT; path[path_used++] = LEFT; break;
+                case W: path[path_used++] = LEFT; break;
+                case S: path[path_used++] = LEFT; path[path_used++] = LEFT; break;
             }
             break;
         case W:
             switch(target.t) {
-                case E: path[path_used++] = FORWARD; path[path_used++] = FORWARD; path[path_used++] = LEFT; path[path_used++] = LEFT; break;
-                case N: path[path_used++] = FORWARD; path[path_used++] = RIGHT; break;
+                case E: path[path_used++] = LEFT; path[path_used++] = LEFT; break;
+                case N: path[path_used++] = RIGHT; break;
                 case W: break;
-                case S: path[path_used++] = FORWARD; path[path_used++] = LEFT; break;
+                case S: path[path_used++] = LEFT; break;
             }
             break;
         case S:
             switch(target.t) {
-                case E: path[path_used++] = FORWARD; path[path_used++] = LEFT; break;
-                case N: path[path_used++] = FORWARD; path[path_used++] = FORWARD; path[path_used++] = LEFT; path[path_used++] = LEFT; break;
-                case W: path[path_used++] = FORWARD; path[path_used++] = RIGHT; break;
+                case E: path[path_used++] = LEFT; break;
+                case N: path[path_used++] = LEFT; path[path_used++] = LEFT; break;
+                case W: path[path_used++] = RIGHT; break;
                 case S: break;
             }
             break;
@@ -254,7 +256,7 @@ void pathFindingReset(cell_t gameMap[SIDE_NCELL][SIDE_NCELL]) {
             gameMap[x][y].state &= ~PATH_FIND_BITS;
             gameMap[x][y].f_score = 0xFF;
             //reset of parent & g_score not really necessary, test before remove
-            gameMap[x][y].g_score = 0xFF;
+            gameMap[x][y].g_score = 0;
             gameMap[x][y].parent = NULL;
         }
 }
