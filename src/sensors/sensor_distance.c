@@ -5,7 +5,6 @@
 static semaphore_t dist_sem;
 uint16_t dist_mm = 0;
 
-// Returns the case in wich the object facing the Epuck is
 uint8_t sensor_distance_norm(void) {
     uint8_t dist;
     chSemWait(&dist_sem);

@@ -6,6 +6,7 @@
  */
 inline void pathFindingReset(cell_t gameMap[SIDE_NCELL][SIDE_NCELL]);
 inline step_t* generatePathCode(cell_t gameMap[SIDE_NCELL][SIDE_NCELL], coord_t current, coord_t target);
+void avoid_path_out_of_memory(step_t *path, uint16_t *path_used, uint16_t *path_allocated);
 
 step_t* findPath(cell_t gameMap[SIDE_NCELL][SIDE_NCELL], coord_t current, const coord_t target) {
     pathFindingReset(gameMap);
@@ -20,13 +21,13 @@ step_t* findPath(cell_t gameMap[SIDE_NCELL][SIDE_NCELL], coord_t current, const 
     gameMap[current.x][current.y].parent = NULL; // stop code for the generatePathCode's loop
     gameMap[target.x][target.y].state |= CELL_OPEN;
     uint8_t f_min, x_min = 0, y_min = 0;
-    for(;;) { //use of for(;;) instead of while(true) for compatibility reasons
+    //use of for(;;) instead of while(true) because more efficient : there are no check to perform between each steps
+    for(;;) {
         /*
         * the default f_min value is 0xFF (0xFF)
         * considering the size of the gameMap a such value should never be obtained
         * TODO: test if uint8_t is enough for the f_score & g_score
         */
-       //kendrick amor
         f_min = 0xFF;
         for(uint8_t x = 0; x < SIDE_NCELL; x++)
             for(uint8_t y = 0; y < SIDE_NCELL; y++)
@@ -104,19 +105,7 @@ step_t* generatePathCode(cell_t gameMap[SIDE_NCELL][SIDE_NCELL], coord_t current
                 break;
         }
 
-        /*
-         * Each iteration in the while loop can add at max 2 steps
-         * => the realloc must reserve space for at least 2 step_t
-         * to limitate the number of call of realloc, realloc will only
-         * happens when the current size is close to the current limit and
-         * will reserve 10 more free spaces
-         */
-        if(path_used + 3 >= path_allocated) {
-            path_allocated += 10;
-            path = realloc(path, path_allocated*sizeof(step_t));
-            for(uint8_t i = path_allocated - 10; i < path_allocated; i++)
-                path[i] = STOP;
-        }
+        avoid_path_out_of_memory(path, &path_used, &path_allocated);
 
         switch(tmp_t) {
             case E:
@@ -210,6 +199,8 @@ step_t* generatePathCode(cell_t gameMap[SIDE_NCELL][SIDE_NCELL], coord_t current
         }
     }
 
+    avoid_path_out_of_memory(path, &path_used, &path_allocated);
+
     //might want to use look up table instead, cleaner, hard to figure out
     switch(tmp_t) {
         case E:
@@ -259,4 +250,20 @@ void pathFindingReset(cell_t gameMap[SIDE_NCELL][SIDE_NCELL]) {
             gameMap[x][y].g_score = 0;
             gameMap[x][y].parent = NULL;
         }
+}
+
+void avoid_path_out_of_memory(step_t *path, uint16_t *path_used, uint16_t *path_allocated) {
+    /*
+     * Each iteration in the while loop can add at max 2 steps
+     * => the realloc must reserve space for at least 2 step_t
+     * to limitate the number of call of realloc, realloc will only
+     * happens when the current size is close to the current limit and
+     * will reserve 10 more free spaces
+     */
+    if((*path_used) + 3 >= (*path_allocated)) {
+        (*path_allocated) += 10;
+        path = realloc(path, (*path_allocated)*sizeof(step_t));
+        for(uint8_t i = (*path_allocated) - 10; i < (*path_allocated); i++)
+            path[i] = STOP;
+    }
 }

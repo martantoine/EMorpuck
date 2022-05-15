@@ -4,6 +4,24 @@
 #include "motors_driver.h"
 #include "path.h"
 
+static const coord_t pickup[12] = {
+    { GAMEMAP_CENTER - 4, GAMEMAP_CENTER - 1, E},
+    { GAMEMAP_CENTER - 4, GAMEMAP_CENTER + 1, E},
+    { GAMEMAP_CENTER - 4, GAMEMAP_CENTER    , E},
+
+    { GAMEMAP_CENTER + 4, GAMEMAP_CENTER - 1, W},
+    { GAMEMAP_CENTER + 4, GAMEMAP_CENTER    , W},
+    { GAMEMAP_CENTER + 4, GAMEMAP_CENTER + 1, W},
+
+    { GAMEMAP_CENTER - 1, GAMEMAP_CENTER - 4, S},
+    { GAMEMAP_CENTER    , GAMEMAP_CENTER - 4, S},
+    { GAMEMAP_CENTER + 1, GAMEMAP_CENTER - 4, S},
+
+    { GAMEMAP_CENTER - 1, GAMEMAP_CENTER + 4, N},
+    { GAMEMAP_CENTER    , GAMEMAP_CENTER + 4, N},
+    { GAMEMAP_CENTER + 1, GAMEMAP_CENTER + 4, N}
+};
+
 void mvt_init(void) {
     motors_init();
     right_motor_set_speed(STEP_SPEED);
@@ -77,7 +95,7 @@ void mvt_place(cell_t gameMap[SIDE_NCELL][SIDE_NCELL], coord_t *position, const 
 
 #define WAIT_MOTOR_TARGET_REACHED() \
     while((left_motor_steps_left() != 0) || (right_motor_steps_left() != 0)) \
-        chThdSleepMilliseconds(100)
+        chThdSleepMilliseconds(200)
 
 void mvt_forward(void) {
     left_motor_move(NSTEPS_HALF_CELL);

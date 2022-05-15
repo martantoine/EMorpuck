@@ -27,23 +27,21 @@ int main(void) {
     mpu_init();
     chSysInit();
     spi_comm_start();
+    chThdSetPriority(NORMALPRIO);
     // Inits the Inter Process Communication bus
     messagebus_init(&bus, &bus_lock, &bus_condvar);
-    clear_leds();
     srand((uint32_t)chVTGetSystemTime());
-    // Sensors
     /*
      * the cell's position is stored implincitly in the address :
      * the cell of position (i,j) is accesssed with gameMap[i,j]
      */
     cell_t gameMap[SIDE_NCELL][SIDE_NCELL];
     game_init(gameMap);
-    sensor_color_init();
     sensor_ir_init();
+    sensor_color_init();
     sensor_distance_init();
     // Actuators
     mvt_init();
-
 
     coord_t position = {
         .x = 1,
@@ -51,20 +49,20 @@ int main(void) {
         .t = N,
     };
 
-    chThdSetPriority(NORMALPRIO);
-    while(1) { 
-        if((gamestates & STATE_BITS) == STATE_WAITING_PLAYER) {}
-        else if((gamestates & STATE_BITS) == STATE_PLAYING) {
+    while(1) {
+        uint8_t gamestates_tmp = get_gamestates();
+        if((gamestates_tmp & STATE_BITS) == STATE_WAITING_PLAYER) {}
+        else if((gamestates_tmp & STATE_BITS) == STATE_PLAYING) {
             updateMap(gameMap, &position);
             coord_t target;
-            if((gamestates & DIFFICULTY_BITS) == DIFFICULTY_EASY)
+            if((gamestates_tmp & DIFFICULTY_BITS) == DIFFICULTY_EASY)
                 target = place_easy(gameMap);
-            else if((gamestates & DIFFICULTY_BITS) == DIFFICULTY_EASY)
+            else if((gamestates_tmp & DIFFICULTY_BITS) == DIFFICULTY_EASY)
                 target = place_hard(gameMap);
             mvt_place(gameMap, &position, target);
-            gamestates = (gamestates & ~STATE_BITS) | STATE_WAITING_PLAYER;
+            set_gamestates((get_gamestates() & ~STATE_BITS) | STATE_WAITING_PLAYER);
         }
-        else if(((gamestates & STATE_BITS) == STATE_START) || ((gamestates & STATE_BITS) == STATE_END)) {}
+        else if(((gamestates_tmp & STATE_BITS) == STATE_START) || ((gamestates_tmp & STATE_BITS) == STATE_END)) {}
         //check_end_game(gameMap);
         chThdSleepMilliseconds(200);
     }

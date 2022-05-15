@@ -68,7 +68,7 @@ typedef struct coord coord_t;
 #define WHEEL_SPACE                 53 // in mm
 #define STEPS_TURN_90               323
 #define NSTEPS_HALF_CELL            (CELL_WIDTH / (WHEEL_DIAMETER * PI) * NSTEP_ONE_TURN / 2)
-#define STEP_SPEED                  900
+#define STEP_SPEED                  400
 
 /*
  * The 3 following defines are commented to show the derivation of of NTURNS_TURN_360
@@ -137,7 +137,9 @@ typedef struct coord coord_t;
 
 #define IMAGE_BUFFER_SIZE		    640
 
-/*those variables are static const and are used in multiple files,
+/*
+ * Used in path.c and game.c
+ * those variables are static const and are used in multiple files,
  * -> it's ok for them to be global
  */
 static const coord_t nearest[4] = {
@@ -147,6 +149,7 @@ static const coord_t nearest[4] = {
     { 0, +1, N}
 };
 
+// Is used in movements.c and game.c
 static const coord_t storage[12] = {
     { GAMEMAP_CENTER - 3, GAMEMAP_CENTER - 1, E},
     { GAMEMAP_CENTER - 3, GAMEMAP_CENTER + 1, E},
@@ -164,38 +167,6 @@ static const coord_t storage[12] = {
     { GAMEMAP_CENTER    , GAMEMAP_CENTER + 3, N},
     { GAMEMAP_CENTER + 1, GAMEMAP_CENTER + 3, N}
 };
-
-static const coord_t pickup[12] = {
-    { GAMEMAP_CENTER - 4, GAMEMAP_CENTER - 1, E},
-    { GAMEMAP_CENTER - 4, GAMEMAP_CENTER + 1, E},
-    { GAMEMAP_CENTER - 4, GAMEMAP_CENTER    , E},
-
-    { GAMEMAP_CENTER + 4, GAMEMAP_CENTER - 1, W},
-    { GAMEMAP_CENTER + 4, GAMEMAP_CENTER    , W},
-    { GAMEMAP_CENTER + 4, GAMEMAP_CENTER + 1, W},
-
-    { GAMEMAP_CENTER - 1, GAMEMAP_CENTER - 4, S},
-    { GAMEMAP_CENTER    , GAMEMAP_CENTER - 4, S},
-    { GAMEMAP_CENTER + 1, GAMEMAP_CENTER - 4, S},
-
-    { GAMEMAP_CENTER - 1, GAMEMAP_CENTER + 4, N},
-    { GAMEMAP_CENTER    , GAMEMAP_CENTER + 4, N},
-    { GAMEMAP_CENTER + 1, GAMEMAP_CENTER + 4, N}
-};
-
-static const coord_t scanning_order[9] = {
-    { GAMEMAP_CENTER - 2, GAMEMAP_CENTER - 1, E},
-    { GAMEMAP_CENTER - 2, GAMEMAP_CENTER    , E},
-    { GAMEMAP_CENTER - 2, GAMEMAP_CENTER + 1, E},
-    { GAMEMAP_CENTER    , GAMEMAP_CENTER + 2, N},
-    { GAMEMAP_CENTER + 2, GAMEMAP_CENTER + 1, W},
-    { GAMEMAP_CENTER + 2, GAMEMAP_CENTER    , W},
-    { GAMEMAP_CENTER + 2, GAMEMAP_CENTER - 1, W},
-    { GAMEMAP_CENTER    , GAMEMAP_CENTER - 2, S},
-    { GAMEMAP_CENTER    , GAMEMAP_CENTER    , S}
-};
-
-
 
 uint8_t getDistance(coord_t A, coord_t B);
 

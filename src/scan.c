@@ -7,6 +7,18 @@
 #include "sensors/sensor_distance.h"
 #include "game.h"
 
+static const coord_t scanning_order[9] = {
+    { GAMEMAP_CENTER - 2, GAMEMAP_CENTER - 1, E},
+    { GAMEMAP_CENTER - 2, GAMEMAP_CENTER    , E},
+    { GAMEMAP_CENTER - 2, GAMEMAP_CENTER + 1, E},
+    { GAMEMAP_CENTER    , GAMEMAP_CENTER + 2, N},
+    { GAMEMAP_CENTER + 2, GAMEMAP_CENTER + 1, W},
+    { GAMEMAP_CENTER + 2, GAMEMAP_CENTER    , W},
+    { GAMEMAP_CENTER + 2, GAMEMAP_CENTER - 1, W},
+    { GAMEMAP_CENTER    , GAMEMAP_CENTER - 2, S},
+    { GAMEMAP_CENTER    , GAMEMAP_CENTER    , S}
+};
+
 void updateMap(cell_t gameMap[SIDE_NCELL][SIDE_NCELL], coord_t *position) {
     coord_t tocheck;
     step_t *path;
@@ -43,20 +55,14 @@ void updateMap(cell_t gameMap[SIDE_NCELL][SIDE_NCELL], coord_t *position) {
             uint8_t c_result = sensor_measure_color();
             uint8_t d_result = sensor_distance_norm();
 
-            chSemWait(&gamestates_sem);
             if((c_result == RED) && (d_result != OUT_MAP))
-                gamestates = (gamestates & ~SCANNING_BITS) | SCANNING_RED;
+                set_gamestates((get_gamestates() & ~SCANNING_BITS) | SCANNING_RED);
             else if((c_result == BLUE) && (d_result != OUT_MAP))
-                gamestates = (gamestates & ~SCANNING_BITS) | SCANNING_BLUE;
+                set_gamestates((get_gamestates() & ~SCANNING_BITS) | SCANNING_BLUE);
             else if((c_result == NONE) || (d_result == OUT_MAP))
-                gamestates = (gamestates & ~SCANNING_BITS) | SCANNING_NONE;
-            chSemSignal(&gamestates_sem);
-
-            chThdSleepMilliseconds(500); // to make leds' color visible
-
-            chSemWait(&gamestates_sem);
-            gamestates = (gamestates & ~SCANNING_BITS) | SCANNING_NOT_SCANNING;
-            chSemSignal(&gamestates_sem);
+                set_gamestates((get_gamestates() & ~SCANNING_BITS) | SCANNING_NONE);
+            chThdSleepMilliseconds(500); // to make leds' color visible at least 500 ms
+            set_gamestates((get_gamestates() & ~SCANNING_BITS) | SCANNING_NOT_SCANNING);
 
             switch(position->t) {
                 case E:

@@ -97,7 +97,6 @@ static THD_FUNCTION(ProcessImage, arg) {
         g = averageBuffer(image_green);
         chSemSignal(&color_sem);
         chThdSleepMilliseconds(100);
-        //dcmi_reset_error();
     }
 }
 
