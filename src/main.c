@@ -13,7 +13,7 @@
 #include <stdlib.h>
 #include <time.h>
 #include <leds.h>
-
+#include <stdlib.h>
 #include <camera/po8030.h>
 #include <spi_comm.h>
 
@@ -30,7 +30,7 @@ int main(void) {
     // Inits the Inter Process Communication bus
     messagebus_init(&bus, &bus_lock, &bus_condvar);
     clear_leds();
-    //srand(time(0));
+    srand((uint32_t)chVTGetSystemTime());
     // Sensors
     cell_t gameMap[SIDE_NCELL][SIDE_NCELL];
     game_init(gameMap);
@@ -53,21 +53,19 @@ int main(void) {
     //
     chThdSetPriority(NORMALPRIO);
     while(1) { 
-        //gamestates = WINNER_RED | STATE_END;
         if((gamestates & STATE_BITS) == STATE_WAITING_PLAYER) {}
         else if((gamestates & STATE_BITS) == STATE_PLAYING) {
-            updateMap(gameMap, &position);
+            //updateMap(gameMap, &position);
             coord_t target;
             if((gamestates & DIFFICULTY_BITS) == DIFFICULTY_EASY)
                 target = place_easy(gameMap);
             else if((gamestates & DIFFICULTY_BITS) == DIFFICULTY_EASY)
                 target = place_hard(gameMap);
-            mvt_place(gameMap, &position, target);
+            mvt_place(&gameMap, &position, target);
             gamestates = (gamestates & ~STATE_BITS) | STATE_WAITING_PLAYER;
         }
         else if(((gamestates & STATE_BITS) == STATE_START) || ((gamestates & STATE_BITS) == STATE_END)) {}
         check_end_game(gameMap);
-        //show_stateofgame();
         chThdSleepMilliseconds(200);
     }
     return 0;

@@ -21,7 +21,7 @@ void game_init(cell_t gameMap[SIDE_NCELL][SIDE_NCELL]) {
     //        gameMap[x][y].state = CELL_OCCUPED;
 
     for(uint8_t i = 0; i < 12; i++) {
-        if((i < 3) || ((i > 5) && (i < 9)))
+        if(i < 6)
             // Red cells are the one on the left and right sides
             gameMap[storage[i].x][storage[i].y].state |= CELL_OCCUPED_RED;
         else
@@ -125,8 +125,8 @@ coord_t place_easy(cell_t gameMap[SIDE_NCELL][SIDE_NCELL]) {
         //assign 2 random coordinates between 0 and 3
         //use of coord_t instead of 2 int because this struct takes 1 bytes instead of 2 bytes
         tmp = (coord_t) {
-            .x = GAMEMAP_CENTER - 3 + (rand() % 4),
-            .y = GAMEMAP_CENTER - 3 + (rand() % 4)
+            .x = GAMEMAP_CENTER - 1 + (rand() % 3),
+            .y = GAMEMAP_CENTER - 1 + (rand() % 3)
         };
 
         if((gameMap[tmp.x][tmp.y].state & OBSTRUCTION_BITS) == CELL_FREE)

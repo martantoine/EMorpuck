@@ -32,6 +32,7 @@ void updateMap(cell_t gameMap[SIDE_NCELL][SIDE_NCELL], coord_t *position) {
                     if((gameMap[GAMEMAP_CENTER + nearest[w].x][GAMEMAP_CENTER + nearest[w].y].state & OBSTRUCTION_BITS) != (CELL_OCCUPED_RED || CELL_OCCUPED_BLUE))
                         tocheck = (coord_t){.x=GAMEMAP_CENTER+nearest[w].x, .y=GAMEMAP_CENTER+nearest[w].y, .t=nearest[w].t};
             }
+            
             path = findPath(gameMap, *position, tocheck);
             mvt_executePath(position, tocheck, path);
             uint8_t c_result = sensor_measure_color();
@@ -49,7 +50,7 @@ void updateMap(cell_t gameMap[SIDE_NCELL][SIDE_NCELL], coord_t *position) {
             gamestates = (gamestates & ~SCANNING_BITS) | SCANNING_NOT_SCANNING;
             chSemSignal(&gamestates_sem);
 
-            if(d_result != OUT_MAP)
+            if((d_result != OUT_MAP) && (c_result == BLUE))
                 switch(position->t) {
                     case E:
                         gameMap[position->x+d_result][position->y].state |= CELL_OCCUPED_BLUE;

@@ -16,7 +16,7 @@
 
 void mvt_init(void);
 void mvt_executePath(coord_t *position, const coord_t target, step_t *path);
-void mvt_place(cell_t gameMap[SIDE_NCELL][SIDE_NCELL], coord_t *position, const coord_t target);
+void mvt_place(cell_t *gameMap[SIDE_NCELL][SIDE_NCELL], coord_t *position, const coord_t target);
 
 void mvt_forward(void);
 void mvt_backward(void);
