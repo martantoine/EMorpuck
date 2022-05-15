@@ -1,11 +1,8 @@
 #include <ch.h>
 #include <stdlib.h>
-#include <math.h>
 #include "movements.h"
 #include "motors_driver.h"
 #include "path.h"
-
-inline void updatePosition(coord_t *position, step_t step); //inline because used only in one place : 1 line in mvt_executablePath
 
 void mvt_init(void) {
     motors_init();
@@ -14,7 +11,6 @@ void mvt_init(void) {
 }
 
 void mvt_executePath(coord_t *position, const coord_t target, step_t *path) {
-    //if(path != NULL) {
     uint8_t i = 0;
     while(path[i] != STOP) {
         switch(path[i]) {
@@ -33,73 +29,50 @@ void mvt_executePath(coord_t *position, const coord_t target, step_t *path) {
             default:
                 break;
         }
-        //updatePosition(position, path[i]);
-        *position = target;
         i++;
     }
+    *position = target;
     free(path); //better not forget to free unused memory
-    //}
-    //else
-       // chSysHalt("path null");
 }
 
-void updatePosition(coord_t *position, step_t step) {
-    int8_t delta = 0;
-    if(step == FORWARD)
-        delta = 1;
-    else if(step == BACKWARD)
-        delta = -1;
-
-    if((step == FORWARD) || (step == BACKWARD)) {
-        if(position->t == E)
-            position->x += delta;
-        else if(position->t == W)
-            position->x -= delta;
-        else if(position->t == N)
-            position->y -= delta;
-        else if(position->t == S)
-            position->y += delta;
-    }
-
-    if(step == LEFT) {
-        switch(position->t) {
-            case E: position->t = N; break;
-            case N: position->t = W; break;
-            case W: position->t = S; break;
-            case S: position->t = E; break;
-        }
-    }
-    else if(step == RIGHT) {
-        switch(position->t) {
-            case E: position->t = S; break;
-            case N: position->t = E; break;
-            case W: position->t = N; break;
-            case S: position->t = W; break;
-        }
-    }
-}
-
-void mvt_place(cell_t *gameMap[SIDE_NCELL][SIDE_NCELL], coord_t *position, const coord_t target) {
+void mvt_place(cell_t gameMap[SIDE_NCELL][SIDE_NCELL], coord_t *position, const coord_t target) {
     coord_t min, tmp;
-    uint8_t min_dist = 0xFF;
+    uint8_t min_dist = 0xFF, i;
 
     // find among all available pieces the cloest one to the target
-    for(uint8_t i = 0; i < 12; i++) {
+    for(i = 0; i < 12; i++) {
         tmp = storage[i];
-        if((gameMap[tmp.x][tmp.y]->state & OBSTRUCTION_BITS) == CELL_OCCUPED_RED) {
+        if((gameMap[tmp.x][tmp.y].state & OBSTRUCTION_BITS) == CELL_OCCUPED_RED) {
             uint8_t dist = getDistance((coord_t){.x=tmp.x, .y=tmp.y, .t=tmp.t}, target);
             if(dist <= min_dist) {
-                min = tmp;
+                min = pickup[i];
                 min_dist = dist;
             }
         }
     }
-    step_t *path = findPath(*gameMap, *position, min);
-//    mvt_executePath(position, min, path);
-    gameMap[min.x][min.y]->state &= ~OBSTRUCTION_BITS; // the robot now see the cell free and can go through it
-    path = findPath(*gameMap, *position, target);
-//    mvt_executePath(position, target, path);
-    gameMap[min.x][min.y]->state = (gameMap[min.x][min.y]->state & ~OBSTRUCTION_BITS) | CELL_OCCUPED_RED;
+    // go behind the stored piece (in the pickup position)
+    step_t *path = findPath(gameMap, *position, min);
+    mvt_executePath(position, min, path);
+    // go forward 4*(1/2 cell) = 2 cells => is now between the storage ring and the 3x3 playing grid
+    mvt_forward();
+    mvt_forward();
+    mvt_forward();
+    mvt_forward();
+    switch(position->t) {
+        case E: position->x += 2; break;
+        case W: position->x -= 2; break;
+        case N: position->y -= 2; break;
+        case S: position->y += 2; break;
+    }
+    gameMap[storage[i].x][storage[i].y].state &= ~OBSTRUCTION_BITS; // the robot now see the cell free and can go through it
+    // search the place to place the piece
+    path = findPath(gameMap, *position, target);
+    mvt_executePath(position, target, path);
+    // go back to idling positon
+    path = findPath(gameMap, *position, (coord_t){1, 7, N});
+    mvt_executePath(position, (coord_t){1, 7, N}, path);
+    // mark the cell that received the red piece
+    gameMap[target.x][target.y].state = (gameMap[target.x][target.y].state & ~OBSTRUCTION_BITS) | CELL_OCCUPED_RED;
 }
 
 #define WAIT_MOTOR_TARGET_REACHED() \

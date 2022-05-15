@@ -16,9 +16,6 @@ void game_init(cell_t gameMap[SIDE_NCELL][SIDE_NCELL]) {
                 .g_score = 0xFF,
                 .parent = NULL
             };
-    //for(uint8_t x = GAMEMAP_CENTER-1; x <= GAMEMAP_CENTER+1; x++)
-    //    for(uint8_t y = GAMEMAP_CENTER-1; y <= GAMEMAP_CENTER+1; y++)
-    //        gameMap[x][y].state = CELL_OCCUPED;
 
     for(uint8_t i = 0; i < 12; i++) {
         if(i < 6)
@@ -34,13 +31,13 @@ void game_init(cell_t gameMap[SIDE_NCELL][SIDE_NCELL]) {
     gamestates = 0;
     chSemSignal(&gamestates_sem);
 }
-
+/*
 uint8_t search_winner(cell_t gameMap[SIDE_NCELL][SIDE_NCELL]) {
     int nb_of_red = 0;
     int nb_of_blue = 0;
 
     for (int x = -1 + GAMEMAP_CENTER; x < GAMEMAP_CENTER + 3; x++) {
-        /*vertical*/
+        //vertical
         nb_of_blue = 0;
         nb_of_red = 0;
         for (int y = -1 + GAMEMAP_CENTER; y < GAMEMAP_CENTER + 3; y++) {
@@ -55,7 +52,7 @@ uint8_t search_winner(cell_t gameMap[SIDE_NCELL][SIDE_NCELL]) {
                 return BLUE;
         }
 
-        /*horizontal*/
+        //horizontal
         nb_of_blue = 0;
         nb_of_red = 0;
         for (int y = -1 + GAMEMAP_CENTER; y < GAMEMAP_CENTER + 3; y++) {
@@ -71,7 +68,7 @@ uint8_t search_winner(cell_t gameMap[SIDE_NCELL][SIDE_NCELL]) {
         }
     }
 
-    /*diagonal*/
+    //diagonal
     if (((gameMap[0][0].state & OBSTRUCTION_BITS) == CELL_OCCUPED_BLUE) &&
         ((gameMap[1][1].state & OBSTRUCTION_BITS) == CELL_OCCUPED_BLUE) &&
         ((gameMap[2][2].state & OBSTRUCTION_BITS) == CELL_OCCUPED_BLUE))
@@ -105,19 +102,21 @@ uint8_t search_winner(cell_t gameMap[SIDE_NCELL][SIDE_NCELL]) {
     if(full == true)
         return DRAW;
     return NONE;
-}
+}*/
 
 coord_t play_center(cell_t gameMap[SIDE_NCELL][SIDE_NCELL]) {
-    if((gameMap[GAMEMAP_CENTER][GAMEMAP_CENTER].state & OBSTRUCTION_BITS) == CELL_FREE)
+    if(((gameMap[GAMEMAP_CENTER][GAMEMAP_CENTER].state & OBSTRUCTION_BITS) != CELL_OCCUPED_BLUE) &&
+       ((gameMap[GAMEMAP_CENTER][GAMEMAP_CENTER].state & OBSTRUCTION_BITS) != CELL_OCCUPED_RED))
         for(uint8_t w = 0; w < 4; w++) 
-            if((gameMap[GAMEMAP_CENTER + nearest[w].x][GAMEMAP_CENTER + nearest[w].y].state & OBSTRUCTION_BITS) == CELL_FREE)
+            if(((gameMap[GAMEMAP_CENTER + nearest[w].x][GAMEMAP_CENTER + nearest[w].y].state & OBSTRUCTION_BITS) != CELL_OCCUPED_BLUE) &&
+               ((gameMap[GAMEMAP_CENTER + nearest[w].x][GAMEMAP_CENTER + nearest[w].y].state & OBSTRUCTION_BITS) != CELL_OCCUPED_RED))
                 return (coord_t){.x=GAMEMAP_CENTER, .y=GAMEMAP_CENTER, .t=nearest[w].t};
     return (coord_t){.x=0, .y=0, .t=E};
 }
 
-coord_t place_easy(cell_t gameMap[SIDE_NCELL][SIDE_NCELL]) {
+coord_t place_easy(cell_t gameMape[SIDE_NCELL][SIDE_NCELL]) {
     //place the center first if not played by the player.
-    coord_t tmp = play_center(gameMap);
+    coord_t tmp = play_center(gameMape);
     if((tmp.x == GAMEMAP_CENTER) && (tmp.y == GAMEMAP_CENTER))
         return tmp;
 
@@ -129,7 +128,8 @@ coord_t place_easy(cell_t gameMap[SIDE_NCELL][SIDE_NCELL]) {
             .y = GAMEMAP_CENTER - 1 + (rand() % 3)
         };
 
-        if((gameMap[tmp.x][tmp.y].state & OBSTRUCTION_BITS) == CELL_FREE)
+        if(((gameMape[tmp.x][tmp.y].state & OBSTRUCTION_BITS) != CELL_OCCUPED_BLUE) &&
+           ((gameMape[tmp.x][tmp.y].state & OBSTRUCTION_BITS) != CELL_OCCUPED_RED))
             return tmp;
     }
 }

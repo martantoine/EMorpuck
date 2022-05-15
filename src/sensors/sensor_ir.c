@@ -89,7 +89,7 @@ void check_at_start(uint8_t *ir_count_1, uint8_t *ir_count_2, uint8_t *ir_state_
 }
 
 void check_ingame(uint8_t *ir_count_1, uint8_t *ir_count_2, uint8_t *ir_state_1, uint8_t *ir_state_2) {
-    if((*ir_state_1 == 1) || (*ir_state_2 == 1)) {
+    if((*ir_state_1 == 1) && (*ir_state_2 == 1)) {
         if((*ir_count_1 > (HOLD_LONG / SENSOR_IR_REFRESH_T)) && (*ir_count_2 > (HOLD_LONG / SENSOR_IR_REFRESH_T)))
             gamestates = (gamestates & ~STATE_BITS) | STATE_END;
         else if((*ir_count_1 > (HOLD_SHORT / SENSOR_IR_REFRESH_T)) && (*ir_count_2 < (HOLD_SHORT / SENSOR_IR_REFRESH_T)))

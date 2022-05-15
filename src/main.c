@@ -32,6 +32,10 @@ int main(void) {
     clear_leds();
     srand((uint32_t)chVTGetSystemTime());
     // Sensors
+    /*
+     * the cell's position is stored implincitly in the address :
+     * the cell of position (i,j) is accesssed with gameMap[i,j]
+     */
     cell_t gameMap[SIDE_NCELL][SIDE_NCELL];
     game_init(gameMap);
     sensor_color_init();
@@ -40,32 +44,28 @@ int main(void) {
     // Actuators
     mvt_init();
 
-    /*
-     * the cell's position is stored implincitly in the address :
-     * the cell of position (i,j) is accesssed with gameMap[i,j]
-     */
+
     coord_t position = {
         .x = 1,
         .y = SIDE_NCELL-2,
         .t = N,
     };
 
-    //
     chThdSetPriority(NORMALPRIO);
     while(1) { 
         if((gamestates & STATE_BITS) == STATE_WAITING_PLAYER) {}
         else if((gamestates & STATE_BITS) == STATE_PLAYING) {
-            //updateMap(gameMap, &position);
+            updateMap(gameMap, &position);
             coord_t target;
             if((gamestates & DIFFICULTY_BITS) == DIFFICULTY_EASY)
                 target = place_easy(gameMap);
             else if((gamestates & DIFFICULTY_BITS) == DIFFICULTY_EASY)
                 target = place_hard(gameMap);
-            mvt_place(&gameMap, &position, target);
+            mvt_place(gameMap, &position, target);
             gamestates = (gamestates & ~STATE_BITS) | STATE_WAITING_PLAYER;
         }
         else if(((gamestates & STATE_BITS) == STATE_START) || ((gamestates & STATE_BITS) == STATE_END)) {}
-        check_end_game(gameMap);
+        //check_end_game(gameMap);
         chThdSleepMilliseconds(200);
     }
     return 0;
