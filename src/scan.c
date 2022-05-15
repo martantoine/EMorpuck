@@ -26,7 +26,7 @@ void updateMap(cell_t gameMap[SIDE_NCELL][SIDE_NCELL], coord_t *position) {
             if((scanning_order[i].x == GAMEMAP_CENTER) && (scanning_order[i].y == GAMEMAP_CENTER)) {
                 /*
                  * It could looks like there is a case where it's impossible to scan the cell in the middle because it's surrounded on every sides
-                 * However, the robot's playing strategy forbidden this kind of situation by always playing the middle case if free
+                 * However, the robot's playing strategy forbidden this kind of situation by always playing the middle case if this later one is free
                  * This strategy simplify the scanning and is moreover the winning strategy
                  */
                 for(uint8_t w = 0; w < 4; w++) {
@@ -42,6 +42,7 @@ void updateMap(cell_t gameMap[SIDE_NCELL][SIDE_NCELL], coord_t *position) {
             mvt_executePath(position, tocheck, path);
             uint8_t c_result = sensor_measure_color();
             uint8_t d_result = sensor_distance_norm();
+
             chSemWait(&gamestates_sem);
             if((c_result == RED) && (d_result != OUT_MAP))
                 gamestates = (gamestates & ~SCANNING_BITS) | SCANNING_RED;
@@ -50,7 +51,9 @@ void updateMap(cell_t gameMap[SIDE_NCELL][SIDE_NCELL], coord_t *position) {
             else if((c_result == NONE) || (d_result == OUT_MAP))
                 gamestates = (gamestates & ~SCANNING_BITS) | SCANNING_NONE;
             chSemSignal(&gamestates_sem);
+
             chThdSleepMilliseconds(500); // to make leds' color visible
+
             chSemWait(&gamestates_sem);
             gamestates = (gamestates & ~SCANNING_BITS) | SCANNING_NOT_SCANNING;
             chSemSignal(&gamestates_sem);

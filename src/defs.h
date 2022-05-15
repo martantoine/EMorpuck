@@ -81,7 +81,7 @@ typedef struct coord coord_t;
 
 #define OBSTRUCTION_BITS            ((uint16_t) (1 << 1) | (1 << 0))
 #define CELL_FREE                   ((uint16_t) (0 << 1) | (0 << 0))
-#define CELL_OCCUPED                ((uint16_t) (0 << 1) | (1 << 0))
+#define CELL_OCCUPED                ((uint16_t) (0 << 1) | (1 << 0)) // Deprecated
 #define CELL_OCCUPED_RED            ((uint16_t) (1 << 1) | (0 << 0))
 #define CELL_OCCUPED_BLUE           ((uint16_t) (1 << 1) | (1 << 0))
 #define PATH_FIND_BITS              ((uint16_t) (1 << 3) | (1 << 2))
@@ -194,6 +194,8 @@ static const coord_t scanning_order[9] = {
     { GAMEMAP_CENTER    , GAMEMAP_CENTER - 2, S},
     { GAMEMAP_CENTER    , GAMEMAP_CENTER    , S}
 };
+
+
 
 uint8_t getDistance(coord_t A, coord_t B);
 
