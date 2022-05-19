@@ -37,7 +37,7 @@ struct cell {
 typedef struct cell cell_t;
 
 struct coord {
-    uint8_t x,y;
+    int8_t x,y;
     angle_t t;
 };
 typedef struct coord coord_t;
@@ -68,7 +68,8 @@ typedef struct coord coord_t;
 #define WHEEL_SPACE                 53 // in mm
 #define STEPS_TURN_90               323
 #define NSTEPS_HALF_CELL            (CELL_WIDTH / (WHEEL_DIAMETER * PI) * NSTEP_ONE_TURN / 2)
-#define STEP_SPEED                  400
+#define STEP_SPEED_STRAIGHT         400
+#define STEP_SPEED_TURN             325
 
 /*
  * The 3 following defines are commented to show the derivation of of NTURNS_TURN_360

@@ -51,19 +51,28 @@ int main(void) {
 
     while(1) {
         uint8_t gamestates_tmp = get_gamestates();
-        if((gamestates_tmp & STATE_BITS) == STATE_WAITING_PLAYER) {}
+        if((get_gamestates() & STATE_BITS) == STATE_WAITING_PLAYER) {}
         else if((gamestates_tmp & STATE_BITS) == STATE_PLAYING) {
             updateMap(gameMap, &position);
-            coord_t target;
-            if((gamestates_tmp & DIFFICULTY_BITS) == DIFFICULTY_EASY)
-                target = place_easy(gameMap);
-            else if((gamestates_tmp & DIFFICULTY_BITS) == DIFFICULTY_EASY)
-                target = place_hard(gameMap);
-            mvt_place(gameMap, &position, target);
-            set_gamestates((get_gamestates() & ~STATE_BITS) | STATE_WAITING_PLAYER);
+            check_end_game(gameMap);
+            gamestates_tmp = get_gamestates();
+            if((gamestates_tmp & STATE_BITS) != STATE_END) {
+                coord_t target;
+                if((gamestates_tmp & DIFFICULTY_BITS) == DIFFICULTY_EASY)
+                    target = place_easy(gameMap);
+                else if((gamestates_tmp & DIFFICULTY_BITS) == DIFFICULTY_EASY)
+                    target = place_hard(gameMap);
+                mvt_place(gameMap, &position, target);
+                set_gamestates((get_gamestates() & ~STATE_BITS) | STATE_WAITING_PLAYER);
+                check_end_game(gameMap);
+                /*
+                 * having 2 calls of check_end_game() is not really necessary, the one after updateMap is enough
+                 * however, this saves some time in case the robot wins :
+                 * it won't scan for nothing the map
+                 */
+            }
         }
         else if(((gamestates_tmp & STATE_BITS) == STATE_START) || ((gamestates_tmp & STATE_BITS) == STATE_END)) {}
-        //check_end_game(gameMap);
         chThdSleepMilliseconds(200);
     }
     return 0;

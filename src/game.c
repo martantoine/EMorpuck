@@ -21,6 +21,17 @@ static const coord_t placing[8] = {
     { GAMEMAP_CENTER    , GAMEMAP_CENTER + 1, N}
 };
 
+static const coord_t placing_goto[8] = {
+    { GAMEMAP_CENTER - 2, GAMEMAP_CENTER - 1, E},
+    { GAMEMAP_CENTER - 2, GAMEMAP_CENTER    , E},
+    { GAMEMAP_CENTER - 2, GAMEMAP_CENTER + 1, E},
+    { GAMEMAP_CENTER + 2, GAMEMAP_CENTER - 1, W},
+    { GAMEMAP_CENTER + 2, GAMEMAP_CENTER    , W},
+    { GAMEMAP_CENTER + 2, GAMEMAP_CENTER + 1, W},
+    { GAMEMAP_CENTER    , GAMEMAP_CENTER - 2, S},
+    { GAMEMAP_CENTER    , GAMEMAP_CENTER + 2, N}
+};
+
 void game_init(cell_t gameMap[SIDE_NCELL][SIDE_NCELL]) {
     for(uint8_t x = 0; x < SIDE_NCELL; x++)
         for(uint8_t y = 0; y < SIDE_NCELL; y++)
@@ -133,39 +144,28 @@ uint8_t search_winner(cell_t gameMap[SIDE_NCELL][SIDE_NCELL]) {
  * Return a zero coord_t if it's possible to place a piece at the middle
  */
 coord_t play_center(cell_t gameMap[SIDE_NCELL][SIDE_NCELL]) {
-    if(((gameMap[GAMEMAP_CENTER][GAMEMAP_CENTER].state & OBSTRUCTION_BITS) != CELL_OCCUPED_BLUE) &&
-       ((gameMap[GAMEMAP_CENTER][GAMEMAP_CENTER].state & OBSTRUCTION_BITS) != CELL_OCCUPED_RED))
+    if((gameMap[GAMEMAP_CENTER][GAMEMAP_CENTER].state & OBSTRUCTION_BITS) == CELL_FREE)
         for(uint8_t w = 0; w < 4; w++)
-            if(((gameMap[GAMEMAP_CENTER + nearest[w].x][GAMEMAP_CENTER + nearest[w].y].state & OBSTRUCTION_BITS) != CELL_OCCUPED_BLUE) &&
-               ((gameMap[GAMEMAP_CENTER + nearest[w].x][GAMEMAP_CENTER + nearest[w].y].state & OBSTRUCTION_BITS) != CELL_OCCUPED_RED))
-                return (coord_t){.x=GAMEMAP_CENTER, .y=GAMEMAP_CENTER, .t=nearest[w].t};
+            if((gameMap[GAMEMAP_CENTER + nearest[w].x][GAMEMAP_CENTER + nearest[w].y].state & OBSTRUCTION_BITS) == CELL_FREE)
+                return (coord_t){.x=GAMEMAP_CENTER + nearest[w].x, .y=GAMEMAP_CENTER + nearest[w].y, .t=nearest[w].t};
     return (coord_t){.x=0, .y=0, .t=E};
 }
 
 coord_t place_easy(cell_t gameMap[SIDE_NCELL][SIDE_NCELL]) {
     //place the center first if not played by the player.
     coord_t tmp = play_center(gameMap);
-    if((tmp.x == GAMEMAP_CENTER) && (tmp.y == GAMEMAP_CENTER))
+    if((tmp.x != 0) && (tmp.y != 0))
         return tmp;
 
     for(;;) {
         //assign 2 random coordinates between 0 and 3
         //use of coord_t instead of 2 int because this struct takes 1 bytes instead of 2 bytes
-        tmp = (coord_t) {
-            .x = GAMEMAP_CENTER - 1 + (rand() % 3),
-            .y = GAMEMAP_CENTER - 1 + (rand() % 3)
-        };
-
-        // Use a Look Up Table to find the angle of placement
-        for(uint8_t i=0; i < 8; i++)
-            if((tmp.x == placing[i].x) && (tmp.y == placing[i].y)) {
-                tmp = placing[i];
-                break;
-            }
+        uint8_t i = rand() % 8;
+        tmp = placing[i];
 
         if(((gameMap[tmp.x][tmp.y].state & OBSTRUCTION_BITS) != CELL_OCCUPED_BLUE) &&
            ((gameMap[tmp.x][tmp.y].state & OBSTRUCTION_BITS) != CELL_OCCUPED_RED))
-            return tmp;
+            return placing_goto[i];
     }
 }
 
@@ -229,18 +229,13 @@ void check_end_game(cell_t gameMap[SIDE_NCELL][SIDE_NCELL]) {
 }
 
 void toggle_rgb_leds(rgb_led_name_t led_number, uint8_t red_val, uint8_t green_val, uint8_t blue_val) {
-    static int b = 0;
-    if(b==0) {
-        set_rgb_led(led_number, red_val, green_val, blue_val);
-        b = 1;
-    }
-    else {
-        set_rgb_led(led_number, 0, 0, 0);
-        b = 0;
-    }
+    toggle_rgb_led(led_number, RED_LED, red_val);
+    toggle_rgb_led(led_number, GREEN_LED, green_val);
+    toggle_rgb_led(led_number, BLUE_LED, blue_val);
 }
 
 void show_stateofgame(void) {
+    static int b = 0;
     uint8_t gamestates_tmp = get_gamestates();
     if((gamestates_tmp & STATE_BITS) != STATE_END) {
         clear_leds();
@@ -284,6 +279,10 @@ void show_stateofgame(void) {
         set_rgb_led(LED6,0,0,0xFF);
     }
     else if((gamestates_tmp & STATE_BITS) == STATE_END) {
+        if(b==0) {
+            clear_leds();
+            b=1;
+        }
         if((gamestates_tmp & WINNER_BITS) == WINNER_RED) {
             toggle_rgb_leds(LED2,0xFF,0,0);
             toggle_rgb_leds(LED4,0xFF,0,0);

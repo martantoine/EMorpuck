@@ -5,10 +5,11 @@
  * those functions are inline because they are only used once by findPath()
  */
 inline void pathFindingReset(cell_t gameMap[SIDE_NCELL][SIDE_NCELL]);
-inline step_t* generatePathCode(cell_t gameMap[SIDE_NCELL][SIDE_NCELL], coord_t current, coord_t target);
+inline step_t* generatePathCode(cell_t gameMap[SIDE_NCELL][SIDE_NCELL], coord_t current, coord_t target, uint8_t backward);
 void avoid_path_out_of_memory(step_t *path, uint16_t *path_used, uint16_t *path_allocated);
+void backward_or_halfturn(step_t *path, uint16_t *path_used, uint8_t backward);
 
-step_t* findPath(cell_t gameMap[SIDE_NCELL][SIDE_NCELL], coord_t current, const coord_t target) {
+step_t* findPath(cell_t gameMap[SIDE_NCELL][SIDE_NCELL], coord_t current, const coord_t target, uint8_t backward) {
     pathFindingReset(gameMap);
 
     /*
@@ -68,10 +69,10 @@ step_t* findPath(cell_t gameMap[SIDE_NCELL][SIDE_NCELL], coord_t current, const 
             }
         }
     }
-    return generatePathCode(gameMap, current, target);
+    return generatePathCode(gameMap, current, target, backward);
 }
 
-step_t* generatePathCode(cell_t gameMap[SIDE_NCELL][SIDE_NCELL], coord_t current, coord_t target) {
+step_t* generatePathCode(cell_t gameMap[SIDE_NCELL][SIDE_NCELL], coord_t current, coord_t target, uint8_t backward) {
     cell_t* icell = &gameMap[current.x][current.y];
     cell_t* icell_old = NULL;
     int8_t delta_x = 0, delta_y = 0;
@@ -113,10 +114,8 @@ step_t* generatePathCode(cell_t gameMap[SIDE_NCELL][SIDE_NCELL], coord_t current
                     path[path_used++] = FORWARD;
                     path[path_used++] = FORWARD;
                 }
-                else if(delta_x == -1) {
-                    path[path_used++] = BACKWARD;
-                    path[path_used++] = BACKWARD;
-                }
+                else if(delta_x == -1)
+                    backward_or_halfturn(path, &path_used, backward);
                 else if(delta_y == 1) {
                     path[path_used++] = RIGHT;
                     path[path_used++] = FORWARD;
@@ -143,20 +142,16 @@ step_t* generatePathCode(cell_t gameMap[SIDE_NCELL][SIDE_NCELL], coord_t current
                     path[path_used++] = FORWARD;
                     tmp_t = W;
                 }
-                else if(delta_y == 1) {
-                    path[path_used++] = BACKWARD;
-                    path[path_used++] = BACKWARD;
-                }
+                else if(delta_y == 1)
+                    backward_or_halfturn(path, &path_used, backward);
                 else if(delta_y == -1) {
                     path[path_used++] = FORWARD;
                     path[path_used++] = FORWARD;
                 }
                 break;
             case W:
-                if(delta_x == 1) {
-                    path[path_used++] = BACKWARD;
-                    path[path_used++] = BACKWARD;
-                }
+                if(delta_x == 1)
+                    backward_or_halfturn(path, &path_used, backward);
                 else if(delta_x == -1) {
                     path[path_used++] = FORWARD;
                     path[path_used++] = FORWARD;
@@ -191,10 +186,8 @@ step_t* generatePathCode(cell_t gameMap[SIDE_NCELL][SIDE_NCELL], coord_t current
                     path[path_used++] = FORWARD;
                     path[path_used++] = FORWARD;
                 }
-                else if(delta_y == -1) {
-                    path[path_used++] = BACKWARD;
-                    path[path_used++] = BACKWARD;
-                }
+                else if(delta_y == -1)
+                    backward_or_halfturn(path, &path_used, backward);
                 break;
         }
     }
@@ -260,10 +253,23 @@ void avoid_path_out_of_memory(step_t *path, uint16_t *path_used, uint16_t *path_
      * happens when the current size is close to the current limit and
      * will reserve 10 more free spaces
      */
-    if((*path_used) + 3 >= (*path_allocated)) {
+    if((*path_used) + 4 >= (*path_allocated)) {
         (*path_allocated) += 10;
         path = realloc(path, (*path_allocated)*sizeof(step_t));
         for(uint8_t i = (*path_allocated) - 10; i < (*path_allocated); i++)
             path[i] = STOP;
+    }
+}
+
+void backward_or_halfturn(step_t *path, uint16_t *path_used, uint8_t backward) {
+    if(backward == 1) {
+        path[(*path_used)++] = BACKWARD;
+        path[(*path_used)++] = BACKWARD;
+    }
+    else {
+        path[(*path_used)++] = LEFT;
+        path[(*path_used)++] = LEFT;
+        path[(*path_used)++] = FORWARD;
+        path[(*path_used)++] = FORWARD;
     }
 }
